@@ -3,12 +3,10 @@ import customtkinter as ctk
 from PIL import Image, ImageTk
 import textwrap
 
-#%% Prima pagina
-# Importing the story of the robot
+#%% Setup
 with open("./Progettazione/storia.txt", "r") as story:
     content = story.read()
 
-# Environment colors
 widgets_bg = "#FFA764"
 widgets_fg_text_color = "#000000"
 widgets_border_color = "#BF5200"
@@ -17,21 +15,55 @@ window_bg = "#FFE2CC"
 
 ctk.set_appearance_mode("light")
 root = ctk.CTk(fg_color=window_bg)
-root.minsize(550, 800)
+root.geometry("400x400")  # Finestra iniziale più piccola
 root.configure(bg=window_bg)
 
-# Container frame for all pages
 container = ctk.CTkFrame(root, fg_color=window_bg)
 container.pack(fill="both", expand=True)
 
-# --- First page frame ---
+user_data = []
+
+#%% --- Start Page ---
+start_page = ctk.CTkFrame(container, fg_color=window_bg)
+start_page.pack(fill="both", expand=True)
+
+start_inner_frame = ctk.CTkFrame(start_page, fg_color=window_bg)
+start_inner_frame.place(relx=0.5, rely=0.5, anchor="center")
+
+welcome_label = ctk.CTkLabel(start_inner_frame, text="Benvenuto!", font=("Comic Sans MS", 20, "bold"), text_color=widgets_fg_text_color)
+welcome_label.pack(pady=(10, 10))
+
+username_entry = ctk.CTkEntry(start_inner_frame, placeholder_text="Username", font=widgets_font, width=250)
+username_entry.pack(pady=10)
+
+def go_to_story():
+    user_data.append(username_entry.get())
+    start_page.pack_forget()
+    root.geometry("550x800")  # Espandi la finestra
+    storytelling.pack(fill="both", expand=True)
+    update_timer()
+
+start_button = ctk.CTkButton(
+    start_inner_frame,
+    text="Prossimo",
+    command=go_to_story,
+    fg_color=widgets_bg,
+    text_color=widgets_fg_text_color,
+    border_color=widgets_border_color,
+    border_width=2,
+    corner_radius=15,
+    font=widgets_font,
+    width=160,
+    height=50
+)
+start_button.pack(pady=20)
+
+#%% --- Storytelling Page ---
 storytelling = ctk.CTkFrame(container, fg_color=window_bg)
-storytelling.pack(fill="both", expand=True)
 
 canvas = ctk.CTkCanvas(storytelling, width=400, height=700, bg=window_bg, highlightthickness=0)
 canvas.pack(fill='both', expand=True)
 
-# Load robot image
 image_sides_size = 150
 robot_img = Image.open("./Progettazione/robot.png").resize((image_sides_size, image_sides_size))
 robot_photo = ImageTk.PhotoImage(robot_img)
@@ -50,8 +82,7 @@ submit_button = ctk.CTkButton(
     height=60
 )
 
-# Timer variables
-time_remaining = 120  # 2 minutes in seconds
+time_remaining = 120
 timer_label = ctk.CTkLabel(storytelling, text="", font=("Comic Sans MS", 14), text_color=widgets_fg_text_color)
 progress_bar = ctk.CTkProgressBar(storytelling, width=400, height=20, progress_color="#00FF22")
 
@@ -90,12 +121,10 @@ def on_resize(event):
     button_padding = 20
     height = event.height - bottom_padding - button_height - button_padding
 
-    # Update progress bar and timer position
     progress_bar.configure(width=width - 50)
     progress_bar.place(x=25, y=40)
     timer_label.place(x=25, y=10)
 
-    # Redraw the story box
     canvas.delete("all")
     create_rounded_label(
         canvas,
@@ -108,12 +137,10 @@ def on_resize(event):
         text_color=widgets_fg_text_color
     )
 
-    # Place the robot image
     robot_x = 25 + 10
     robot_y = 75 + (height-100) - image_sides_size - 10
     robot_label.place(x=robot_x, y=robot_y)
 
-    # Text placement
     box_x = 25
     box_y = 75
     box_width = width - 50
@@ -128,9 +155,7 @@ def on_resize(event):
     robot_bottom = robot_y + image_sides_size
     robot_right = robot_x + image_sides_size
 
-    font = (widgets_font[0], widgets_font[1])
     line_height = 22
-
     lines = []
     for paragraph in content.split('\n'):
         wrapped = textwrap.wrap(paragraph, width=60)
@@ -166,6 +191,5 @@ canvas.bind("<Configure>", on_resize)
 submit_button.place(relx=1.0, rely=1.0, anchor='se', x=-25, y=-25)
 timer_label.place(x=25, y=10)
 progress_bar.place(x=25, y=40)
-update_timer()
 
 root.mainloop()
