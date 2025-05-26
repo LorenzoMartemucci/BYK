@@ -15,7 +15,9 @@ window_bg = "#FFE2CC"
 
 ctk.set_appearance_mode("light")
 root = ctk.CTk(fg_color=window_bg)
-root.geometry("400x400")  # Finestra iniziale più piccola
+root.geometry("600x400")
+root.resizable(False, False)
+root.minsize(600, 400)
 root.configure(bg=window_bg)
 
 container = ctk.CTkFrame(root, fg_color=window_bg)
@@ -30,30 +32,46 @@ start_page.pack(fill="both", expand=True)
 start_inner_frame = ctk.CTkFrame(start_page, fg_color=window_bg)
 start_inner_frame.place(relx=0.5, rely=0.5, anchor="center")
 
-welcome_label = ctk.CTkLabel(start_inner_frame, text="Benvenuto!", font=("Comic Sans MS", 20, "bold"), text_color=widgets_fg_text_color)
-welcome_label.pack(pady=(10, 10))
+# Layout orizzontale
+horizontal_frame = ctk.CTkFrame(start_inner_frame, fg_color=window_bg)
+horizontal_frame.pack(padx=20, pady=20)
 
-username_entry = ctk.CTkEntry(start_inner_frame, placeholder_text="Username", font=widgets_font, width=250)
-username_entry.pack(pady=10)
+# Robot a sinistra (più in basso)
+robot_img = Image.open("./Progettazione/robot.png").resize((180, 180))
+robot_photo = ImageTk.PhotoImage(robot_img)
+robot_label = ctk.CTkLabel(horizontal_frame, image=robot_photo, text="", fg_color="transparent")
+robot_label.pack(side="left", padx=10, pady=(20, 0))  # Abbassato leggermente
+
+# Riquadro a destra
+box_frame = ctk.CTkFrame(horizontal_frame, fg_color=widgets_bg, border_color=widgets_border_color, border_width=2, corner_radius=15)
+box_frame.pack(side="left", padx=10, pady=10)
+
+username_label = ctk.CTkLabel(box_frame, text="COME TI CHIAMI?", font=("Comic Sans MS", 18, "bold"), text_color=widgets_fg_text_color, fg_color="transparent")
+username_label.pack(pady=(20, 10), padx=20)
+
+username_entry = ctk.CTkEntry(box_frame, placeholder_text="Scrivi qui il tuo nome", font=widgets_font, width=200)
+username_entry.pack(pady=5, padx=20)
 
 def go_to_story():
     user_data.append(username_entry.get())
     start_page.pack_forget()
-    root.geometry("550x800")  # Espandi la finestra
+    root.geometry("550x800")
+    root.resizable(True, True)
+    root.minsize(400, 600)
     storytelling.pack(fill="both", expand=True)
     update_timer()
 
 start_button = ctk.CTkButton(
-    start_inner_frame,
-    text="Prossimo",
+    box_frame,
+    text="GIOCHIAMO",
     command=go_to_story,
-    fg_color=widgets_bg,
+    fg_color="#FFFFFF",
     text_color=widgets_fg_text_color,
     border_color=widgets_border_color,
     border_width=2,
     corner_radius=15,
-    font=widgets_font,
-    width=160,
+    font=("Comic Sans MS", 14, "bold"),
+    width=180,
     height=50
 )
 start_button.pack(pady=20)
@@ -65,9 +83,9 @@ canvas = ctk.CTkCanvas(storytelling, width=400, height=700, bg=window_bg, highli
 canvas.pack(fill='both', expand=True)
 
 image_sides_size = 150
-robot_img = Image.open("./Progettazione/robot.png").resize((image_sides_size, image_sides_size))
-robot_photo = ImageTk.PhotoImage(robot_img)
-robot_label = ctk.CTkLabel(storytelling, image=robot_photo, text="", fg_color=widgets_bg)
+robot_story_img = Image.open("./Progettazione/robot.png").resize((image_sides_size, image_sides_size))
+robot_story_photo = ImageTk.PhotoImage(robot_story_img)
+robot_label_story = ctk.CTkLabel(storytelling, image=robot_story_photo, text="", fg_color=widgets_bg)
 
 submit_button = ctk.CTkButton(
     storytelling,
@@ -139,7 +157,7 @@ def on_resize(event):
 
     robot_x = 25 + 10
     robot_y = 75 + (height-100) - image_sides_size - 10
-    robot_label.place(x=robot_x, y=robot_y)
+    robot_label_story.place(x=robot_x, y=robot_y)
 
     box_x = 25
     box_y = 75
@@ -150,7 +168,6 @@ def on_resize(event):
     text_x = box_x + text_padding_x
     text_y = box_y + text_padding_y
     text_width = box_width - 2 * text_padding_x
-
     robot_top = robot_y
     robot_bottom = robot_y + image_sides_size
     robot_right = robot_x + image_sides_size
