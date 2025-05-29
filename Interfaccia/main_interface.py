@@ -250,14 +250,27 @@ chat_scrollbar = tk.Scrollbar(center_frame, orient="vertical", command=chat_canv
 chat_scrollbar.pack(side="right", fill="y")
 
 chat_frame = tk.Frame(chat_canvas, bg=window_bg)
-chat_canvas.create_window((0, 0), window=chat_frame, anchor="nw")
-chat_canvas.configure(yscrollcommand=chat_scrollbar.set)
+chat_window = chat_canvas.create_window((0, 0), window=chat_frame, anchor="nw")
 
 def on_frame_configure(event):
+    # Aggiorna la scrollregion per includere tutto il frame
     chat_canvas.configure(scrollregion=chat_canvas.bbox("all"))
-chat_frame.bind("<Configure>", on_frame_configure)
+    # Se il frame è più largo del canvas, aggiorna la larghezza del frame
+    if chat_frame.winfo_reqwidth() != chat_canvas.winfo_width():
+        chat_canvas.itemconfigure(chat_window, width=chat_canvas.winfo_width())
 
-# Funzione per aggiungere messaggi a fumetto con coda
+def on_canvas_configure(event):
+    # Mantieni la larghezza del frame uguale a quella del canvas
+    chat_canvas.itemconfigure(chat_window, width=event.width)
+
+chat_frame.bind("<Configure>", on_frame_configure)
+chat_canvas.bind("<Configure>", on_canvas_configure)
+
+chat_canvas.configure(yscrollcommand=chat_scrollbar.set)
+
+# Lista per tenere traccia dei bubble (label) dei messaggi
+message_bubbles = []
+
 def add_message(text, sender="user"):
     bubble_color = "#FFA764" if sender == "user" else "#AEE4FF"
     anchor = "e" if sender == "user" else "w"
@@ -276,11 +289,9 @@ def add_message(text, sender="user"):
         corner_radius=18,
         anchor="w",
         justify=justify,
-        wraplength=260,
-        width=260,
         height=50
     )
-    bubble.pack(side="top", anchor=anchor)
+    bubble.pack(side="top", anchor=anchor, fill="x", expand=True)
     # Bubble tail (triangolo)
     tail_canvas = tk.Canvas(bubble_frame, width=20, height=15, bg=window_bg, highlightthickness=0)
     if sender == "user":
@@ -361,11 +372,14 @@ send_button = ctk.CTkButton(
 )
 send_button.pack(side="right", padx=(0, 0), pady=10)
 
-# Robot che sbuca dalla chat (solo testa e mano, immagine PNG trasparente consigliata)
-robot_head_img = Image.open("./Progettazione/robot.png").resize((110, 90))
-robot_head_photo = ImageTk.PhotoImage(robot_head_img)
-robot_head_label = ctk.CTkLabel(chat_page, image=robot_head_photo, text="", fg_color="transparent")
-robot_head_label.place(x=0, rely=1.0, anchor="sw", y=-input_frame.winfo_reqheight() + 30)
+chat_canvas.configure(yscrollcommand=chat_scrollbar.set)
 
+# Abilita lo scroll con la rotellina del mouse
+def _on_mousewheel(event):
+    # Per Windows
+    chat_canvas.yview_scroll(int(-1*(event.delta/120)), "units")
+
+# Per Windows e Mac
+chat_canvas.bind_all("<MouseWheel>", _on_mousewheel)
 
 root.mainloop()
