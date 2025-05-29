@@ -38,20 +38,21 @@ card_frame.place(relx=0.5, rely=0.45, anchor="center")
 # Robot image (top right, floating)
 image_sides_size = 175
 robot_img = Image.open("./Progettazione/robot.png").resize((image_sides_size, image_sides_size))
-robot_photo = ImageTk.PhotoImage(robot_img)
+robot_photo = ctk.CTkImage(light_image=robot_img, size=(image_sides_size, image_sides_size))
 robot_label = ctk.CTkLabel(card_frame, image=robot_photo, text="", fg_color="transparent")
-robot_label.place(x=290, y=10)
+robot_label.place(x=25, y=20)
 
-# Top section: Title, Score
+# Top section: Title, Score (to the right of the robot, aligned right)
 title_label = ctk.CTkLabel(
     card_frame,
     text="Congratulazioni!",
     font=title_font,
     text_color="#FFFFFF",
     fg_color="transparent",
-    anchor="w",
+    anchor="e",  # align text to the right
+    width=250
 )
-title_label.place(x=25, y=20)
+title_label.place(x=220, y=30)  # Adjust x to be to the right of the robot
 
 subtitle_label = ctk.CTkLabel(
     card_frame,
@@ -59,9 +60,10 @@ subtitle_label = ctk.CTkLabel(
     font=subtitle_font,
     text_color="#FFFFFF",
     fg_color="transparent",
-    anchor="w",
+    anchor="e",  # align text to the right
+    width=250
 )
-subtitle_label.place(x=25, y=65)
+subtitle_label.place(x=220, y=75)
 
 score_value = 83  # Replace with your actual score variable
 score_label = ctk.CTkLabel(
@@ -70,9 +72,10 @@ score_label = ctk.CTkLabel(
     font=score_font,
     text_color="#FFFFFF",
     fg_color="transparent",
-    anchor="w",
+    anchor="e",  # align text to the right
+    width=250
 )
-score_label.place(x=25, y=100)
+score_label.place(x=220, y=110)
 
 # Table section
 table_y = 200
