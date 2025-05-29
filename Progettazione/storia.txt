@@ -1,11 +1,3 @@
-Nel 2042, la Lunatic Corp. ha lanciato il primo prototipo di robot umanoide : Robbi.
-A causa dell’eccessivo affidamento dell’umanità sui robot anche per i compiti più semplici, è stato 
-deciso che ogni robot dovrà essere programmato direttamente da un umano, attraverso il linguaggio 
-naturale.
-Tu sei stato scelto come Insegnante di Robot. Il tuo compito è istruire Robbi, passo dopo passo, 
-rispondendo alle sue domande e insegnandogli come comprendere e svolgere i compiti nel modo 
-più utile possibile.
-Ricordati che Robbi non ha accesso a Internet e quindi tutto ciò che apprende è grazie agli umani e 
-alle conversazioni a cui partecipa.
-Ogni task dovrà essere completato entro un tempo limite: solo così potrai dimostrare di essere un vero 
-Programmatore di Robot!
+Nel 2042 nasce Robbi, il primo robot umanoide della Lunatic Corp.
+Tu sei il suo programmatore e dovrai insegnargli tutto usando solo la tua immaginazione.
+Robbi non puÃ² accedere a Internet: impara solo da te e dalle vostre conversazioni.
