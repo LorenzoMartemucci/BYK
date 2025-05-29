@@ -9,13 +9,14 @@ widgets_border_color = "#BF5200"
 widgets_font = ("Comic Sans MS", 12)
 window_bg = "#FFE2CC"
 table_header_font = ("Comic Sans MS", 11)
-score_font = ("Comic Sans MS", 64, "bold")
+score_font = ("Comic Sans MS", 48, "bold")
 title_font = ("Comic Sans MS", 28, "bold")
 subtitle_font = ("Comic Sans MS", 22)
 button_font = ("Comic Sans MS", 13)
 
 ctk.set_appearance_mode("light")
 root = ctk.CTk(fg_color=window_bg)
+root.resizable(False, False)
 root.minsize(600, 700)
 root.title("Score & Ranking")
 
