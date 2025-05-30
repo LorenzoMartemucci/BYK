@@ -59,9 +59,8 @@ chat_time_remaining = [180]
 def go_to_story():
     user_data.append(username_entry.get())
     start_page.pack_forget()
-    root.geometry("550x800")
     root.resizable(True, True)
-    root.minsize(400, 600)
+    root.minsize(550, 500)
     storytelling.pack(fill="both", expand=True)
     time_remaining[0] = 120
     update_generic_timer(time_remaining, timer_label, progress_bar, 120, None)
@@ -69,6 +68,8 @@ def go_to_story():
 def go_to_chat():
     storytelling.pack_forget()
     chat_page.pack(fill="both", expand=True)
+    root.resizable(False, False)
+    root.minsize(600, 800)
     chat_time_remaining[0] = 180
     update_generic_timer(chat_time_remaining, chat_timer_label, chat_progress_bar, 180, None)
 
@@ -250,23 +251,38 @@ chat_scrollbar = tk.Scrollbar(center_frame, orient="vertical", command=chat_canv
 chat_scrollbar.pack(side="right", fill="y")
 
 chat_frame = tk.Frame(chat_canvas, bg=window_bg)
-chat_canvas.create_window((0, 0), window=chat_frame, anchor="nw")
-chat_canvas.configure(yscrollcommand=chat_scrollbar.set)
+chat_window = chat_canvas.create_window((0, 0), window=chat_frame, anchor="nw")
 
 def on_frame_configure(event):
+    # Aggiorna la scrollregion per includere tutto il frame
     chat_canvas.configure(scrollregion=chat_canvas.bbox("all"))
-chat_frame.bind("<Configure>", on_frame_configure)
+    # Se il frame è più largo del canvas, aggiorna la larghezza del frame
+    if chat_frame.winfo_reqwidth() != chat_canvas.winfo_width():
+        chat_canvas.itemconfigure(chat_window, width=chat_canvas.winfo_width())
 
-# Funzione per aggiungere messaggi a fumetto con coda
+def on_canvas_configure(event):
+    # Mantieni la larghezza del frame uguale a quella del canvas
+    chat_canvas.itemconfigure(chat_window, width=event.width)
+
+chat_frame.bind("<Configure>", on_frame_configure)
+chat_canvas.bind("<Configure>", on_canvas_configure)
+
+chat_canvas.configure(yscrollcommand=chat_scrollbar.set)
+
+# Lista per tenere traccia dei bubble (label) dei messaggi
+message_bubbles = []
+
 def add_message(text, sender="user"):
     bubble_color = "#FFA764" if sender == "user" else "#AEE4FF"
     anchor = "e" if sender == "user" else "w"
     justify = "right" if sender == "user" else "left"
-    padx = (60, 10) if sender == "user" else (10, 60)
-    # Bubble frame
+    # Sposta i messaggi del bot più a destra aumentando il margine sinistro
+    padx = (60, 10) if sender == "user" else (87, 60)
+    max_width = max(200, chat_canvas.winfo_width() - 100)
+
     bubble_frame = tk.Frame(chat_frame, bg=window_bg)
     bubble_frame.pack(anchor=anchor, pady=8, padx=padx, fill="x")
-    # Bubble label
+
     bubble = ctk.CTkLabel(
         bubble_frame,
         text=text,
@@ -276,19 +292,21 @@ def add_message(text, sender="user"):
         corner_radius=18,
         anchor="w",
         justify=justify,
-        wraplength=260,
-        width=260,
-        height=50
+        wraplength=max_width,
+        padx=10,
+        pady=10
     )
-    bubble.pack(side="top", anchor=anchor)
-    # Bubble tail (triangolo)
-    tail_canvas = tk.Canvas(bubble_frame, width=20, height=15, bg=window_bg, highlightthickness=0)
-    if sender == "user":
-        tail_canvas.pack(side="right", anchor="e")
-        tail_canvas.create_polygon(20, 0, 0, 7, 20, 15, fill=bubble_color, outline=bubble_color)
-    else:
-        tail_canvas.pack(side="left", anchor="w")
-        tail_canvas.create_polygon(0, 0, 20, 7, 0, 15, fill=bubble_color, outline=bubble_color)
+    bubble.pack(anchor=anchor, fill="none")
+
+    message_bubbles.append((bubble, sender))
+
+# Aggiorna la larghezza delle bubble quando la finestra cambia
+def update_bubble_widths(event=None):
+    max_width = max(200, chat_canvas.winfo_width() - 100)
+    for bubble, sender in message_bubbles:
+        bubble.configure(wraplength=max_width)
+
+chat_canvas.bind("<Configure>", update_bubble_widths)
 
 # Input in basso (stile come da esempio)
 input_outer_frame = ctk.CTkFrame(
@@ -312,7 +330,7 @@ input_frame.pack(side="left", fill="x", expand=True, padx=(0, 20))
 font = widgets_font
 f = tkFont.Font(font=font)
 line_height = f.metrics("linespace") + 2
-fixed_height = line_height * 3 + 12  # padding
+fixed_height = line_height * 3 + 12 # padding
 
 user_input = ctk.CTkTextbox(
     input_frame,
@@ -346,7 +364,6 @@ def send_message_event(event=None):
 user_input.bind("<Return>", send_message_event)
 user_input.bind("<Shift-Return>", lambda e: None)  # Permetti newline con Shift+Invio
 
-
 send_button = ctk.CTkButton(
     input_outer_frame,
     text="Invio",
@@ -357,15 +374,24 @@ send_button = ctk.CTkButton(
     border_width=2,
     corner_radius=15,
     width=90,
-    height=40
+    height=70
 )
+
 send_button.pack(side="right", padx=(0, 0), pady=10)
 
-# Robot che sbuca dalla chat (solo testa e mano, immagine PNG trasparente consigliata)
-robot_head_img = Image.open("./Progettazione/robot.png").resize((110, 90))
-robot_head_photo = ImageTk.PhotoImage(robot_head_img)
-robot_head_label = ctk.CTkLabel(chat_page, image=robot_head_photo, text="", fg_color="transparent")
-robot_head_label.place(x=0, rely=1.0, anchor="sw", y=-input_frame.winfo_reqheight() + 30)
+chat_canvas.configure(yscrollcommand=chat_scrollbar.set)
 
+# Abilita lo scroll con la rotellina del mouse
+def _on_mousewheel(event):
+    # Per Windows
+    chat_canvas.yview_scroll(int(-1*(event.delta/120)), "units")
+
+# Per Windows e Mac
+chat_canvas.bind_all("<MouseWheel>", _on_mousewheel)
+
+robot_chat_img = Image.open("./Progettazione/Robot_Chat.png").resize((150, 150))
+robot_chat_photo = ImageTk.PhotoImage(robot_chat_img)
+robot_chat_label = ctk.CTkLabel(center_frame, image=robot_chat_photo, text="", fg_color="transparent")
+robot_chat_label.place(relx=0.0, rely=1.0, anchor="sw", x=-43, y=0)  # y=0 per stare sul bordo
 
 root.mainloop()
