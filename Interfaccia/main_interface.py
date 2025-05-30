@@ -392,6 +392,6 @@ chat_canvas.bind_all("<MouseWheel>", _on_mousewheel)
 robot_chat_img = Image.open("./Progettazione/Robot_Chat.png").resize((150, 150))
 robot_chat_photo = ImageTk.PhotoImage(robot_chat_img)
 robot_chat_label = ctk.CTkLabel(center_frame, image=robot_chat_photo, text="", fg_color="transparent")
-robot_chat_label.place(relx=0.0, rely=1.0, anchor="sw", x=-40, y=0)  # y=0 per stare sul bordo
+robot_chat_label.place(relx=0.0, rely=1.0, anchor="sw", x=-43, y=0)  # y=0 per stare sul bordo
 
 root.mainloop()
