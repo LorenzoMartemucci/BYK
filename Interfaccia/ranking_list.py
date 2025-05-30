@@ -1,9 +1,23 @@
 import csv
 
-def ranking_update(username, score):
-    with open("./Progettazione/scores.csv", "a", newline='', encoding='utf-8') as file:
-        writer = csv.writer(file)
-        writer.writerow([username, score])
+def read_scores():
+    scores = []
+    with open("./Progettazione/scores.csv", "r", newline='', encoding='utf-8') as file:
+        reader = csv.reader(file)
+        for row in reader:
+            if len(row) >= 2:
+                scores.append({"username": row[0], "punteggio": int(row[1])})
+    return scores
 
-ranking_update("user1", 100)
-ranking_update("user2", 80)
+def write_scores(scores):
+    with open("./Progettazione/scores.csv", "w", newline='', encoding='utf-8') as file:
+        writer = csv.writer(file)
+        for entry in scores:
+            writer.writerow([entry["username"], entry["punteggio"]])
+
+
+
+updated_score = read_scores()
+updated_score.append({"username": "Nuovo Giocatore", "punteggio": 100})  # Example of adding a new score
+updated_score.sort(key=lambda x: x["punteggio"], reverse=True)
+write_scores(updated_score)
