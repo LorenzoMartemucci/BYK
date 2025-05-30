@@ -65,6 +65,8 @@ def go_to_story():
     time_remaining[0] = 120
     update_generic_timer(time_remaining, timer_label, progress_bar, 120, None)
 
+welcome_message = "Ciao! Sono il tuo robot amico! Iniziamo un'avventura insieme. "
+
 def go_to_chat():
     storytelling.pack_forget()
     chat_page.pack(fill="both", expand=True)
@@ -72,6 +74,16 @@ def go_to_chat():
     root.minsize(600, 800)
     chat_time_remaining[0] = 180
     update_generic_timer(chat_time_remaining, chat_timer_label, chat_progress_bar, 180, None)
+    # Svuota la chat e mostra SEMPRE il messaggio di benvenuto
+    for bubble, _ in message_bubbles:
+        bubble.master.destroy()
+    message_bubbles.clear()
+    def show_welcome():
+        chat_canvas.update_idletasks()  # <-- forza aggiornamento layout
+        add_message(welcome_message, sender="bot")
+        chat_canvas.update_idletasks()
+        chat_canvas.yview_moveto(0.0)
+    root.after_idle(show_welcome)
 
 start_button = ctk.CTkButton(
     box_frame,
@@ -346,13 +358,23 @@ user_input = ctk.CTkTextbox(
 user_input.pack(side="left", fill="both", expand=True, padx=10, pady=(8, 8))
 user_input.insert("1.0", "")
 
+last_user_message = None  # Variabile globale per l'ultimo messaggio
+
+def get_last_user_message():
+    global last_user_message
+    return last_user_message
+
+#Variabile output del robot restituita da team llm
+robby_output_llm = 'Ciao output'
+
 def send_message():
+    global last_user_message
     msg = user_input.get("1.0", "end-1c").strip()
     if msg:
+        last_user_message = msg  # Salva il messaggio nella variabile
         add_message(msg, sender="user")
         user_input.delete("1.0", "end")
-        root.after(500, lambda: add_message("Risposta del robot a: " + msg, sender="bot"))
-        # Scroll automatico in fondo
+        root.after(500, lambda: add_message("Risposta del robot a: " + robby_output_llm, sender="bot"))
         chat_canvas.yview_moveto(1.0)
 
 def send_message_event(event=None):
