@@ -324,6 +324,24 @@ class ChatPage(ctk.CTkFrame):
             if callback:
                 callback()
 
+class Persona:
+    def __init__(self, nome=None):
+        self.nome = nome
+        self.tempo_rimanente = None
+        self.punteggio = 0
+
+    def set_nome(self, nome):
+        self.nome = nome
+
+    def set_tempo_rimanente(self, tempo):
+        self.tempo_rimanente = tempo
+
+    def aggiorna_punteggio(self, punti):
+        self.punteggio += punti
+
+    def __str__(self):
+        return f"Nome: {self.nome}, Tempo rimanente: {self.tempo_rimanente}, Punteggio: {self.punteggio}"
+
 class StartPage(ctk.CTkFrame):
     def __init__(self, master, widgets, go_to_story_callback, *args, **kwargs):
         super().__init__(master, fg_color=widgets['window_bg'], *args, **kwargs)
@@ -391,7 +409,7 @@ class MainApp:
         self.container = ctk.CTkFrame(self.root, fg_color=self.widgets['window_bg'])
         self.container.pack(fill="both", expand=True)
 
-        self.user_data = []
+        self.persona = Persona()  # Usa la classe Persona
         self.time_remaining = [120]
         self.chat_time_remaining = [180]
         self.welcome_message = "Ciao! Sono il tuo robot amico! Iniziamo un'avventura insieme. "
@@ -403,12 +421,14 @@ class MainApp:
         self.chat_page = ChatPage(self.container, self.widgets, self.welcome_message)
 
     def go_to_story(self):
-        self.user_data.append(self.start_page.get_username())
+        nome = self.start_page.get_username()
+        self.persona.set_nome(nome)  # Salva il nome nella classe Persona
         self.start_page.pack_forget()
         self.root.resizable(True, True)
         self.root.minsize(550, 500)
         self.storytelling.pack(fill="both", expand=True)
         self.time_remaining[0] = 120
+        self.persona.set_tempo_rimanente(self.time_remaining[0])  # Salva il tempo rimanente
         self.storytelling.update_timer(self.time_remaining, 120, None)
 
     def go_to_chat(self):
@@ -417,9 +437,12 @@ class MainApp:
         self.root.resizable(False, False)
         self.root.minsize(600, 800)
         self.chat_time_remaining[0] = 180
+        self.persona.set_tempo_rimanente(self.chat_time_remaining[0])  # Aggiorna il tempo rimanente
         self.chat_page.update_timer(self.chat_time_remaining, 180, None)
         self.chat_page.clear_messages()
         self.root.after_idle(self.chat_page.show_welcome)
+        # Esempio: aggiorna il punteggio quando si entra in chat
+        # self.persona.aggiorna_punteggio(10)
 
     def run(self):
         self.root.mainloop()
