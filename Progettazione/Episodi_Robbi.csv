@@ -1,16 +1,16 @@
 Ruolo,Episodio,Domanda,Obiettivo
-Insegnante,Episodio 2,"Va bene, sono un insegnante! Ma… cosa devo fare?",Spiegagli che deve aiutarti a preparare un progetto da mostrare ai compagni.
-Insegnante,Episodio 3,Oh… dovevo leggerla ai ragazzi a scuola?,Spiega che il suo lavoro è per una classe di scuola media.
-Insegnante,Episodio 4,Va bene così? O preferivi un elenco più ordinato?,Chiedigli di usare punti elenco e un testo chiaro e corto.
-Insegnante,Episodio 5,Dovevo essere più serio? E più breve?,"Digli che deve usare un tono gentile, semplice e non superare le 100 parole."
-Insegnante,Episodio Finale,È il momento! Dimmi cosa devo dire!,"La spiegazione deve essere chiara, semplice, in 4 punti elenco e sotto le 100 parole."
-Cuoco,Episodio 2,Che bello! Sono un cuoco! Ma… cosa devo cucinare?,Spiegagli che deve preparare una merenda sana per dei bambini.
-Cuoco,Episodio 3,Oh… dovevo portarli a scuola?,Digli che la merenda è per la mensa della scuola elementare.
-Cuoco,Episodio 4,"Va bene così? O volevi una sola ricetta, scritta bene?","Chiedigli una ricetta semplice, in 3 passaggi chiari."
-Cuoco,Episodio 5,Ooops… doveva essere più sano?,"Spiegagli che il piatto deve essere sano, facile da fare, e senza troppe calorie."
-Cuoco,Episodio Finale,È il momento di cucinare! Cosa preparo?,"Il piatto deve essere sano, gustoso, per bambini di 6 anni, in 3 passaggi e con max 5 ingredienti."
-Poeta,Episodio 2,"Va bene, sono un poeta! Ma… cosa devo scrivere?",Spiegagli che deve scrivere una poesia allegra per una festa a scuola.
-Poeta,Episodio 3,Oh no! Era per i bambini della prima elementare?,"Ricordagli che la poesia è per bambini piccoli, e va letta in classe."
-Poeta,Episodio 4,Ti piace così? O doveva essere più semplice?,"Spiegagli che la poesia deve essere corta, con rime e parole facili."
-Poeta,Episodio 5,Doveva essere più allegra? Più divertente?,"Digli che la poesia deve essere felice, con immagini colorate e tono giocoso."
-Poeta,Episodio Finale,È il momento di scrivere la mia poesia! Ma ho bisogno delle tue istruzioni.,"La poesia deve essere allegra, semplice, in rima, max 4 versi, per bambini di 6 anni."
+Insegnante,Task,"Va bene, sono un insegnante! Ma… cosa devo fare?",Spiegagli che deve aiutarti a preparare un progetto da mostrare ai compagni.
+Insegnante,Context,Oh… dovevo leggerla ai ragazzi a scuola?,Spiega che il suo lavoro è per una classe di scuola media.
+Insegnante,Output format,Va bene così? O preferivi un elenco più ordinato?,Chiedigli di usare punti elenco e un testo chiaro e corto.
+Insegnante,Contraint,Dovevo essere più serio? E più breve?,"Digli che deve usare un tono gentile, semplice e non superare le 100 parole."
+Insegnante,Final episode,È il momento! Dimmi cosa devo dire!,"La spiegazione deve essere chiara, semplice, in 4 punti elenco e sotto le 100 parole."
+Cuoco,Task,Che bello! Sono un cuoco! Ma… cosa devo cucinare?,Spiegagli che deve preparare una merenda sana per dei bambini.
+Cuoco,Context,Oh… dovevo portarli a scuola?,Digli che la merenda è per la mensa della scuola elementare.
+Cuoco,Output format,"Va bene così? O volevi una sola ricetta, scritta bene?","Chiedigli una ricetta semplice, in 3 passaggi chiari."
+Cuoco,Contraint,Ooops… doveva essere più sano?,"Spiegagli che il piatto deve essere sano, facile da fare, e senza troppe calorie."
+Cuoco,Final episode,È il momento di cucinare! Cosa preparo?,"Il piatto deve essere sano, gustoso, per bambini di 6 anni, in 3 passaggi e con max 5 ingredienti."
+Poeta,Task,"Va bene, sono un poeta! Ma… cosa devo scrivere?",Spiegagli che deve scrivere una poesia allegra per una festa a scuola.
+Poeta,Context,Oh no! Era per i bambini della prima elementare?,"Ricordagli che la poesia è per bambini piccoli, e va letta in classe."
+Poeta,Output format,Ti piace così? O doveva essere più semplice?,"Spiegagli che la poesia deve essere corta, con rime e parole facili."
+Poeta,Contraint,Doveva essere più allegra? Più divertente?,"Digli che la poesia deve essere felice, con immagini colorate e tono giocoso."
+Poeta,Final episode,È il momento di scrivere la mia poesia! Ma ho bisogno delle tue istruzioni.,"La poesia deve essere allegra, semplice, in rima, max 4 versi, per bambini di 6 anni."
