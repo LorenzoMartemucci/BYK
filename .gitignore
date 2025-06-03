@@ -163,3 +163,6 @@ public
 dist/
 out/
 build/
+
+# dummy files
+test.py
