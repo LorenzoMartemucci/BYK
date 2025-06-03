@@ -6,9 +6,9 @@ import textwrap
 class StorytellingPage(ctk.CTkFrame):
     def __init__(self, master, content, widgets, go_to_chat_callback, *args, **kwargs):
         super().__init__(master, fg_color=widgets['window_bg'], *args, **kwargs)
+        self.go_to_chat_callback = go_to_chat_callback
         self.content = content
         self.widgets = widgets
-        self.go_to_chat_callback = go_to_chat_callback
 
         self.canvas = ctk.CTkCanvas(self, width=400, height=700, bg=widgets['window_bg'], highlightthickness=0)
         self.canvas.pack(fill='both', expand=True)

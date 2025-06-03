@@ -2,15 +2,42 @@ import tkinter as tk
 import tkinter.font as tkFont
 import customtkinter as ctk
 from PIL import Image, ImageTk
+import pandas as pd
+import os
 
 class ChatPage(ctk.CTkFrame):
-    def __init__(self, master, widgets, welcome_message, *args, **kwargs):
+    def __init__(
+        self,
+        master,
+        widgets,
+        person,
+        go_to_next_storytelling,
+        *args, **kwargs
+    ):
         super().__init__(master, fg_color=widgets['window_bg'], *args, **kwargs)
+        self.person = person
+        self.go_to_next_storytelling = go_to_next_storytelling
+
         self.widgets = widgets
-        self.welcome_message = welcome_message
+        self.check_prompt_relevance_fn = True
+        self.extract_role_from_prompt_fn = None
+
+        # Load CSV with error handling
+        csv_path = "./Progettazione/Episodi_Robbi.csv"
+        try:
+            self.episodes = pd.read_csv(csv_path)
+        except FileNotFoundError:
+            raise FileNotFoundError(
+                f"CSV file not found at '{csv_path}'. "
+                "Please ensure the file exists and the path is correct."
+            )
+        self.current_role = None
+        self.current_index = 0
+        self.last_domanda = ""
+        self.last_obiettivo = ""
+
         self.message_bubbles = []
         self.last_user_message = None
-        self.robby_output_llm = 'Ciao output'
 
         self.chat_timer_label = ctk.CTkLabel(self, text="Tempo rimanente: 180", font=("Comic Sans MS", 14), text_color=widgets['widgets_fg_text_color'])
         self.chat_timer_label.place(x=25, y=10)
@@ -101,6 +128,10 @@ class ChatPage(ctk.CTkFrame):
         self.robot_chat_label = ctk.CTkLabel(self.center_frame, image=self.robot_chat_ctkimage, text="", fg_color="transparent")
         self.robot_chat_label.place(relx=0.0, rely=1.0, anchor="sw", x=-43, y=0)
 
+        # Set the new welcome message
+        self.welcome_message = "Hei io sono Robbi, cosa vuoi che sia oggi? Un cuoco? Un insegnate? Un poeta?"
+        self.after(100, self.show_welcome)
+
     def on_chat_resize(self, event):
         new_width = max(100, event.width - 50)
         self.chat_progress_bar.configure(width=new_width)
@@ -154,8 +185,7 @@ class ChatPage(ctk.CTkFrame):
             self.last_user_message = msg
             self.add_message(msg, sender="user")
             self.user_input.delete("1.0", "end")
-            self.after(500, lambda: self.add_message("Risposta del robot a: " + self.robby_output_llm, sender="bot"))
-            self.chat_canvas.yview_moveto(1.0)
+            self.process_user_prompt(msg)
 
     def send_message_event(self, event=None):
         if event and (event.state & 0x0001):
@@ -164,10 +194,53 @@ class ChatPage(ctk.CTkFrame):
         return "break"
 
     def show_welcome(self):
-        self.chat_canvas.update_idletasks()
         self.add_message(self.welcome_message, sender="bot")
-        self.chat_canvas.update_idletasks()
-        self.chat_canvas.yview_moveto(0.0)
+        # Wait a moment, then show the objective message (placeholder)
+        self.after(800, self.show_objective_message)
+
+    def show_objective_message(self):
+        # Placeholder: you may want to show a generic objective or wait for user role
+        self.add_message("Scrivi il ruolo che vuoi che io interpreti!", sender="bot")
+
+    def process_user_prompt(self, prompt):
+        # Use the provided role extraction function
+        role = self.extract_role_from_prompt_fn(prompt)
+        if role:
+            self.current_role = role
+            self.current_index = 0
+            self.show_next_domanda_obiettivo()
+        else:
+            self.add_message("Non ho capito il ruolo, riprova.", sender="bot")
+
+    def show_next_domanda_obiettivo(self):
+        # Get all rows for the current role
+        role_rows = self.episodes[self.episodes["Ruolo"].str.lower() == self.current_role.lower()]
+        if self.current_index < len(role_rows):
+            row = role_rows.iloc[self.current_index]
+            domanda = row["Domanda"]
+            obiettivo = row["Obiettivo"]
+            self.last_domanda = domanda
+            self.last_obiettivo = obiettivo
+            self.add_message(domanda, sender="bot")
+            self.after(800, lambda: self.add_message(obiettivo, sender="bot"))
+            self.current_index += 1
+        else:
+            # End of role, go to next storytelling
+            self.go_to_next_storytelling()
+
+    def check_prompt_relevance(self, prompt):
+        # Use the provided function for checking relevance
+        return self.check_prompt_relevance_fn(prompt)
+
+    def handle_user_response(self, prompt):
+        # Use the provided prompt relevance function
+        is_relevant = self.check_prompt_relevance_fn(prompt)
+        if is_relevant:
+            self.show_next_domanda_obiettivo()
+        else:
+            self.add_message("I'm sorry, try again", sender="bot")
+            self.add_message(self.last_domanda, sender="bot")
+            self.after(800, lambda: self.add_message(self.last_obiettivo, sender="bot"))
 
     def clear_messages(self):
         for bubble, _ in self.message_bubbles:

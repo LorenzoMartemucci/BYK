@@ -2,10 +2,11 @@ import customtkinter as ctk
 from PIL import Image
 
 class StartPage(ctk.CTkFrame):
-    def __init__(self, master, widgets, go_to_story_callback, *args, **kwargs):
+    def __init__(self, master, widgets, go_to_story_callback, person=None, *args, **kwargs):
         super().__init__(master, fg_color=widgets['window_bg'], *args, **kwargs)
         self.widgets = widgets
         self.go_to_story_callback = go_to_story_callback
+        self.person = person  # Store the Person object
 
         self.start_inner_frame = ctk.CTkFrame(self, fg_color=widgets['window_bg'])
         self.start_inner_frame.place(relx=0.5, rely=0.5, anchor="center")
@@ -43,4 +44,7 @@ class StartPage(ctk.CTkFrame):
         self.start_button.pack(pady=20)
 
     def get_username(self):
-        return self.username_entry.get()
+        username = self.username_entry.get()
+        if self.person is not None:
+            self.person.set_name(username)
+        return username

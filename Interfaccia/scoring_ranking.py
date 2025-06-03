@@ -2,8 +2,9 @@ import tkinter as tk
 import customtkinter as ctk
 from PIL import Image
 
-class ScoringRankingPage:
-    def __init__(self, master, score_value=83, ranking_data=None, on_play_again=None):
+class ScoringRankingPage(ctk.CTkFrame):
+    def __init__(self, master, score_value=83, ranking_data=None, on_play_again=None, *args, **kwargs):
+        super().__init__(master, fg_color="#FFE2CC", *args, **kwargs)
         # Theme colors and fonts (match your main interface)
         self.widgets_bg = "#FFA764"
         self.widgets_fg_text_color = "#000000"
@@ -41,13 +42,9 @@ class ScoringRankingPage:
         ]
         self.on_play_again = on_play_again
 
-        # Main frame
-        self.main_frame = ctk.CTkFrame(master, fg_color=self.window_bg)
-        self.main_frame.pack(fill="both", expand=True)
-
         # Card-like frame
         self.card_frame = ctk.CTkFrame(
-            self.main_frame,
+            self,
             fg_color=self.widgets_bg,
             border_color=self.widgets_border_color,
             border_width=2,
@@ -170,7 +167,7 @@ class ScoringRankingPage:
 
         # Bottom button
         play_again_button = ctk.CTkButton(
-            self.main_frame,
+            self,
             text="Giochiamo di nuovo!",
             font=self.button_font,
             fg_color=self.widgets_bg,
@@ -180,7 +177,7 @@ class ScoringRankingPage:
             corner_radius=15,
             width=250,
             height=50,
-            command=self.on_play_again
+            command=on_play_again
         )
         play_again_button.place(relx=0.5, rely=0.93, anchor="center")
 
@@ -196,4 +193,5 @@ if __name__ == "__main__":
         print("Play again clicked!")
 
     page = ScoringRankingPage(root, score_value=83, on_play_again=play_again)
+    page.pack(fill="both", expand=True)
     root.mainloop()
