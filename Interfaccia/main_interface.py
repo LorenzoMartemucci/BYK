@@ -358,6 +358,7 @@ user_input = ctk.CTkTextbox(
 user_input.pack(side="left", fill="both", expand=True, padx=10, pady=(8, 8))
 user_input.insert("1.0", "")
 
+#Variabile globale per l'ultimo messaggio dell'utente
 last_user_message = None  # Variabile globale per l'ultimo messaggio
 
 def get_last_user_message():
