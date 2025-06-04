@@ -1,11 +1,11 @@
 import tkinter as tk
 import tkinter.font as tkFont
 import customtkinter as ctk
-from PIL import Image, ImageTk
+from PIL import Image
 import pandas as pd
 import os
 
-class ChatPage(ctk.CTkFrame):
+class ChatPageTutorial(ctk.CTkFrame):
     def __init__(
         self,
         master,

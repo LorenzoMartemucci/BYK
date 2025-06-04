@@ -1,5 +1,5 @@
 from storytelling_page import StorytellingPage
-from chat_page import ChatPage
+from chat_page import ChatPageTutorial
 from start_page import StartPage
 from scoring_ranking import ScoringRankingPage
 from person import Person
@@ -45,9 +45,9 @@ class MainApp:
         # Instantiate all pages, but only pack the start page
         self.start_page = StartPage(self.container, self.widgets, self.go_to_story, person=self.person)
         self.storytelling1 = StorytellingPage(self.container, self.content, self.widgets, self.go_to_chat1)
-        self.chat_page1 = ChatPage(self.container, self.widgets, self.person, self.go_to_story2)
+        self.chat_page1 = ChatPageTutorial(self.container, self.widgets, self.person, self.go_to_story2)
         self.storytelling2 = StorytellingPage(self.container, self.content, self.widgets, self.go_to_chat2)
-        self.chat_page2 = ChatPage(self.container, self.widgets, self.person, self.go_to_scoring)
+        self.chat_page2 = ChatPageTutorial(self.container, self.widgets, self.person, self.go_to_scoring)
         self.scoring_page = ScoringRankingPage(self.container)
 
         self.show_start_page()
