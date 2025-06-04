@@ -154,6 +154,7 @@ class ScoringRankingPage(ctk.CTkFrame):
         table_canvas.create_line(0, 0, table_width, 0, fill=self.widgets_fg_text_color, width=1)
 
         # Sort and assign ranks
+        # TODO: implementare la logica dello score minimo e ritentare la prova del gioco (+ recap window) 
         sorted_ranking = sorted(self.ranking_data, key=lambda x: x["score"], reverse=True)
         row_height = 38
         for idx, entry in enumerate(sorted_ranking, start=1):

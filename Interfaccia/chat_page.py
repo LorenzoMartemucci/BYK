@@ -20,7 +20,7 @@ class ChatPage(ctk.CTkFrame):
 
         self.widgets = widgets
         self.check_prompt_relevance_fn = True
-        self.extract_role_from_prompt_fn = None
+        self.extract_role_from_prompt_fn = "None"
 
         # Load CSV with error handling
         csv_path = "./Progettazione/Episodi_Robbi.csv"
@@ -145,7 +145,7 @@ class ChatPage(ctk.CTkFrame):
         self.chat_canvas.itemconfigure(self.chat_window, width=event.width)
 
     def add_message(self, text, sender="user"):
-        bubble_color = "#FFA764" if sender == "user" else "#AEE4FF"
+        bubble_color = "#00FF00" if sender == "user" else "#AEE4FF"
         anchor = "e" if sender == "user" else "w"
         justify = "right" if sender == "user" else "left"
         padx = (60, 10) if sender == "user" else (87, 60)
@@ -204,7 +204,7 @@ class ChatPage(ctk.CTkFrame):
 
     def process_user_prompt(self, prompt):
         # Use the provided role extraction function
-        role = self.extract_role_from_prompt_fn(prompt)
+        role = self.extract_role_from_prompt_fn
         if role:
             self.current_role = role
             self.current_index = 0
