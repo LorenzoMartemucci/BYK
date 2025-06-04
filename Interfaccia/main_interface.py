@@ -1,5 +1,7 @@
 from storytelling_page import StorytellingPage
-from chat_page import ChatPageTutorial
+from chat_page_tutorial import ChatPageTutorial
+from chat_page_final import ChatPageFinal
+from recap_page import RecapPage
 from start_page import StartPage
 from scoring_ranking import ScoringRankingPage
 from person import Person
@@ -46,8 +48,8 @@ class MainApp:
         self.start_page = StartPage(self.container, self.widgets, self.go_to_story, person=self.person)
         self.storytelling1 = StorytellingPage(self.container, self.content, self.widgets, self.go_to_chat1)
         self.chat_page1 = ChatPageTutorial(self.container, self.widgets, self.person, self.go_to_story2)
-        self.storytelling2 = StorytellingPage(self.container, self.content, self.widgets, self.go_to_chat2)
-        self.chat_page2 = ChatPageTutorial(self.container, self.widgets, self.person, self.go_to_scoring)
+        self.recap_page = RecapPage(self.container, self.person, self.widgets, self.go_to_chat2)
+        self.chat_page2 = ChatPageFinal(self.container, self.widgets, self.person, self.go_to_scoring)
         self.scoring_page = ScoringRankingPage(self.container)
 
         self.show_start_page()
@@ -59,22 +61,29 @@ class MainApp:
 
     def go_to_story(self):
         self.hide_all_frames()
+        self.storytelling1.timer_var = [120]
         self.storytelling1.pack(fill="both", expand=True)
-        self.storytelling1.update_timer(self.time_remaining, 120, None)
+        self.storytelling1.start_timer()
+        self.chat_page1.stop_timer()  # Ferma il timer della chat
 
     def go_to_chat1(self):
         self.hide_all_frames()
+        self.chat_page1.timer_var = [180]
         self.chat_page1.pack(fill="both", expand=True)
         self.chat_page1.clear_messages()
+        self.chat_page1.start_timer()
+        self.storytelling1.stop_timer()  # Ferma il timer dello storytelling
         self.root.after_idle(self.chat_page1.show_welcome)
 
     def go_to_story2(self):
         self.hide_all_frames()
-        self.storytelling2.pack(fill="both", expand=True)
-        self.storytelling2.update_timer(self.time_remaining, 120, None)
+        self.recap_page.timer_var = [120]  # Timer storytelling 2: 120 secondi
+        self.recap_page.pack(fill="both", expand=True)
+        self.recap_page.update_timer(self.recap_page.timer_var, 120, None)
 
     def go_to_chat2(self):
         self.hide_all_frames()
+        self.chat_page2.timer_var = [180]  # Timer chat 2: 180 secondi
         self.chat_page2.pack(fill="both", expand=True)
         self.chat_page2.clear_messages()
         self.root.after_idle(self.chat_page2.show_welcome)
@@ -84,7 +93,7 @@ class MainApp:
         self.scoring_page.pack(fill="both", expand=True)
 
     def hide_all_frames(self):
-        for frame in [self.start_page, self.storytelling1, self.chat_page1, self.storytelling2, self.chat_page2, self.scoring_page]:
+        for frame in [self.start_page, self.storytelling1, self.chat_page1, self.recap_page, self.chat_page2, self.scoring_page]:
             frame.pack_forget()
 
     def run(self):

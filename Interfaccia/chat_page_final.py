@@ -5,7 +5,7 @@ from PIL import Image
 import pandas as pd
 import os
 
-class ChatPageTutorial(ctk.CTkFrame):
+class ChatPageFinal(ctk.CTkFrame):
     def __init__(
         self,
         master,
@@ -45,10 +45,6 @@ class ChatPageTutorial(ctk.CTkFrame):
         self.chat_progress_bar = ctk.CTkProgressBar(self, width=400, height=20, progress_color="#00FF22")
         self.chat_progress_bar.set(1.0)
         self.chat_progress_bar.place(x=25, y=40)
-
-        self.timer_total = 180  # <-- CORRETTO QUI
-        self.timer_var = [self.timer_total]
-        self.timer_running = False
 
         self.bind("<Configure>", self.on_chat_resize)
 
@@ -134,7 +130,11 @@ class ChatPageTutorial(ctk.CTkFrame):
 
         # Set the new welcome message
         self.welcome_message = "Hei io sono Robbi, cosa vuoi che sia oggi? Un cuoco? Un insegnate? Un poeta?"
-        self.after(100, self.show_welcome)
+        self.after(100, self.show_welcome_and_first_episode)  # Cambia qui
+
+        self.timer_total = 180
+        self.timer_var = [self.timer_total]
+        self.timer_running = False
 
     def on_chat_resize(self, event):
         new_width = max(100, event.width - 50)
@@ -197,15 +197,32 @@ class ChatPageTutorial(ctk.CTkFrame):
         self.send_message()
         return "break"
 
-    def show_welcome(self):
+    def show_welcome_and_first_episode(self):
         self.add_message(self.welcome_message, sender="bot")
-        # Wait a moment, then show the objective message (placeholder)
-        self.after(800, self.show_objective_message)
-        self.start_timer()  # <-- AVVIA IL TIMER QUI
+        self.after(800, self.show_first_domanda_obiettivo)
 
-    def show_objective_message(self):
-        # Placeholder: you may want to show a generic objective or wait for user role
-        self.add_message("Scrivi il ruolo che vuoi che io interpreti!", sender="bot")
+    def show_first_domanda_obiettivo(self):
+        # Recupera il ruolo scelto dall'utente tramite person
+        role = None
+        if hasattr(self.person, "prompts"):
+            role = self.person.prompts.get("role", None)
+        if not role:
+            self.add_message("Non hai scelto un ruolo! Torna indietro e seleziona un ruolo.", sender="bot")
+            return
+
+        # Cerca la prima riga del ruolo nel CSV
+        role_rows = self.episodes[self.episodes["Ruolo"].str.lower() == role.lower()]
+        if not role_rows.empty:
+            row = role_rows.iloc[0]
+            domanda = row["Domanda"]
+            obiettivo = row["Obiettivo"]
+            self.last_domanda = domanda
+            self.last_obiettivo = obiettivo
+            self.add_message(domanda, sender="bot")
+            self.after(800, lambda: self.add_message(obiettivo, sender="bot"))
+            self.current_index = 1
+        else:
+            self.add_message("Ruolo non trovato nel database.", sender="bot")
 
     def process_user_prompt(self, prompt):
         # Use the provided role extraction function
@@ -257,8 +274,7 @@ class ChatPageTutorial(ctk.CTkFrame):
             return
         minutes = time_var[0] // 60
         seconds = time_var[0] % 60
-        self.chat_timer_label.configure(text=f"Tempo rimanente: {minutes:02d}:{seconds:02d}")
-        # INVERTI IL PROGRESSO: 1.0 -> pieno, 0.0 -> vuoto
+        self.chat_timer_label.configure(text=f"Tempo rimanente: {minutes:02}:{seconds:02}")
         progress = max(0, min(1, time_var[0] / total))
         self.chat_progress_bar.set(progress)
         if time_var[0] > 0:
