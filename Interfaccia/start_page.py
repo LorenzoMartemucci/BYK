@@ -2,7 +2,7 @@ import customtkinter as ctk
 from PIL import Image
 
 class StartPage(ctk.CTkFrame):
-    def __init__(self, master, widgets, go_to_story_callback, person=None, *args, **kwargs):
+    def __init__(self, master, widgets, go_to_story_callback, person, *args, **kwargs):
         super().__init__(master, fg_color=widgets['window_bg'], *args, **kwargs)
         self.widgets = widgets
         self.go_to_story_callback = go_to_story_callback

@@ -17,6 +17,9 @@ class Person:
     def set_name(self, name):
         self.name = name
 
+    def get_name(self):
+        return self.name
+
     def update_score(self, score):
         self.score += score
 

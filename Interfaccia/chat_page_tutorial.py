@@ -12,14 +12,15 @@ class ChatPageTutorial(ctk.CTkFrame):
         widgets,
         person,
         go_to_next_storytelling,
+        llm,
         *args, **kwargs
     ):
         super().__init__(master, fg_color=widgets['window_bg'], *args, **kwargs)
         self.person = person
         self.go_to_next_storytelling = go_to_next_storytelling
-
+        self.llm = llm  # Use the passed-in LLMBuilder instance
         self.widgets = widgets
-        self.check_prompt_relevance_fn = True
+        self.check_prompt_relevance_fn = self.check_prompt_relevance  # Set to the method below
         self.extract_role_from_prompt_fn = "None"
 
         # Load CSV with error handling
@@ -229,16 +230,16 @@ class ChatPageTutorial(ctk.CTkFrame):
             self.go_to_next_storytelling()
 
     def check_prompt_relevance(self, prompt):
-        # Use the provided function for checking relevance
-        return self.check_prompt_relevance_fn(prompt)
+        # Use the LLMBuilder's validate_prompt method
+        return self.llm.validate_prompt(self.person.get_name(), prompt)
 
     def handle_user_response(self, prompt):
-        # Use the provided prompt relevance function
-        is_relevant = self.check_prompt_relevance_fn(prompt)
-        if is_relevant:
+        # Use the provided prompt relevance function and check the result string
+        result = self.check_prompt_relevance_fn(prompt)
+        if result == "Ok! Proseguiamo.":
             self.show_next_domanda_obiettivo()
         else:
-            self.add_message("I'm sorry, try again", sender="bot")
+            self.add_message(result, sender="bot")
             self.add_message(self.last_domanda, sender="bot")
             self.after(800, lambda: self.add_message(self.last_obiettivo, sender="bot"))
 

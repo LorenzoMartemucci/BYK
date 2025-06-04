@@ -1,8 +1,9 @@
 from storytelling_page import StorytellingPage
-from chat_page import ChatPageTutorial
+from chat_page_tutorial import ChatPageTutorial
 from start_page import StartPage
 from scoring_ranking import ScoringRankingPage
 from person import Person
+from llm.llama3 import LLMBuilder
 import customtkinter as ctk
 from PIL import Image
 import os
@@ -38,14 +39,16 @@ class MainApp:
         self.container.pack(fill="both", expand=True)
 
         self.person = Person()
+        llm_builder = LLMBuilder()
         self.time_remaining = [120]
         self.chat_time_remaining = [180]
         self.welcome_message = "Hei io sono Robbi, cosa vuoi che sia oggi? Un cuoco? Un insegnate? Un poeta?"
 
+
         # Instantiate all pages, but only pack the start page
         self.start_page = StartPage(self.container, self.widgets, self.go_to_story, person=self.person)
         self.storytelling1 = StorytellingPage(self.container, self.content, self.widgets, self.go_to_chat1)
-        self.chat_page1 = ChatPageTutorial(self.container, self.widgets, self.person, self.go_to_story2)
+        self.chat_page1 = ChatPageTutorial(self.container, self.widgets, self.person, self.go_to_story2, llm_builder.check_prompt_relevance)
         self.storytelling2 = StorytellingPage(self.container, self.content, self.widgets, self.go_to_chat2)
         self.chat_page2 = ChatPageTutorial(self.container, self.widgets, self.person, self.go_to_scoring)
         self.scoring_page = ScoringRankingPage(self.container)
