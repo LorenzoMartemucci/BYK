@@ -173,6 +173,11 @@ class ChatPageTutorial(ctk.CTkFrame):
         )
         bubble.pack(anchor=anchor, fill="none")
 
+        # Aggiorna la dimensione della bubble in base al contenuto
+        bubble.update_idletasks()
+        req_height = bubble.winfo_reqheight()
+        bubble.configure(height=req_height)
+
         self.message_bubbles.append((bubble, sender))
 
     def update_bubble_widths(self, event=None):

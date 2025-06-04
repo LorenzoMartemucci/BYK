@@ -173,7 +173,11 @@ class ChatPageFinal(ctk.CTkFrame):
         )
         bubble.pack(anchor=anchor, fill="none")
 
-        self.message_bubbles.append((bubble, sender))
+        # Aggiorna la dimensione della bubble in base al contenuto
+        bubble.update_idletasks()
+        req_height = bubble.winfo_reqheight()
+        bubble.configure(height=req_height)
+
 
     def update_bubble_widths(self, event=None):
         max_width = max(200, self.chat_canvas.winfo_width() - 100)
