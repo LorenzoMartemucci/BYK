@@ -12,15 +12,14 @@ class ChatPageTutorial(ctk.CTkFrame):
         widgets,
         person,
         go_to_next_storytelling,
-        llm,
+        llm_builder,
         *args, **kwargs
     ):
         super().__init__(master, fg_color=widgets['window_bg'], *args, **kwargs)
         self.person = person
         self.go_to_next_storytelling = go_to_next_storytelling
-        self.llm = llm  # Use the passed-in LLMBuilder instance
-        self.widgets = widgets
-        self.check_prompt_relevance_fn = self.check_prompt_relevance  # Set to the method below
+        self.llm_builder = llm_builder  # Use the passed-in LLMBuilder instance
+        self.widgets = widgets  # Set to the method below
         self.extract_role_from_prompt_fn = "None"
 
         # Load CSV with error handling
@@ -130,9 +129,11 @@ class ChatPageTutorial(ctk.CTkFrame):
         self.robot_chat_label.place(relx=0.0, rely=1.0, anchor="sw", x=-43, y=0)
 
         # Set the new welcome message
-        self.welcome_message = "Hei io sono Robbi, cosa vuoi che sia oggi? Un cuoco? Un insegnate? Un poeta?"
+        self.welcome_message = "Hei io sono Robbi, cosa vuoi che sia oggi? Un cuoco? Un insegnante? Un poeta?"
         self.after(100, self.show_welcome)
+    
 
+    # ...out of constructor
     def on_chat_resize(self, event):
         new_width = max(100, event.width - 50)
         self.chat_progress_bar.configure(width=new_width)
@@ -186,6 +187,7 @@ class ChatPageTutorial(ctk.CTkFrame):
             self.last_user_message = msg
             self.add_message(msg, sender="user")
             self.user_input.delete("1.0", "end")
+            # Evaluate the message immediately after sending
             self.process_user_prompt(msg)
 
     def send_message_event(self, event=None):
@@ -204,14 +206,16 @@ class ChatPageTutorial(ctk.CTkFrame):
         self.add_message("Scrivi il ruolo che vuoi che io interpreti!", sender="bot")
 
     def process_user_prompt(self, prompt):
-        # Use the provided role extraction function
-        role = self.extract_role_from_prompt_fn
-        if role:
-            self.current_role = role
-            self.current_index = 0
+        # Validate the prompt using the LLM
+        validation_result = self.llm_builder.validate_prompt(self.current_role, prompt)
+        if validation_result == "Ok! Proseguiamo.":
+            self.current_index += 1  # Move to the next domanda/obiettivo
             self.show_next_domanda_obiettivo()
         else:
-            self.add_message("Non ho capito il ruolo, riprova.", sender="bot")
+            # Show the validation message and repeat the same domanda/obiettivo
+            self.add_message(validation_result, sender="bot")
+            self.add_message(self.last_domanda, sender="bot")
+            self.after(800, lambda: self.add_message(self.last_obiettivo, sender="bot"))
 
     def show_next_domanda_obiettivo(self):
         # Get all rows for the current role
@@ -231,7 +235,7 @@ class ChatPageTutorial(ctk.CTkFrame):
 
     def check_prompt_relevance(self, prompt):
         # Use the LLMBuilder's validate_prompt method
-        return self.llm.validate_prompt(self.person.get_name(), prompt)
+        return self.llm.validate_prompt(prompt, prompt)
 
     def handle_user_response(self, prompt):
         # Use the provided prompt relevance function and check the result string

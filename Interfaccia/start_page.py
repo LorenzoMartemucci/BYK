@@ -31,7 +31,7 @@ class StartPage(ctk.CTkFrame):
         self.start_button = ctk.CTkButton(
             self.box_frame,
             text="GIOCHIAMO",
-            command=self.go_to_story_callback,
+            command=self.on_prossimo_click,
             fg_color="#FFFFFF",
             text_color=widgets['widgets_fg_text_color'],
             border_color=widgets['widgets_border_color'],
@@ -45,6 +45,11 @@ class StartPage(ctk.CTkFrame):
 
     def get_username(self):
         username = self.username_entry.get()
-        if self.person is not None:
-            self.person.set_name(username)
+        self.person.set_name(username)
         return username
+
+    def on_prossimo_click(self):
+        username = self.username_entry.get()
+        self.person.set_name(username)
+        print(f"DEBUG: Person name set to: {self.person.get_name()}")
+        self.go_to_story_callback()

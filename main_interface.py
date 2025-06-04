@@ -1,8 +1,8 @@
-from storytelling_page import StorytellingPage
-from chat_page_tutorial import ChatPageTutorial
-from start_page import StartPage
-from scoring_ranking import ScoringRankingPage
-from person import Person
+from Interfaccia.storytelling_page import StorytellingPage
+from Interfaccia.chat_page_tutorial import ChatPageTutorial
+from Interfaccia.start_page import StartPage
+from Interfaccia.scoring_ranking import ScoringRankingPage
+from Interfaccia.person import Person
 from llm.llama3 import LLMBuilder
 import customtkinter as ctk
 from PIL import Image
@@ -38,19 +38,19 @@ class MainApp:
         self.container = ctk.CTkFrame(self.root, fg_color=self.widgets['window_bg'])
         self.container.pack(fill="both", expand=True)
 
-        self.person = Person()
-        llm_builder = LLMBuilder()
+        person = Person()
+        self.llm_builder = LLMBuilder()
         self.time_remaining = [120]
         self.chat_time_remaining = [180]
         self.welcome_message = "Hei io sono Robbi, cosa vuoi che sia oggi? Un cuoco? Un insegnate? Un poeta?"
 
 
         # Instantiate all pages, but only pack the start page
-        self.start_page = StartPage(self.container, self.widgets, self.go_to_story, person=self.person)
+        self.start_page = StartPage(self.container, self.widgets, self.go_to_story, person=person)
         self.storytelling1 = StorytellingPage(self.container, self.content, self.widgets, self.go_to_chat1)
-        self.chat_page1 = ChatPageTutorial(self.container, self.widgets, self.person, self.go_to_story2, llm_builder.check_prompt_relevance)
+        self.chat_page1 = ChatPageTutorial(self.container, self.widgets, person, self.go_to_story2, self.llm_builder)
         self.storytelling2 = StorytellingPage(self.container, self.content, self.widgets, self.go_to_chat2)
-        self.chat_page2 = ChatPageTutorial(self.container, self.widgets, self.person, self.go_to_scoring)
+        self.chat_page2 = ChatPageTutorial(self.container, self.widgets, person, self.go_to_scoring, self.llm_builder)
         self.scoring_page = ScoringRankingPage(self.container)
 
         self.show_start_page()

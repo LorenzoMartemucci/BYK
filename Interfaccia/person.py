@@ -1,6 +1,6 @@
 class Person:
-    def __init__(self, name=None):
-        self.name = name
+    def __init__(self):
+        self.name = None
         self.remaining_time = None
         self.score = 0
         self.final_prompt = None
