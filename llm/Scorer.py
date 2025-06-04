@@ -136,8 +136,7 @@ class Scorer:
         lexical_similarity = (lexical_similarity + 1) / 2
 
         # Combine the semantic and lexical similarity scores using the weight l_w
-
-        return  (1-l_w)*semantic_similarity +  l_w*lexical_similarity 
+        return  (1-l_w)*semantic_similarity + l_w*lexical_similarity 
 
 
     
