@@ -54,7 +54,6 @@ class StorytellingPage(ctk.CTkFrame):
         progress = time_var[0] / total
         progress = max(0, min(1, progress))  # Clamp tra 0 e 1
         self.progress_bar.set(progress)
-        self.progress_bar.update()
         self.update_idletasks()
         if time_var[0] > 0:
             time_var[0] -= 1

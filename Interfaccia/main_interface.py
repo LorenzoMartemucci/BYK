@@ -62,6 +62,7 @@ class MainApp:
     def go_to_story(self):
         self.hide_all_frames()
         self.storytelling1.timer_var = [120]
+        self.storytelling1.timer_total = 120  # <-- AGGIUNGI QUESTA RIGA
         self.storytelling1.pack(fill="both", expand=True)
         self.storytelling1.start_timer()
         self.chat_page1.stop_timer()  # Ferma il timer della chat
