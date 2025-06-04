@@ -201,7 +201,6 @@ class ChatPageTutorial(ctk.CTkFrame):
         self.add_message(self.welcome_message, sender="bot")
         # Wait a moment, then show the objective message (placeholder)
         self.after(800, self.show_objective_message)
-        self.start_timer()  # <-- AVVIA IL TIMER QUI
 
     def show_objective_message(self):
         # Placeholder: you may want to show a generic objective or wait for user role
