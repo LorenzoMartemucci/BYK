@@ -23,6 +23,13 @@ class LLMBuilder:
         """
         self.messages.append({'role': role, 'content': content})
 
+    def remove_last_message(self):
+        """
+        Removes the last message from the conversation history.
+        """
+        if self.messages:
+            self.messages.pop()
+
     def chat_with_llm(self):
         """
         Sends the conversation history to the LLM and returns the response.
@@ -60,7 +67,7 @@ class LLMBuilder:
 
         response = self.chat_with_llm()
 
-        self.append_message("assistant", response)
+        
         return response
 
 
