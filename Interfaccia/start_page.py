@@ -91,5 +91,5 @@ class StartPage(ctk.CTkFrame):
         """Handle the 'Play' button click: store name and transition."""
         username = self.username_entry.get()
         self.person.set_name(username)
-        print(f"DEBUG: Person name set to: {self.person.get_name()}")
+        self.go_to_story_callback()
         self.go_to_story_callback()

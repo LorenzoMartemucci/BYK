@@ -74,7 +74,7 @@ class MainApp:
         """
         self.hide_all_frames()
         self.storytelling1.timer_var = [120]
-        self.storytelling1.timer_total = 120  # <-- AGGIUNGI QUESTA RIGA
+        self.storytelling1.timer_total = 120  
         self.storytelling1.pack(fill="both", expand=True)
         self.storytelling1.start_timer()
         self.chat_page1.stop_timer()  # Ferma il timer della chat
@@ -107,10 +107,10 @@ class MainApp:
         """
         self.hide_all_frames()
         self.chat_page2.timer_var = [180]  # Timer chat 2: 180 secondi
-        self.chat_page2.timer_total = 180  # <-- AGGIUNGI QUESTA RIGA
+        self.chat_page2.timer_total = 180  
         self.chat_page2.pack(fill="both", expand=True)
         self.chat_page2.clear_messages()
-        self.chat_page2.start_timer()      # <-- AGGIUNGI QUESTA RIGA
+        self.chat_page2.start_timer()      
         self.root.after_idle(self.chat_page2.show_welcome_and_first_episode)
 
     def go_to_scoring(self):
