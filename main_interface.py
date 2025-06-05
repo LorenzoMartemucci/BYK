@@ -4,7 +4,7 @@ from Interfaccia.start_page import StartPage
 from Interfaccia.scoring_ranking import ScoringRankingPage
 from Interfaccia.person import Person
 from Interfaccia.chat_page_final import ChatPageFinal
-from Interfaccia.chat_page_final import RecapPage
+from Interfaccia.recap_page import RecapPage
 from llm.llama3 import LLMBuilder
 import customtkinter as ctk
 from PIL import Image
@@ -40,7 +40,7 @@ class MainApp:
         self.container = ctk.CTkFrame(self.root, fg_color=self.widgets['window_bg'])
         self.container.pack(fill="both", expand=True)
 
-        person = Person()
+        self.person = Person()
         self.llm_builder = LLMBuilder()
         self.time_remaining = [120]
         self.chat_time_remaining = [180]
@@ -48,9 +48,9 @@ class MainApp:
 
 
         # Instantiate all pages, but only pack the start page
-        self.start_page = StartPage(self.container, self.widgets, self.go_to_story, person=person)
+        self.start_page = StartPage(self.container, self.widgets, self.go_to_story, person=self.person)
         self.storytelling1 = StorytellingPage(self.container, self.content, self.widgets, self.go_to_chat1)
-        self.chat_page1 = ChatPageTutorial(self.container, self.widgets, self.person, self.go_to_story2)
+        self.chat_page1 = ChatPageTutorial(self.container, self.widgets, self.person,self.llm_builder, self.go_to_story2)
         self.recap_page = RecapPage(self.container, self.person, self.widgets, self.go_to_chat2)
         self.chat_page2 = ChatPageFinal(self.container, self.widgets, self.person, self.go_to_scoring)
         self.scoring_page = ScoringRankingPage(self.container)

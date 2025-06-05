@@ -123,7 +123,8 @@ class ChatPageTutorial(ctk.CTkFrame):
         self.send_button.pack(side="right", padx=(0, 0), pady=10)
 
         self.chat_canvas.configure(yscrollcommand=self.chat_scrollbar.set)
-        self.chat_canvas.bind_all("<MouseWheel>", self._on_mousewheel)
+        self.chat_canvas.bind("<Enter>", lambda e: self._bind_mousewheel())
+        self.chat_canvas.bind("<Leave>", lambda e: self._unbind_mousewheel())
 
         # Load, rotate, and use CTkImage for the robot image
         self.robot_chat_img = Image.open("./Progettazione/robot.png").resize((150, 150))
@@ -155,7 +156,11 @@ class ChatPageTutorial(ctk.CTkFrame):
         anchor = "e" if sender == "user" else "w"
         justify = "right" if sender == "user" else "left"
         padx = (60, 10) if sender == "user" else (87, 60)
-        max_width = max(200, self.chat_canvas.winfo_width() - 100)
+        # Diminuisci la larghezza massima per i messaggi utente
+        if sender == "user":
+            max_width = max(120, self.chat_canvas.winfo_width() - 180)
+        else:
+            max_width = max(200, self.chat_canvas.winfo_width() - 100)
 
         bubble_frame = tk.Frame(self.chat_frame, bg=self.widgets['window_bg'])
         bubble_frame.pack(anchor=anchor, pady=8, padx=padx, fill="x")
@@ -183,12 +188,23 @@ class ChatPageTutorial(ctk.CTkFrame):
         self.message_bubbles.append((bubble, sender))
 
     def update_bubble_widths(self, event=None):
-        max_width = max(200, self.chat_canvas.winfo_width() - 100)
+        # Diminuisci la larghezza massima per i messaggi utente
         for bubble, sender in self.message_bubbles:
+            if sender == "user":
+                max_width = max(120, self.chat_canvas.winfo_width() - 180)
+            else:
+                max_width = max(200, self.chat_canvas.winfo_width() - 100)
             bubble.configure(wraplength=max_width)
 
+    def _bind_mousewheel(self):
+        self.chat_canvas.bind_all("<MouseWheel>", self._on_mousewheel)
+
+    def _unbind_mousewheel(self):
+        self.chat_canvas.unbind_all("<MouseWheel>")
+
     def _on_mousewheel(self, event):
-        self.chat_canvas.yview_scroll(int(-1*(event.delta/120)), "units")
+        # Windows scroll direction
+        self.chat_canvas.yview_scroll(int(-1 * (event.delta / 120)), "units")
 
     def send_message(self):
         msg = self.user_input.get("1.0", "end-1c").strip()
