@@ -76,6 +76,7 @@ class Scorer:
         max_similarity = max(similarities)
         max_index = similarities.index(max_similarity)
 
+        # Check if the max similarity is above the threshold
         if max_similarity >= threshold:
             return self.roles[max_index]
         else:
