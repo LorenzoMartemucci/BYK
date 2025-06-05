@@ -12,14 +12,16 @@ class ChatPageTutorial(ctk.CTkFrame):
         widgets,
         person,
         go_to_next_storytelling,
+        llm_builder,
+        scorer,
         *args, **kwargs
     ):
         super().__init__(master, fg_color=widgets['window_bg'], *args, **kwargs)
         self.person = person
+        seelf.scorer = scorer  # Use the passed-in Scorer instance
         self.go_to_next_storytelling = go_to_next_storytelling
-
-        self.widgets = widgets
-        self.check_prompt_relevance_fn = True
+        self.llm_builder = llm_builder  # Use the passed-in LLMBuilder instance
+        self.widgets = widgets  # Set to the method below
         self.extract_role_from_prompt_fn = "None"
 
         # Load CSV with error handling
@@ -31,7 +33,7 @@ class ChatPageTutorial(ctk.CTkFrame):
                 f"CSV file not found at '{csv_path}'. "
                 "Please ensure the file exists and the path is correct."
             )
-        self.current_role = None
+        self.current_role = "insegnante"
         self.current_index = 0
         self.last_domanda = ""
         self.last_obiettivo = ""
@@ -133,9 +135,11 @@ class ChatPageTutorial(ctk.CTkFrame):
         self.robot_chat_label.place(relx=0.0, rely=1.0, anchor="sw", x=-43, y=0)
 
         # Set the new welcome message
-        self.welcome_message = "Hei io sono Robbi, cosa vuoi che sia oggi? Un cuoco? Un insegnate? Un poeta?"
+        self.welcome_message = "Hei io sono Robbi, cosa vuoi che sia oggi? Un cuoco? Un insegnante? Un poeta?"
         self.after(100, self.show_welcome)
+    
 
+    # ...out of constructor
     def on_chat_resize(self, event):
         new_width = max(100, event.width - 50)
         self.chat_progress_bar.configure(width=new_width)
@@ -188,13 +192,19 @@ class ChatPageTutorial(ctk.CTkFrame):
     def _on_mousewheel(self, event):
         self.chat_canvas.yview_scroll(int(-1*(event.delta/120)), "units")
 
+        # MESSAGES CHECKING FASE 
+
     def send_message(self):
         msg = self.user_input.get("1.0", "end-1c").strip()
         if msg:
             self.last_user_message = msg
             self.add_message(msg, sender="user")
             self.user_input.delete("1.0", "end")
+            # Evaluate the message immediately after sending
             self.process_user_prompt(msg)
+
+    def role_definition(self, prompt):
+        return self.scores.get_most_similar_role(prompt)
 
     def send_message_event(self, event=None):
         if event and (event.state & 0x0001):
@@ -212,14 +222,16 @@ class ChatPageTutorial(ctk.CTkFrame):
         self.add_message("Scrivi il ruolo che vuoi che io interpreti!", sender="bot")
 
     def process_user_prompt(self, prompt):
-        # Use the provided role extraction function
-        role = self.extract_role_from_prompt_fn
-        if role:
-            self.current_role = role
-            self.current_index = 0
+        # Validate the prompt using the LLM
+        validation_result = self.llm_builder.validate_prompt(self.current_role, prompt)
+        if validation_result == "Ok! Proseguiamo.":
             self.show_next_domanda_obiettivo()
+            self.current_index += 1  # Move to the next domanda/obiettivo
         else:
-            self.add_message("Non ho capito il ruolo, riprova.", sender="bot")
+            # Show the validation message and repeat the same domanda/obiettivo
+            self.add_message(validation_result, sender="bot")
+            self.add_message(self.last_domanda, sender="bot")
+            self.after(800, lambda: self.add_message(self.last_obiettivo, sender="bot"))
 
     def show_next_domanda_obiettivo(self):
         # Get all rows for the current role
@@ -238,18 +250,20 @@ class ChatPageTutorial(ctk.CTkFrame):
             self.go_to_next_storytelling()
 
     def check_prompt_relevance(self, prompt):
-        # Use the provided function for checking relevance
-        return self.check_prompt_relevance_fn(prompt)
+        # Use the LLMBuilder's validate_prompt method
+        return self.llm.validate_prompt(self.current_role, prompt)
 
     def handle_user_response(self, prompt):
-        # Use the provided prompt relevance function
-        is_relevant = self.check_prompt_relevance_fn(prompt)
-        if is_relevant:
+        # Use the provided prompt relevance function and check the result string
+        result = self.check_prompt_relevance_fn(prompt)
+        if result == "Ok! Proseguiamo.":
             self.show_next_domanda_obiettivo()
         else:
-            self.add_message("I'm sorry, try again", sender="bot")
+            self.add_message(result, sender="bot")
             self.add_message(self.last_domanda, sender="bot")
             self.after(800, lambda: self.add_message(self.last_obiettivo, sender="bot"))
+
+        # END MESSAGES CHECKING FASE
 
     def clear_messages(self):
         for bubble, _ in self.message_bubbles:

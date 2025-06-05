@@ -1,10 +1,12 @@
-from storytelling_page import StorytellingPage
-from chat_page_tutorial import ChatPageTutorial
-from chat_page_final import ChatPageFinal
-from recap_page import RecapPage
-from start_page import StartPage
-from scoring_ranking import ScoringRankingPage
-from person import Person
+from Interfaccia.storytelling_page import StorytellingPage
+from Interfaccia.chat_page_tutorial import ChatPageTutorial
+from Interfaccia.start_page import StartPage
+from Interfaccia.scoring_ranking import ScoringRankingPage
+from Interfaccia.person import Person
+from Interfaccia.chat_page_final import ChatPageFinal
+from Interfaccia.recap_page import RecapPage
+from llm.llama3 import LLMBuilder
+from llm.Scorer import Scorer
 import customtkinter as ctk
 from PIL import Image
 import os
@@ -40,14 +42,17 @@ class MainApp:
         self.container.pack(fill="both", expand=True)
 
         self.person = Person()
+        self.llm_builder = LLMBuilder()
+        self.scorer = Scorer()
         self.time_remaining = [120]
         self.chat_time_remaining = [180]
         self.welcome_message = "Hei io sono Robbi, cosa vuoi che sia oggi? Un cuoco? Un insegnate? Un poeta?"
 
+
         # Instantiate all pages, but only pack the start page
         self.start_page = StartPage(self.container, self.widgets, self.go_to_story, person=self.person)
         self.storytelling1 = StorytellingPage(self.container, self.content, self.widgets, self.go_to_chat1)
-        self.chat_page1 = ChatPageTutorial(self.container, self.widgets, self.person, self.go_to_story2)
+        self.chat_page1 = ChatPageTutorial(self.container, self.widgets, self.person, self.go_to_story2, llm_builder=self.llm_builder, scorer=self.scorer)
         self.recap_page = RecapPage(self.container, self.person, self.widgets, self.go_to_chat2)
         self.chat_page2 = ChatPageFinal(self.container, self.widgets, self.person, self.go_to_scoring)
         self.scoring_page = ScoringRankingPage(self.container)
@@ -80,7 +85,6 @@ class MainApp:
         self.hide_all_frames()
         self.recap_page.timer_var = [120]  # Timer storytelling 2: 120 secondi
         self.recap_page.pack(fill="both", expand=True)
-        self.recap_page.update_timer(self.recap_page.timer_var, 120, None)
 
     def go_to_chat2(self):
         self.hide_all_frames()
