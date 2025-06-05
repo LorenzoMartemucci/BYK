@@ -1,3 +1,20 @@
+"""
+chat_page_tutorial.py
+
+This module defines the ChatPageTutorial class, a custom Tkinter frame for the tutorial chat interaction in the application.
+It manages the chat interface, user input, message display, and interaction logic for the tutorial chat phase.
+
+Main features:
+- Loads episode data from a CSV file to provide context-specific questions and objectives based on the user's chosen role.
+- Displays chat bubbles for both user and bot messages, with dynamic resizing and scrolling.
+- Handles user input, message sending, and response processing using an LLM and a scoring system.
+- Manages a countdown timer and progress bar for the chat session.
+- Provides methods to clear messages, update the chat UI, and transition to the next storytelling phase.
+
+Classes:
+    ChatPageTutorial: CustomTkinter Frame for the tutorial chat page, handling chat logic, UI, and episode progression.
+"""
+
 import tkinter as tk
 import tkinter.font as tkFont
 import customtkinter as ctk
@@ -13,14 +30,15 @@ class ChatPageTutorial(ctk.CTkFrame):
         person,
         go_to_next_storytelling,
         llm_builder,
+        scorer,
         *args, **kwargs
     ):
         super().__init__(master, fg_color=widgets['window_bg'], *args, **kwargs)
         self.person = person
+        self.scorer = scorer  # Use the passed-in Scorer instance
         self.go_to_next_storytelling = go_to_next_storytelling
         self.llm_builder = llm_builder  # Use the passed-in LLMBuilder instance
         self.widgets = widgets  # Set to the method below
-        self.extract_role_from_prompt_fn = "None"
 
         # Load CSV with error handling
         csv_path = "./Progettazione/Episodi_Robbi.csv"
@@ -31,7 +49,7 @@ class ChatPageTutorial(ctk.CTkFrame):
                 f"CSV file not found at '{csv_path}'. "
                 "Please ensure the file exists and the path is correct."
             )
-        self.current_role = None
+        self.current_role = "insegnante"
         self.current_index = 0
         self.last_domanda = ""
         self.last_obiettivo = ""
@@ -135,7 +153,8 @@ class ChatPageTutorial(ctk.CTkFrame):
         # Set the new welcome message
         self.welcome_message = "Hei io sono Robbi, cosa vuoi che sia oggi? Un cuoco? Un insegnante? Un poeta?"
         self.after(100, self.show_welcome)
-    
+
+        self.role_defined = False  # <-- Added to track if role has been set
 
     # ...out of constructor
     def on_chat_resize(self, event):
@@ -190,14 +209,24 @@ class ChatPageTutorial(ctk.CTkFrame):
     def _on_mousewheel(self, event):
         self.chat_canvas.yview_scroll(int(-1*(event.delta/120)), "units")
 
+        # MESSAGES CHECKING FASE 
+
     def send_message(self):
         msg = self.user_input.get("1.0", "end-1c").strip()
         if msg:
             self.last_user_message = msg
             self.add_message(msg, sender="user")
             self.user_input.delete("1.0", "end")
-            # Evaluate the message immediately after sending
-            self.process_user_prompt(msg)
+            # Call role_definition only after the first prompt
+            if not self.role_defined:
+                self.role_definition(msg)
+                self.role_defined = True
+            else:
+                # Evaluate the message immediately after sending
+                self.process_user_prompt(msg)
+
+    def role_definition(self, prompt):
+        return self.person.set_prompt("role" ,self.scorer.get_most_similar_role(prompt))
 
     def send_message_event(self, event=None):
         if event and (event.state & 0x0001):
@@ -218,8 +247,8 @@ class ChatPageTutorial(ctk.CTkFrame):
         # Validate the prompt using the LLM
         validation_result = self.llm_builder.validate_prompt(self.current_role, prompt)
         if validation_result == "Ok! Proseguiamo.":
-            self.current_index += 1  # Move to the next domanda/obiettivo
             self.show_next_domanda_obiettivo()
+            # self.current_index += 1  # Move to the next domanda/obiettivo
         else:
             # Show the validation message and repeat the same domanda/obiettivo
             self.add_message(validation_result, sender="bot")
@@ -244,7 +273,7 @@ class ChatPageTutorial(ctk.CTkFrame):
 
     def check_prompt_relevance(self, prompt):
         # Use the LLMBuilder's validate_prompt method
-        return self.llm.validate_prompt(prompt, prompt)
+        return self.llm.validate_prompt(self.current_role, prompt)
 
     def handle_user_response(self, prompt):
         # Use the provided prompt relevance function and check the result string
@@ -255,6 +284,8 @@ class ChatPageTutorial(ctk.CTkFrame):
             self.add_message(result, sender="bot")
             self.add_message(self.last_domanda, sender="bot")
             self.after(800, lambda: self.add_message(self.last_obiettivo, sender="bot"))
+
+        # END MESSAGES CHECKING FASE
 
     def clear_messages(self):
         for bubble, _ in self.message_bubbles:

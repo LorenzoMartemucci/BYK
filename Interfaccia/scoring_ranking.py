@@ -1,3 +1,18 @@
+"""
+scoring_ranking.py
+
+This module defines the ScoringRankingPage class, a custom Tkinter frame designed to display
+user scores and a ranking leaderboard in a stylized card interface. It provides visual feedback
+at the end of an activity or game, and includes the option to play again.
+
+Main Features:
+- Displays a congratulatory message with the user's score.
+- Shows a scrollable, ranked leaderboard sorted by score.
+- Renders a card layout with headers, robot avatar, and styled buttons.
+- Integrates a 'Play Again' button for restarting the experience.
+"""
+
+
 import tkinter as tk
 import customtkinter as ctk
 from PIL import Image
