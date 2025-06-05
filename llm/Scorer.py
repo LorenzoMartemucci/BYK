@@ -64,7 +64,7 @@ class Scorer:
         """
 
         # Create a list of sentences with roles and prompt coupled together
-        sentences = [ [role,prompt] for role in self.roles]
+        sentences = [[role,prompt] for role in self.roles]
 
         # Encode the sentences using the model by extracting the embeddings
         embeddings = [self._model.encode(sentence) for sentence in sentences]
