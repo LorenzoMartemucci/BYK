@@ -213,6 +213,6 @@ if __name__ == "__main__":
     score_prova=[np.random.randint(60, 101),np.random.randint(0, 60), None, 23.45, -20, 130]
     # self.persona.get_score()
     #portarsi persona nella pagina di scoring
-    page = ScoringRankingPage(root,person=None, score_value=score_prova[5], on_play_again=play_again)
+    page = ScoringRankingPage(root,person=None, score_value=score_prova[0], on_play_again=play_again)
     page.pack(fill="both", expand=True)
     root.mainloop()
