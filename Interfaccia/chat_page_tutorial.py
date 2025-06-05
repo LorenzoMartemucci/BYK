@@ -242,6 +242,7 @@ class ChatPageTutorial(ctk.CTkFrame):
         # Placeholder: you may want to show a generic objective or wait for user role
         self.add_message("Scrivi il ruolo che vuoi che io interpreti!", sender="bot")
 
+        # MESSAGES CHECK
     def process_user_prompt(self, prompt):
         # Validate the prompt using the LLM
         role = self.person.get_prompt("role")
