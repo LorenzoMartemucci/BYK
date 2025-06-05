@@ -167,4 +167,4 @@ build/
 #Python
 __pycache__/
 llm/__pycache__/
-interfaccia/__pycache__/
+Interfaccia/__pycache__/
