@@ -22,7 +22,6 @@ class ChatPageTutorial(ctk.CTkFrame):
         self.go_to_next_storytelling = go_to_next_storytelling
         self.llm_builder = llm_builder  # Use the passed-in LLMBuilder instance
         self.widgets = widgets  # Set to the method below
-        self.extract_role_from_prompt_fn = "None"
 
         # Load CSV with error handling
         csv_path = "./Progettazione/Episodi_Robbi.csv"
@@ -137,7 +136,8 @@ class ChatPageTutorial(ctk.CTkFrame):
         # Set the new welcome message
         self.welcome_message = "Hei io sono Robbi, cosa vuoi che sia oggi? Un cuoco? Un insegnante? Un poeta?"
         self.after(100, self.show_welcome)
-    
+
+        self.role_defined = False  # <-- Added to track if role has been set
 
     # ...out of constructor
     def on_chat_resize(self, event):
@@ -200,11 +200,16 @@ class ChatPageTutorial(ctk.CTkFrame):
             self.last_user_message = msg
             self.add_message(msg, sender="user")
             self.user_input.delete("1.0", "end")
-            # Evaluate the message immediately after sending
-            self.process_user_prompt(msg)
+            # Call role_definition only after the first prompt
+            if not self.role_defined:
+                self.role_definition(msg)
+                self.role_defined = True
+            else:
+                # Evaluate the message immediately after sending
+                self.process_user_prompt(msg)
 
     def role_definition(self, prompt):
-        return self.person.set_role(self.scores.get_most_similar_role(prompt))
+        return self.person.set_prompt("role" ,self.scorer.get_most_similar_role(prompt))
 
     def send_message_event(self, event=None):
         if event and (event.state & 0x0001):
