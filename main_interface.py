@@ -3,6 +3,8 @@ from Interfaccia.chat_page_tutorial import ChatPageTutorial
 from Interfaccia.start_page import StartPage
 from Interfaccia.scoring_ranking import ScoringRankingPage
 from Interfaccia.person import Person
+from Interfaccia.chat_page_final import ChatPageFinal
+from Interfaccia.chat_page_final import RecapPage
 from llm.llama3 import LLMBuilder
 import customtkinter as ctk
 from PIL import Image
