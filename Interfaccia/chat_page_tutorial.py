@@ -18,7 +18,7 @@ class ChatPageTutorial(ctk.CTkFrame):
     ):
         super().__init__(master, fg_color=widgets['window_bg'], *args, **kwargs)
         self.person = person
-        seelf.scorer = scorer  # Use the passed-in Scorer instance
+        self.scorer = scorer  # Use the passed-in Scorer instance
         self.go_to_next_storytelling = go_to_next_storytelling
         self.llm_builder = llm_builder  # Use the passed-in LLMBuilder instance
         self.widgets = widgets  # Set to the method below
