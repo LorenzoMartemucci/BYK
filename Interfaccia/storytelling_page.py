@@ -1,3 +1,17 @@
+"""
+storytelling_page.py
+
+This module defines the StorytellingPage class, a custom Tkinter frame used to present narrative content
+in a storytelling or educational application. It displays story text within a rounded panel and includes
+a countdown timer, robot image, and navigation button.
+
+Main Features:
+- Shows story content with dynamic layout and text wrapping.
+- Displays a timer and progress bar to track time remaining.
+- Includes a 'Next' button to continue to the chat or next phase.
+- Automatically resizes content to fit various screen dimensions.
+"""
+
 import tkinter as tk
 import customtkinter as ctk
 from PIL import Image, ImageTk
@@ -5,19 +19,23 @@ import textwrap
 
 class StorytellingPage(ctk.CTkFrame):
     def __init__(self, master, content, widgets, go_to_chat_callback, *args, **kwargs):
+        # Initialize storytelling page frame
         super().__init__(master, fg_color=widgets['window_bg'], *args, **kwargs)
         self.go_to_chat_callback = go_to_chat_callback
         self.content = content
         self.widgets = widgets
 
+        # Setup canvas for background and text
         self.canvas = ctk.CTkCanvas(self, width=400, height=700, bg=widgets['window_bg'], highlightthickness=0)
         self.canvas.pack(fill='both', expand=True)
 
+        # Load robot image
         self.image_sides_size = 150
         self.robot_story_img = Image.open("./Progettazione/robot.png").resize((self.image_sides_size, self.image_sides_size))
         self.robot_story_ctkimage = ctk.CTkImage(light_image=self.robot_story_img, size=(self.image_sides_size, self.image_sides_size))
         self.robot_label_story = ctk.CTkLabel(self, image=self.robot_story_ctkimage, text="", fg_color=widgets['widgets_bg'])
 
+        # 'Next' button to continue
         self.submit_button = ctk.CTkButton(
             self,
             text='Prossimo',
@@ -31,6 +49,8 @@ class StorytellingPage(ctk.CTkFrame):
             width=160,
             height=60
         )
+
+        # Timer and progress bar setup
         self.timer_label = ctk.CTkLabel(self, text="", font=("Comic Sans MS", 14), text_color=widgets['widgets_fg_text_color'])
         self.progress_bar = ctk.CTkProgressBar(self, width=400, height=20, progress_color="#00FF22")
 
@@ -41,18 +61,18 @@ class StorytellingPage(ctk.CTkFrame):
         self.canvas.bind("<Configure>", self.on_resize)
 
         self.timer_running = False
-
-        self.timer_total = 60  # tempo totale in secondi (modifica a piacere)
-        self.timer_var = [self.timer_total]  # variabile mutabili per il countdown
+        self.timer_total = 60  # total time in seconds
+        self.timer_var = [self.timer_total]  # mutable time tracker
 
     def update_timer(self, time_var, total, callback):
+        # Update timer and progress bar every second
         if not self.timer_running:
             return
         minutes = time_var[0] // 60
         seconds = time_var[0] % 60
         self.timer_label.configure(text=f"Tempo rimanente: {minutes:02}:{seconds:02}")
         progress = time_var[0] / total
-        progress = max(0, min(1, progress))  # Clamp tra 0 e 1
+        progress = max(0, min(1, progress))
         self.progress_bar.set(progress)
         self.update_idletasks()
         if time_var[0] > 0:
@@ -63,14 +83,16 @@ class StorytellingPage(ctk.CTkFrame):
                 callback()
 
     def start_timer(self):
+        # Start the countdown timer
         self.timer_running = True
-        # Scegli tu il valore di default, oppure passa da fuori
         self.update_timer(self.timer_var, self.timer_total, None)
 
     def stop_timer(self):
+        # Stop the countdown timer
         self.timer_running = False
 
     def create_rounded_label(self, canvas, x, y, width, height, radius, border_color, fill_color, text, text_color):
+        # Draw a rounded rectangle with optional text (centered)
         points = [
             x+radius, y,
             x+width-radius, y,
@@ -89,6 +111,7 @@ class StorytellingPage(ctk.CTkFrame):
         canvas.create_text(x+width/2, y+height/2, text=text, fill=text_color, font=("Comic Sans MS", 12))
 
     def on_resize(self, event):
+        # Redraw all components upon resizing
         width = event.width
         bottom_padding = 25
         button_height = 40
@@ -111,10 +134,12 @@ class StorytellingPage(ctk.CTkFrame):
             text_color=self.widgets['widgets_fg_text_color']
         )
 
+        # Position robot image at bottom-left
         robot_x = 25 + 10
         robot_y = 75 + (height-100) - self.image_sides_size - 10
         self.robot_label_story.place(x=robot_x, y=robot_y)
 
+        # Text wrapping and layout
         box_x = 25
         box_y = 75
         box_width = width - 50
@@ -124,6 +149,7 @@ class StorytellingPage(ctk.CTkFrame):
         text_x = box_x + text_padding_x
         text_y = box_y + text_padding_y
         text_width = box_width - 2 * text_padding_x
+
         robot_top = robot_y
         robot_bottom = robot_y + self.image_sides_size
         robot_right = robot_x + self.image_sides_size
