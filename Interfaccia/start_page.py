@@ -51,5 +51,4 @@ class StartPage(ctk.CTkFrame):
     def on_prossimo_click(self):
         username = self.username_entry.get()
         self.person.set_name(username)
-        print(f"DEBUG: Person name set to: {self.person.get_name()}")
         self.go_to_story_callback()
