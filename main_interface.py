@@ -61,10 +61,17 @@ class MainApp:
 
     # --- Frame swap methods ---
     def show_start_page(self):
+        """
+        Displays the start page of the application, hiding all other frames.
+        """
         self.hide_all_frames()
         self.start_page.pack(fill="both", expand=True)
 
     def go_to_story(self):
+        """
+        Switches to the first storytelling page, sets and starts the timer for storytelling,
+        and stops the chat timer if it is running.
+        """
         self.hide_all_frames()
         self.storytelling1.timer_var = [120]
         self.storytelling1.timer_total = 120  
@@ -73,6 +80,10 @@ class MainApp:
         self.chat_page1.stop_timer()  # Ferma il timer della chat
 
     def go_to_chat1(self):
+        """
+        Switches to the first chat page, sets and starts the chat timer,
+        clears previous messages, stops the storytelling timer, and shows the welcome message.
+        """
         self.hide_all_frames()
         self.chat_page1.timer_var = [180]
         self.chat_page1.pack(fill="both", expand=True)
@@ -82,11 +93,18 @@ class MainApp:
         self.root.after_idle(self.chat_page1.show_welcome)
 
     def go_to_story2(self):
+        """
+        Switches to the recap (second storytelling) page and sets the timer for storytelling.
+        """
         self.hide_all_frames()
         self.recap_page.timer_var = [120]  # Timer storytelling 2: 120 secondi
         self.recap_page.pack(fill="both", expand=True)
 
     def go_to_chat2(self):
+        """
+        Switches to the second chat page, sets and starts the chat timer,
+        clears previous messages, and shows the welcome message and the first episode.
+        """
         self.hide_all_frames()
         self.chat_page2.timer_var = [180]  # Timer chat 2: 180 secondi
         self.chat_page2.timer_total = 180  
