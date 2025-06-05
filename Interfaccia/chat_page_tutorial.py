@@ -1,3 +1,20 @@
+"""
+chat_page_tutorial.py
+
+This module defines the ChatPageTutorial class, a custom Tkinter frame for the tutorial chat interaction in the application.
+It manages the chat interface, user input, message display, and interaction logic for the tutorial chat phase.
+
+Main features:
+- Loads episode data from a CSV file to provide context-specific questions and objectives based on the user's chosen role.
+- Displays chat bubbles for both user and bot messages, with dynamic resizing and scrolling.
+- Handles user input, message sending, and response processing using an LLM and a scoring system.
+- Manages a countdown timer and progress bar for the chat session.
+- Provides methods to clear messages, update the chat UI, and transition to the next storytelling phase.
+
+Classes:
+    ChatPageTutorial: CustomTkinter Frame for the tutorial chat page, handling chat logic, UI, and episode progression.
+"""
+
 import tkinter as tk
 import tkinter.font as tkFont
 import customtkinter as ctk
