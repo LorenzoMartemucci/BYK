@@ -18,7 +18,7 @@ class ChatPageTutorial(ctk.CTkFrame):
     ):
         super().__init__(master, fg_color=widgets['window_bg'], *args, **kwargs)
         self.person = person
-        seelf.scorer = scorer  # Use the passed-in Scorer instance
+        self.scorer = scorer  # Use the passed-in Scorer instance
         self.go_to_next_storytelling = go_to_next_storytelling
         self.llm_builder = llm_builder  # Use the passed-in LLMBuilder instance
         self.widgets = widgets  # Set to the method below
@@ -204,7 +204,7 @@ class ChatPageTutorial(ctk.CTkFrame):
             self.process_user_prompt(msg)
 
     def role_definition(self, prompt):
-        return self.scores.get_most_similar_role(prompt)
+        return self.person.set_role(self.scores.get_most_similar_role(prompt))
 
     def send_message_event(self, event=None):
         if event and (event.state & 0x0001):
@@ -226,7 +226,7 @@ class ChatPageTutorial(ctk.CTkFrame):
         validation_result = self.llm_builder.validate_prompt(self.current_role, prompt)
         if validation_result == "Ok! Proseguiamo.":
             self.show_next_domanda_obiettivo()
-            self.current_index += 1  # Move to the next domanda/obiettivo
+            # self.current_index += 1  # Move to the next domanda/obiettivo
         else:
             # Show the validation message and repeat the same domanda/obiettivo
             self.add_message(validation_result, sender="bot")
