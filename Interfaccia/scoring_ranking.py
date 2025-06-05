@@ -16,9 +16,11 @@ Main Features:
 import tkinter as tk
 import customtkinter as ctk
 from PIL import Image
+from ranking_list import read_scores, write_scores
+import numpy as np
 
 class ScoringRankingPage(ctk.CTkFrame):
-    def __init__(self, master, score_value=83, ranking_data=None, on_play_again=None, *args, **kwargs):
+    def __init__(self, master, person, score_value=None, on_play_again=None, *args, **kwargs):
         super().__init__(master, fg_color="#FFE2CC", *args, **kwargs)
         # Theme colors and fonts (match your main interface)
         self.widgets_bg = "#FFA764"
@@ -28,33 +30,47 @@ class ScoringRankingPage(ctk.CTkFrame):
         self.window_bg = "#FFE2CC"
         self.table_header_font = ("Comic Sans MS", 11)
         self.score_font = ("Comic Sans MS", 48, "bold")
-        self.title_font = ("Comic Sans MS", 28, "bold")
+        self.title_font = ("Comic Sans MS", 25, "bold")
         self.subtitle_font = ("Comic Sans MS", 22)
         self.button_font = ("Comic Sans MS", 13)
+        self.title_xplacement = 190  # Adjusted for right alignment
+        self.title_yplacement = 30  # Adjusted for top placement
+        self.title_width = 280  # Width for the title label
+        
+        
+
+        self.is_score_below_minimum = False
 
         self.score_value = score_value
-        self.ranking_data = ranking_data if ranking_data is not None else [
-            {"name": "Alice", "score": 95},
-            {"name": "Bob", "score": 90},
-            {"name": "Carlo", "score": 88},
-            {"name": "Dario", "score": 83},
-            {"name": "Elena", "score": 80},
-            {"name": "Franco", "score": 78},
-            {"name": "Gina", "score": 75},
-            {"name": "Hugo", "score": 72},
-            {"name": "Irene", "score": 70},
-            {"name": "Luca", "score": 68},
-            {"name": "Marta", "score": 65},
-            {"name": "Nina", "score": 62},
-            {"name": "Oscar", "score": 60},
-            {"name": "Paolo", "score": 58},
-            {"name": "Quinto", "score": 55},
-            {"name": "Rita", "score": 52},
-            {"name": "Sara", "score": 50},
-            {"name": "Tom", "score": 48},
-            {"name": "Ugo", "score": 45},
-            {"name": "Vera", "score": 42},
-        ]
+        self.ranking_data = read_scores()   # Read existing scores
+
+        # Validate the score_value
+        if self.score_value is None:
+            self.title_text = "ERRORE! Punteggio non fornito!"
+        elif not isinstance(self.score_value, int):
+            self.title_text = "ERRORE! Punteggio non intero!"
+        elif self.score_value < 0 :
+            self.title_font = ("Comic Sans MS", 20, "bold")
+            self.title_text = "ERRORE! Il Punteggio deve essere positivo!"
+        elif self.score_value > 100:
+            self.title_font = ("Comic Sans MS", 20, "bold")
+            self.title_text = "ERRORE! Il Punteggio deve essere minore o uguale a 100!"
+        elif self.score_value < 60:
+            self.is_score_below_minimum = True
+            self.title_text = "Oh peccato, c'eri quasi! Prova di nuovo!"
+        else:
+            self.title_text = "Congratulazioni!"
+            self.title_font = ("Comic Sans MS", 30, "bold")
+            self.title_width = 200  # Width for the title label
+            self.title_xplacement = 220  # Adjusted for right alignment
+            self.title_yplacement = 60  # Adjusted for top placement
+        # Update the ranking data
+            self.new_user = "Giocatore"+str(len(self.ranking_data) + 1)  # Example new user
+            self.ranking_data.append({"name": self.new_user, "score": self.score_value})  # Example of adding a new score
+            self.ranking_data.sort(key=lambda x: x["score"], reverse=True)  # Sort by score descending
+            write_scores(self.ranking_data) # Save updated ranking
+
+        
         self.on_play_again = on_play_again
 
         # Card-like frame
@@ -79,36 +95,37 @@ class ScoringRankingPage(ctk.CTkFrame):
         # Top section: Title, Score (to the right of the robot, aligned right)
         title_label = ctk.CTkLabel(
             self.card_frame,
-            text="Congratulazioni!",
+            text=self.title_text,
             font=self.title_font,
-            text_color="#FFFFFF",
+            text_color="#632B00",
             fg_color="transparent",
             anchor="e",
-            width=250
+            width=self.title_width,
+            wraplength=280
         )
-        title_label.place(x=220, y=30)
+        title_label.place(x=self.title_xplacement,y=self.title_yplacement)
 
         subtitle_label = ctk.CTkLabel(
             self.card_frame,
             text="Punteggio:",
             font=self.subtitle_font,
-            text_color="#FFFFFF",
+            text_color="#632B00",
             fg_color="transparent",
             anchor="e",
-            width=250
+            width=150
         )
-        subtitle_label.place(x=220, y=75)
+        subtitle_label.place(x=200, y=140)
 
         score_label = ctk.CTkLabel(
             self.card_frame,
             text=str(self.score_value),
             font=self.score_font,
-            text_color="#FFFFFF",
+            text_color="#112E4B",
             fg_color="transparent",
             anchor="e",
-            width=250
+            width=50
         )
-        score_label.place(x=220, y=110)
+        score_label.place(x=360, y=120)
 
         # Table section
         table_y = 200
@@ -169,9 +186,9 @@ class ScoringRankingPage(ctk.CTkFrame):
         table_canvas.create_line(0, 0, table_width, 0, fill=self.widgets_fg_text_color, width=1)
 
         # Sort and assign ranks
-        # TODO: implementare la logica dello score minimo e ritentare la prova del gioco (+ recap window) 
-        sorted_ranking = sorted(self.ranking_data, key=lambda x: x["score"], reverse=True)
+        # TODO: implementare la logica dello score minimo e ritentare la prova del gioco (+ recap window)
         row_height = 38
+        sorted_ranking= self.ranking_data
         for idx, entry in enumerate(sorted_ranking, start=1):
             y = (idx - 1) * row_height + 10
             tk.Label(table_body, text=str(idx), font=self.widgets_font, bg=self.widgets_bg, fg=self.widgets_fg_text_color, width=8, anchor="center").place(x=0, y=y, width=90, height=row_height)
@@ -208,6 +225,9 @@ if __name__ == "__main__":
     def play_again():
         print("Play again clicked!")
 
-    page = ScoringRankingPage(root, score_value=83, on_play_again=play_again)
+    score_prova=[np.random.randint(60, 101),np.random.randint(0, 60), None, 23.45, -20, 130]
+    # self.persona.get_score()
+    #portarsi persona nella pagina di scoring
+    page = ScoringRankingPage(root,person=None, score_value=score_prova[0], on_play_again=play_again)
     page.pack(fill="both", expand=True)
     root.mainloop()
