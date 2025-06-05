@@ -5,21 +5,21 @@ from PIL import Image
 import pandas as pd
 import os
 
-class ChatPageTutorial(ctk.CTkFrame):
+class ChatPageFinal(ctk.CTkFrame):
     def __init__(
         self,
         master,
         widgets,
         person,
         go_to_next_storytelling,
-        llm_builder,
         *args, **kwargs
     ):
         super().__init__(master, fg_color=widgets['window_bg'], *args, **kwargs)
         self.person = person
         self.go_to_next_storytelling = go_to_next_storytelling
-        self.llm_builder = llm_builder  # Use the passed-in LLMBuilder instance
-        self.widgets = widgets  # Set to the method below
+
+        self.widgets = widgets
+        self.check_prompt_relevance_fn = True
         self.extract_role_from_prompt_fn = "None"
 
         # Load CSV with error handling
@@ -45,10 +45,6 @@ class ChatPageTutorial(ctk.CTkFrame):
         self.chat_progress_bar = ctk.CTkProgressBar(self, width=400, height=20, progress_color="#00FF22")
         self.chat_progress_bar.set(1.0)
         self.chat_progress_bar.place(x=25, y=40)
-
-        self.timer_total = 180  # <-- CORRETTO QUI
-        self.timer_var = [self.timer_total]
-        self.timer_running = False
 
         self.bind("<Configure>", self.on_chat_resize)
 
@@ -133,11 +129,13 @@ class ChatPageTutorial(ctk.CTkFrame):
         self.robot_chat_label.place(relx=0.0, rely=1.0, anchor="sw", x=-43, y=0)
 
         # Set the new welcome message
-        self.welcome_message = "Hei io sono Robbi, cosa vuoi che sia oggi? Un cuoco? Un insegnante? Un poeta?"
-        self.after(100, self.show_welcome)
-    
+        self.welcome_message = "Hei io sono Robbi, cosa vuoi che sia oggi? Un cuoco? Un insegnate? Un poeta?"
+        self.after(100, self.show_welcome_and_first_episode)  # Cambia qui
 
-    # ...out of constructor
+        self.timer_total = 180
+        self.timer_var = [self.timer_total]
+        self.timer_running = False
+
     def on_chat_resize(self, event):
         new_width = max(100, event.width - 50)
         self.chat_progress_bar.configure(width=new_width)
@@ -180,7 +178,6 @@ class ChatPageTutorial(ctk.CTkFrame):
         req_height = bubble.winfo_reqheight()
         bubble.configure(height=req_height)
 
-        self.message_bubbles.append((bubble, sender))
 
     def update_bubble_widths(self, event=None):
         max_width = max(200, self.chat_canvas.winfo_width() - 100)
@@ -196,7 +193,6 @@ class ChatPageTutorial(ctk.CTkFrame):
             self.last_user_message = msg
             self.add_message(msg, sender="user")
             self.user_input.delete("1.0", "end")
-            # Evaluate the message immediately after sending
             self.process_user_prompt(msg)
 
     def send_message_event(self, event=None):
@@ -205,26 +201,42 @@ class ChatPageTutorial(ctk.CTkFrame):
         self.send_message()
         return "break"
 
-    def show_welcome(self):
+    def show_welcome_and_first_episode(self):
         self.add_message(self.welcome_message, sender="bot")
-        # Wait a moment, then show the objective message (placeholder)
-        self.after(800, self.show_objective_message)
+        self.after(800, self.show_first_domanda_obiettivo)
 
-    def show_objective_message(self):
-        # Placeholder: you may want to show a generic objective or wait for user role
-        self.add_message("Scrivi il ruolo che vuoi che io interpreti!", sender="bot")
+    def show_first_domanda_obiettivo(self):
+        # Recupera il ruolo scelto dall'utente tramite person
+        role = None
+        if hasattr(self.person, "prompts"):
+            role = self.person.prompts.get("role", None)
+        if not role:
+            self.add_message("Non hai scelto un ruolo! Torna indietro e seleziona un ruolo.", sender="bot")
+            return
+
+        # Cerca la prima riga del ruolo nel CSV
+        role_rows = self.episodes[self.episodes["Ruolo"].str.lower() == role.lower()]
+        if not role_rows.empty:
+            row = role_rows.iloc[0]
+            domanda = row["Domanda"]
+            obiettivo = row["Obiettivo"]
+            self.last_domanda = domanda
+            self.last_obiettivo = obiettivo
+            self.add_message(domanda, sender="bot")
+            self.after(800, lambda: self.add_message(obiettivo, sender="bot"))
+            self.current_index = 1
+        else:
+            self.add_message("Ruolo non trovato nel database.", sender="bot")
 
     def process_user_prompt(self, prompt):
-        # Validate the prompt using the LLM
-        validation_result = self.llm_builder.validate_prompt(self.current_role, prompt)
-        if validation_result == "Ok! Proseguiamo.":
-            self.current_index += 1  # Move to the next domanda/obiettivo
+        # Use the provided role extraction function
+        role = self.extract_role_from_prompt_fn
+        if role:
+            self.current_role = role
+            self.current_index = 0
             self.show_next_domanda_obiettivo()
         else:
-            # Show the validation message and repeat the same domanda/obiettivo
-            self.add_message(validation_result, sender="bot")
-            self.add_message(self.last_domanda, sender="bot")
-            self.after(800, lambda: self.add_message(self.last_obiettivo, sender="bot"))
+            self.add_message("Non ho capito il ruolo, riprova.", sender="bot")
 
     def show_next_domanda_obiettivo(self):
         # Get all rows for the current role
@@ -243,16 +255,16 @@ class ChatPageTutorial(ctk.CTkFrame):
             self.go_to_next_storytelling()
 
     def check_prompt_relevance(self, prompt):
-        # Use the LLMBuilder's validate_prompt method
-        return self.llm.validate_prompt(prompt, prompt)
+        # Use the provided function for checking relevance
+        return self.check_prompt_relevance_fn(prompt)
 
     def handle_user_response(self, prompt):
-        # Use the provided prompt relevance function and check the result string
-        result = self.check_prompt_relevance_fn(prompt)
-        if result == "Ok! Proseguiamo.":
+        # Use the provided prompt relevance function
+        is_relevant = self.check_prompt_relevance_fn(prompt)
+        if is_relevant:
             self.show_next_domanda_obiettivo()
         else:
-            self.add_message(result, sender="bot")
+            self.add_message("I'm sorry, try again", sender="bot")
             self.add_message(self.last_domanda, sender="bot")
             self.after(800, lambda: self.add_message(self.last_obiettivo, sender="bot"))
 
@@ -266,8 +278,7 @@ class ChatPageTutorial(ctk.CTkFrame):
             return
         minutes = time_var[0] // 60
         seconds = time_var[0] % 60
-        self.chat_timer_label.configure(text=f"Tempo rimanente: {minutes:02d}:{seconds:02d}")
-        # INVERTI IL PROGRESSO: 1.0 -> pieno, 0.0 -> vuoto
+        self.chat_timer_label.configure(text=f"Tempo rimanente: {minutes:02}:{seconds:02}")
         progress = max(0, min(1, time_var[0] / total))
         self.chat_progress_bar.set(progress)
         if time_var[0] > 0:

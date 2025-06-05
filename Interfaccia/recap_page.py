@@ -3,11 +3,11 @@ import customtkinter as ctk
 from PIL import Image, ImageTk
 import textwrap
 
-class StorytellingPage(ctk.CTkFrame):
-    def __init__(self, master, content, widgets, go_to_chat_callback, *args, **kwargs):
+class RecapPage(ctk.CTkFrame):
+    def __init__(self, master, person, widgets, go_to_chat_callback, *args, **kwargs):
         super().__init__(master, fg_color=widgets['window_bg'], *args, **kwargs)
         self.go_to_chat_callback = go_to_chat_callback
-        self.content = content
+        self.person = person
         self.widgets = widgets
 
         self.canvas = ctk.CTkCanvas(self, width=400, height=700, bg=widgets['window_bg'], highlightthickness=0)
@@ -31,44 +31,9 @@ class StorytellingPage(ctk.CTkFrame):
             width=160,
             height=60
         )
-        self.timer_label = ctk.CTkLabel(self, text="", font=("Comic Sans MS", 14), text_color=widgets['widgets_fg_text_color'])
-        self.progress_bar = ctk.CTkProgressBar(self, width=400, height=20, progress_color="#00FF22")
-
         self.submit_button.place(relx=1.0, rely=1.0, anchor='se', x=-25, y=-25)
-        self.timer_label.place(x=25, y=10)
-        self.progress_bar.place(x=25, y=40)
 
         self.canvas.bind("<Configure>", self.on_resize)
-
-        self.timer_running = False
-
-        self.timer_total = 60  # tempo totale in secondi (modifica a piacere)
-        self.timer_var = [self.timer_total]  # variabile mutabili per il countdown
-
-    def update_timer(self, time_var, total, callback):
-        if not self.timer_running:
-            return
-        minutes = time_var[0] // 60
-        seconds = time_var[0] % 60
-        self.timer_label.configure(text=f"Tempo rimanente: {minutes:02}:{seconds:02}")
-        progress = time_var[0] / total
-        progress = max(0, min(1, progress))  # Clamp tra 0 e 1
-        self.progress_bar.set(progress)
-        self.update_idletasks()
-        if time_var[0] > 0:
-            time_var[0] -= 1
-            self.after(1000, lambda: self.update_timer(time_var, total, callback))
-        else:
-            if callback:
-                callback()
-
-    def start_timer(self):
-        self.timer_running = True
-        # Scegli tu il valore di default, oppure passa da fuori
-        self.update_timer(self.timer_var, self.timer_total, None)
-
-    def stop_timer(self):
-        self.timer_running = False
 
     def create_rounded_label(self, canvas, x, y, width, height, radius, border_color, fill_color, text, text_color):
         points = [
@@ -88,16 +53,28 @@ class StorytellingPage(ctk.CTkFrame):
         canvas.create_polygon(points, smooth=True, fill=fill_color, outline=border_color, width=2)
         canvas.create_text(x+width/2, y+height/2, text=text, fill=text_color, font=("Comic Sans MS", 12))
 
+    def get_person_recap(self):
+        prompt_labels = {
+            "role": "Ruolo",
+            "task": "Compito",
+            "context": "Contesto",
+            "output_format": "Formato output",
+            "constraint": "Vincoli"
+        }
+        lines = []
+        for key in ["role", "task", "context", "output_format", "constraint"]:
+            label = prompt_labels.get(key, key.capitalize())
+            value = self.person.prompts.get(key, None)
+            lines.append(f"{label}:")
+            lines.append(f"{value if value else 'N/A'}")
+        return "\n".join(lines)
+
     def on_resize(self, event):
         width = event.width
         bottom_padding = 25
         button_height = 40
         button_padding = 20
         height = event.height - bottom_padding - button_height - button_padding
-
-        self.progress_bar.configure(width=width - 50)
-        self.progress_bar.place(x=25, y=40)
-        self.timer_label.place(x=25, y=10)
 
         self.canvas.delete("all")
         self.create_rounded_label(
@@ -129,13 +106,29 @@ class StorytellingPage(ctk.CTkFrame):
         robot_right = robot_x + self.image_sides_size
 
         line_height = 22
+
+        # --- NUOVO BLOCCO: Messaggio iniziale ---
+        intro_message = "Perfetto hai completato il tutorial! Ecco un piccolo recap di quello che hai scritto prima:"
+        recap_text = self.get_person_recap()
+        outro_message = "Adesso mettiti alla prova con un test finale!"
+
+        # Prepara tutte le linee da visualizzare
         lines = []
-        for paragraph in self.content.split('\n'):
+        # Messaggio iniziale
+        lines.extend(textwrap.wrap(intro_message, width=60))
+        lines.append("")  # Riga vuota
+
+        # Recap
+        for paragraph in recap_text.split('\n'):
             wrapped = textwrap.wrap(paragraph, width=60)
             if not wrapped:
                 lines.append("")
             else:
                 lines.extend(wrapped)
+        lines.append("")  # Riga vuota
+
+        # Messaggio finale
+        lines.extend(textwrap.wrap(outro_message, width=60))
 
         y = text_y
         for line in lines:
