@@ -49,7 +49,7 @@ class ChatPageTutorial(ctk.CTkFrame):
                 f"CSV file not found at '{csv_path}'. "
                 "Please ensure the file exists and the path is correct."
             )
-        self.current_role = "insegnante"
+        # self.current_role = "insegnante"  # REMOVED: now use self.person.get_prompt("role")
         self.current_index = 0
         self.last_domanda = ""
         self.last_obiettivo = ""
@@ -141,7 +141,8 @@ class ChatPageTutorial(ctk.CTkFrame):
         self.send_button.pack(side="right", padx=(0, 0), pady=10)
 
         self.chat_canvas.configure(yscrollcommand=self.chat_scrollbar.set)
-        self.chat_canvas.bind_all("<MouseWheel>", self._on_mousewheel)
+        self.chat_canvas.bind("<Enter>", lambda e: self._bind_mousewheel())
+        self.chat_canvas.bind("<Leave>", lambda e: self._unbind_mousewheel())
 
         # Load, rotate, and use CTkImage for the robot image
         self.robot_chat_img = Image.open("./Progettazione/robot.png").resize((150, 150))
@@ -174,7 +175,11 @@ class ChatPageTutorial(ctk.CTkFrame):
         anchor = "e" if sender == "user" else "w"
         justify = "right" if sender == "user" else "left"
         padx = (60, 10) if sender == "user" else (87, 60)
-        max_width = max(200, self.chat_canvas.winfo_width() - 100)
+        # Diminuisci la larghezza massima per i messaggi utente
+        if sender == "user":
+            max_width = max(120, self.chat_canvas.winfo_width() - 180)
+        else:
+            max_width = max(200, self.chat_canvas.winfo_width() - 100)
 
         bubble_frame = tk.Frame(self.chat_frame, bg=self.widgets['window_bg'])
         bubble_frame.pack(anchor=anchor, pady=8, padx=padx, fill="x")
@@ -202,12 +207,23 @@ class ChatPageTutorial(ctk.CTkFrame):
         self.message_bubbles.append((bubble, sender))
 
     def update_bubble_widths(self, event=None):
-        max_width = max(200, self.chat_canvas.winfo_width() - 100)
+        # Diminuisci la larghezza massima per i messaggi utente
         for bubble, sender in self.message_bubbles:
+            if sender == "user":
+                max_width = max(120, self.chat_canvas.winfo_width() - 180)
+            else:
+                max_width = max(200, self.chat_canvas.winfo_width() - 100)
             bubble.configure(wraplength=max_width)
 
+    def _bind_mousewheel(self):
+        self.chat_canvas.bind_all("<MouseWheel>", self._on_mousewheel)
+
+    def _unbind_mousewheel(self):
+        self.chat_canvas.unbind_all("<MouseWheel>")
+
     def _on_mousewheel(self, event):
-        self.chat_canvas.yview_scroll(int(-1*(event.delta/120)), "units")
+        # Windows scroll direction
+        self.chat_canvas.yview_scroll(int(-1 * (event.delta / 120)), "units")
 
         # MESSAGES CHECKING FASE 
 
@@ -221,9 +237,8 @@ class ChatPageTutorial(ctk.CTkFrame):
             if not self.role_defined:
                 self.role_definition(msg)
                 self.role_defined = True
-            else:
-                # Evaluate the message immediately after sending
-                self.process_user_prompt(msg)
+            # Evaluate the message immediately after sending
+            self.process_user_prompt(msg)
 
     def role_definition(self, prompt):
         return self.person.set_prompt("role" ,self.scorer.get_most_similar_role(prompt))
@@ -243,9 +258,11 @@ class ChatPageTutorial(ctk.CTkFrame):
         # Placeholder: you may want to show a generic objective or wait for user role
         self.add_message("Scrivi il ruolo che vuoi che io interpreti!", sender="bot")
 
+        # MESSAGES CHECK
     def process_user_prompt(self, prompt):
         # Validate the prompt using the LLM
-        validation_result = self.llm_builder.validate_prompt(self.current_role, prompt)
+        role = self.person.get_prompt("role")
+        validation_result = self.llm_builder.validate_prompt(role, prompt)
         if validation_result == "Ok! Proseguiamo.":
             self.show_next_domanda_obiettivo()
             # self.current_index += 1  # Move to the next domanda/obiettivo
@@ -257,7 +274,8 @@ class ChatPageTutorial(ctk.CTkFrame):
 
     def show_next_domanda_obiettivo(self):
         # Get all rows for the current role
-        role_rows = self.episodes[self.episodes["Ruolo"].str.lower() == self.current_role.lower()]
+        role = self.person.get_prompt("role")
+        role_rows = self.episodes[self.episodes["Ruolo"].str.lower() == str(role).lower()]
         if self.current_index < len(role_rows):
             row = role_rows.iloc[self.current_index]
             domanda = row["Domanda"]
@@ -273,7 +291,8 @@ class ChatPageTutorial(ctk.CTkFrame):
 
     def check_prompt_relevance(self, prompt):
         # Use the LLMBuilder's validate_prompt method
-        return self.llm.validate_prompt(self.current_role, prompt)
+        role = self.person.get_prompt("role")
+        return self.llm.validate_prompt(role, prompt)
 
     def handle_user_response(self, prompt):
         # Use the provided prompt relevance function and check the result string
