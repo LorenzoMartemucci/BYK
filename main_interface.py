@@ -10,6 +10,13 @@ from llm.Scorer import Scorer
 import customtkinter as ctk
 from PIL import Image
 import os
+import ctypes
+try:
+    ctypes.windll.shcore.SetProcessDpiAwareness(1)  # 1 = SYSTEM_DPI_AWARE (comportamento come 100% scala)
+except Exception:
+    pass
+
+
 
 class MainApp:
     def __init__(self):
