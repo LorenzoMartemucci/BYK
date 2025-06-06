@@ -10,6 +10,13 @@ from llm.Scorer import Scorer
 import customtkinter as ctk
 from PIL import Image
 import os
+import ctypes
+try:
+    ctypes.windll.shcore.SetProcessDpiAwareness(1)  # 1 = SYSTEM_DPI_AWARE (comportamento come 100% scala)
+except Exception:
+    pass
+
+
 
 class MainApp:
     def __init__(self):
@@ -33,9 +40,9 @@ class MainApp:
 
         ctk.set_appearance_mode("light")
         self.root = ctk.CTk(fg_color=self.widgets['window_bg'])
-        self.root.geometry("600x800")
+        self.root.geometry("480x640")
         self.root.resizable(False, False)
-        self.root.minsize(600, 800)
+        self.root.minsize(480, 640)
         self.root.configure(bg=self.widgets['window_bg'])
 
         self.container = ctk.CTkFrame(self.root, fg_color=self.widgets['window_bg'])
