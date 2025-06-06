@@ -16,7 +16,7 @@ Main Features:
 import tkinter as tk
 import customtkinter as ctk
 from PIL import Image
-from ranking_list import read_scores, write_scores # se avviata da main_interface from Interfaccia.ranking_list
+from Interfaccia.ranking_list import read_scores, write_scores # se avviata da main_interface from Interfaccia.ranking_list
 import numpy as np
 
 class ScoringRankingPage(ctk.CTkFrame):

@@ -53,6 +53,10 @@ class ChatPageTutorial(ctk.CTkFrame):
         self.current_index = 0
         self.last_domanda = ""
         self.last_obiettivo = ""
+        self.text_send_button="Invio"
+
+        if None not in self.person.prompts.values(): 
+            self.text_send_button = "Next"
 
         self.message_bubbles = []
         self.last_user_message = None
@@ -128,7 +132,7 @@ class ChatPageTutorial(ctk.CTkFrame):
 
         self.send_button = ctk.CTkButton(
             self.input_outer_frame,
-            text="Invio",
+            text=self.text_send_button,
             command=self.send_message,
             fg_color=widgets['widgets_bg'],
             text_color=widgets['widgets_fg_text_color'],
@@ -264,6 +268,7 @@ class ChatPageTutorial(ctk.CTkFrame):
         role = self.person.get_prompt("role")
         validation_result = self.llm_builder.validate_prompt(role, prompt)
         if validation_result == "Ok! Proseguiamo.":
+            print(self.person.prompts)  # Debugging line to check prompts)
             self.show_next_domanda_obiettivo()
             # self.current_index += 1  # Move to the next domanda/obiettivo
         else:

@@ -46,7 +46,6 @@ class MainApp:
         self.scorer = Scorer()
         self.time_remaining = [120]
         self.chat_time_remaining = [180]
-        self.welcome_message = "Hei io sono Robbi, cosa vuoi che sia oggi? Un cuoco? Un insegnate? Un poeta?"
 
 
         # Instantiate all pages, but only pack the start page
