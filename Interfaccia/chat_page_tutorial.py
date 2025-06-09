@@ -17,6 +17,7 @@ Classes:
 
 import tkinter as tk
 import tkinter.font as tkFont
+from turtle import width
 import customtkinter as ctk
 from PIL import Image
 import pandas as pd
@@ -53,10 +54,8 @@ class ChatPageTutorial(ctk.CTkFrame):
         self.current_index = 0
         self.last_domanda = ""
         self.last_obiettivo = ""
-        self.text_send_button="Invio"
 
-        if None not in self.person.prompts.values(): 
-            self.text_send_button = "Next"
+        self.is_train_completed= False  # <-- Added to control the training phase
 
         self.message_bubbles = []
         self.last_user_message = None
@@ -132,7 +131,7 @@ class ChatPageTutorial(ctk.CTkFrame):
 
         self.send_button = ctk.CTkButton(
             self.input_outer_frame,
-            text=self.text_send_button,
+            text="Invio",
             command=self.send_message,
             fg_color=widgets['widgets_bg'],
             text_color=widgets['widgets_fg_text_color'],
@@ -162,6 +161,22 @@ class ChatPageTutorial(ctk.CTkFrame):
         self.role_defined = False  # <-- Added to track if role has been set
 
     # ...out of constructor
+   
+    def set_send_button_to_next(self):
+        # Distruggi il frame di input
+        self.input_frame.destroy()
+        # Riposiziona il bottone al centro della riga
+        self.send_button.pack_forget()
+        self.send_button.configure(
+            text="Avanti",
+            command=self.go_to_next_storytelling,
+            state="normal",
+            width=150,  # Set a fixed width for the button
+            height=90,
+            font=("Comic Sans MS", 20)
+        )
+        self.send_button.pack(pady=10, anchor="center")
+
     def on_chat_resize(self, event):
         new_width = max(100, event.width - 50)
         self.chat_progress_bar.configure(width=new_width)
@@ -292,7 +307,9 @@ class ChatPageTutorial(ctk.CTkFrame):
             self.current_index += 1
         else:
             # End of role, go to next storytelling
-            self.go_to_next_storytelling()
+            self.is_train_completed=True
+            print(self.is_train_completed)
+            self.set_send_button_to_next()
 
     def check_prompt_relevance(self, prompt):
         # Use the LLMBuilder's validate_prompt method

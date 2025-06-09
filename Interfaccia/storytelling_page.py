@@ -25,6 +25,8 @@ class StorytellingPage(ctk.CTkFrame):
         self.content = content
         self.widgets = widgets
 
+       
+
         # Setup canvas for background and text
         self.canvas = ctk.CTkCanvas(self, width=400, height=700, bg=widgets['window_bg'], highlightthickness=0)
         self.canvas.pack(fill='both', expand=True)

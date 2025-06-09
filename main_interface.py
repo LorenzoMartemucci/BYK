@@ -1,3 +1,4 @@
+from Interfaccia import person
 from Interfaccia.storytelling_page import StorytellingPage
 from Interfaccia.chat_page_tutorial import ChatPageTutorial
 from Interfaccia.start_page import StartPage
@@ -54,7 +55,7 @@ class MainApp:
         self.chat_page1 = ChatPageTutorial(self.container, self.widgets, self.person, self.go_to_story2, llm_builder=self.llm_builder, scorer=self.scorer)
         self.recap_page = RecapPage(self.container, self.person, self.widgets, self.go_to_chat2)
         self.chat_page2 = ChatPageFinal(self.container, self.widgets, self.person, self.go_to_scoring)
-        self.scoring_page = ScoringRankingPage(self.container,self.widgets, self.person)
+        self.scoring_page = ScoringRankingPage(self.container,self.widgets,self.person)
 
         self.show_start_page()
 

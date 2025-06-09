@@ -90,6 +90,9 @@ class StartPage(ctk.CTkFrame):
     def on_prossimo_click(self):
         """Handle the 'Play' button click: store name and transition."""
         username = self.username_entry.get()
+        print(f"Username entered: {username}")  # Debug print)
         self.person.set_name(username)
+        print("nome persona= ",self.person.get_name())  # Debug print to check if name is set correctly
+
         self.go_to_story_callback()
-        self.go_to_story_callback()
+
