@@ -26,33 +26,10 @@ class ChatPageTutorial(ctk.CTkFrame):
     def __init__(
         self,
         master,
-        widgets,
-        person,
-        go_to_next_storytelling,
-        llm_builder,
-        scorer,
-        *args, **kwargs
+        widgets
     ):
-        super().__init__(master, fg_color=widgets['window_bg'], *args, **kwargs)
-        self.person = person
-        self.scorer = scorer  # Use the passed-in Scorer instance
-        self.go_to_next_storytelling = go_to_next_storytelling
-        self.llm_builder = llm_builder  # Use the passed-in LLMBuilder instance
+        super().__init__(master, fg_color=widgets['window_bg'])
         self.widgets = widgets  # Set to the method below
-
-        # Load CSV with error handling
-        csv_path = "./Progettazione/Episodi_Robbi.csv"
-        try:
-            self.episodes = pd.read_csv(csv_path)
-        except FileNotFoundError:
-            raise FileNotFoundError(
-                f"CSV file not found at '{csv_path}'. "
-                "Please ensure the file exists and the path is correct."
-            )
-        # self.current_role = "insegnante"  # REMOVED: now use self.person.get_prompt("role")
-        self.current_index = 0
-        self.last_domanda = ""
-        self.last_obiettivo = ""
 
         self.message_bubbles = []
         self.last_user_message = None
@@ -68,8 +45,6 @@ class ChatPageTutorial(ctk.CTkFrame):
         self.timer_var = [self.timer_total]
         self.timer_running = False
 
-        self.bind("<Configure>", self.on_chat_resize)
-
         self.center_frame = ctk.CTkFrame(self, fg_color=widgets['window_bg'])
         self.center_frame.pack(fill="both", expand=True, padx=20, pady=(70, 20))
 
@@ -82,10 +57,7 @@ class ChatPageTutorial(ctk.CTkFrame):
         self.chat_frame = tk.Frame(self.chat_canvas, bg=widgets['window_bg'])
         self.chat_window = self.chat_canvas.create_window((0, 0), window=self.chat_frame, anchor="nw")
 
-        self.chat_frame.bind("<Configure>", self.on_frame_configure)
-        self.chat_canvas.bind("<Configure>", self.on_canvas_configure)
         self.chat_canvas.configure(yscrollcommand=self.chat_scrollbar.set)
-        self.chat_canvas.bind("<Configure>", self.update_bubble_widths)
 
         self.input_outer_frame = ctk.CTkFrame(
             self,
@@ -121,7 +93,6 @@ class ChatPageTutorial(ctk.CTkFrame):
             height=fixed_height
         )
         self.user_input.pack(side="left", fill="both", expand=True, padx=10, pady=(8, 8))
-        self.user_input.insert("1.0", "")
 
         self.user_input.bind("<Return>", self.send_message_event)
         self.user_input.bind("<Shift-Return>", lambda e: None)
@@ -145,7 +116,7 @@ class ChatPageTutorial(ctk.CTkFrame):
         self.chat_canvas.bind("<Leave>", lambda e: self._unbind_mousewheel())
 
         # Load, rotate, and use CTkImage for the robot image
-        self.robot_chat_img = Image.open("./Progettazione/robot.png").resize((150, 150))
+        self.robot_chat_img = Image.open("./rsc/robot.png").resize((150, 150))
         self.robot_chat_img = self.robot_chat_img.rotate(-15, expand=True)  # Rotate 15 degrees to the right
         self.robot_chat_ctkimage = ctk.CTkImage(light_image=self.robot_chat_img, size=(150, 150))
         self.robot_chat_label = ctk.CTkLabel(self.center_frame, image=self.robot_chat_ctkimage, text="", fg_color="transparent")
@@ -153,22 +124,15 @@ class ChatPageTutorial(ctk.CTkFrame):
 
         # Set the new welcome message
         self.welcome_message = "Hei io sono Robbi, cosa vuoi che sia oggi? Un cuoco? Un insegnante? Un poeta?"
-        self.after(100, self.show_welcome)
+        
+        def show_welcome():
+            self.add_message(self.welcome_message, sender="bot")
+            self.after(800, self.show_objective_message)
+            self.add_message("Scrivi il ruolo che vuoi che io interpreti!", sender="bot")
+ 
+        self.after(100, show_welcome)
 
         self.role_defined = False  # <-- Added to track if role has been set
-
-    # ...out of constructor
-    def on_chat_resize(self, event):
-        new_width = max(100, event.width - 50)
-        self.chat_progress_bar.configure(width=new_width)
-
-    def on_frame_configure(self, event):
-        self.chat_canvas.configure(scrollregion=self.chat_canvas.bbox("all"))
-        if self.chat_frame.winfo_reqwidth() != self.chat_canvas.winfo_width():
-            self.chat_canvas.itemconfigure(self.chat_window, width=self.chat_canvas.winfo_width())
-
-    def on_canvas_configure(self, event):
-        self.chat_canvas.itemconfigure(self.chat_window, width=event.width)
 
     def add_message(self, text, sender="user"):
         bubble_color = "#00FF00" if sender == "user" else "#AEE4FF"
@@ -215,96 +179,18 @@ class ChatPageTutorial(ctk.CTkFrame):
                 max_width = max(200, self.chat_canvas.winfo_width() - 100)
             bubble.configure(wraplength=max_width)
 
-    def _bind_mousewheel(self):
-        self.chat_canvas.bind_all("<MouseWheel>", self._on_mousewheel)
-
-    def _unbind_mousewheel(self):
-        self.chat_canvas.unbind_all("<MouseWheel>")
-
-    def _on_mousewheel(self, event):
-        # Windows scroll direction
-        self.chat_canvas.yview_scroll(int(-1 * (event.delta / 120)), "units")
-
-        # MESSAGES CHECKING FASE 
-
     def send_message(self):
         msg = self.user_input.get("1.0", "end-1c").strip()
         if msg:
             self.last_user_message = msg
             self.add_message(msg, sender="user")
             self.user_input.delete("1.0", "end")
-            # Call role_definition only after the first prompt
-            if not self.role_defined:
-                self.role_definition(msg)
-                self.role_defined = True
-            # Evaluate the message immediately after sending
-            self.process_user_prompt(msg)
-
-    def role_definition(self, prompt):
-        return self.person.set_prompt("role" ,self.scorer.get_most_similar_role(prompt))
 
     def send_message_event(self, event=None):
         if event and (event.state & 0x0001):
             return
         self.send_message()
         return "break"
-
-    def show_welcome(self):
-        self.add_message(self.welcome_message, sender="bot")
-        # Wait a moment, then show the objective message (placeholder)
-        self.after(800, self.show_objective_message)
-
-    def show_objective_message(self):
-        # Placeholder: you may want to show a generic objective or wait for user role
-        self.add_message("Scrivi il ruolo che vuoi che io interpreti!", sender="bot")
-
-        # MESSAGES CHECK
-    def process_user_prompt(self, prompt):
-        # Validate the prompt using the LLM
-        role = self.person.get_prompt("role")
-        validation_result = self.llm_builder.validate_prompt(role, prompt)
-        if validation_result == "Ok! Proseguiamo.":
-            self.show_next_domanda_obiettivo()
-            # self.current_index += 1  # Move to the next domanda/obiettivo
-        else:
-            # Show the validation message and repeat the same domanda/obiettivo
-            self.add_message(validation_result, sender="bot")
-            self.add_message(self.last_domanda, sender="bot")
-            self.after(800, lambda: self.add_message(self.last_obiettivo, sender="bot"))
-
-    def show_next_domanda_obiettivo(self):
-        # Get all rows for the current role
-        role = self.person.get_prompt("role")
-        role_rows = self.episodes[self.episodes["Ruolo"].str.lower() == str(role).lower()]
-        if self.current_index < len(role_rows):
-            row = role_rows.iloc[self.current_index]
-            domanda = row["Domanda"]
-            obiettivo = row["Obiettivo"]
-            self.last_domanda = domanda
-            self.last_obiettivo = obiettivo
-            self.add_message(domanda, sender="bot")
-            self.after(800, lambda: self.add_message(obiettivo, sender="bot"))
-            self.current_index += 1
-        else:
-            # End of role, go to next storytelling
-            self.go_to_next_storytelling()
-
-    def check_prompt_relevance(self, prompt):
-        # Use the LLMBuilder's validate_prompt method
-        role = self.person.get_prompt("role")
-        return self.llm.validate_prompt(role, prompt)
-
-    def handle_user_response(self, prompt):
-        # Use the provided prompt relevance function and check the result string
-        result = self.check_prompt_relevance_fn(prompt)
-        if result == "Ok! Proseguiamo.":
-            self.show_next_domanda_obiettivo()
-        else:
-            self.add_message(result, sender="bot")
-            self.add_message(self.last_domanda, sender="bot")
-            self.after(800, lambda: self.add_message(self.last_obiettivo, sender="bot"))
-
-        # END MESSAGES CHECKING FASE
 
     def clear_messages(self):
         for bubble, _ in self.message_bubbles:
@@ -333,3 +219,24 @@ class ChatPageTutorial(ctk.CTkFrame):
 
     def stop_timer(self):
         self.timer_running = False
+
+    def on_frame_configure(self, event):
+        self.chat_canvas.configure(scrollregion=self.chat_canvas.bbox("all"))
+        if self.chat_frame.winfo_reqwidth() != self.chat_canvas.winfo_width():
+            self.chat_canvas.itemconfigure(self.chat_window, width=self.chat_canvas.winfo_width())
+
+
+
+
+    def on_canvas_configure(self, event):
+        self.chat_canvas.itemconfigure(self.chat_window, width=event.width)
+
+    def _bind_mousewheel(self):
+        self.chat_canvas.bind_all("<MouseWheel>", self._on_mousewheel)
+
+    def _unbind_mousewheel(self):
+        self.chat_canvas.unbind_all("<MouseWheel>")
+
+    def _on_mousewheel(self, event):
+        # Windows scroll direction
+        self.chat_canvas.yview_scroll(int(-1 * (event.delta / 120)), "units")
