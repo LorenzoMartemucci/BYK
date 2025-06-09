@@ -1,0 +1,97 @@
+from interface.time_bar import TimeBar
+from interface.style import Style
+from interface.chat import Chat
+
+import customtkinter as ctk
+from PIL import Image
+import tkinter as tk
+import textwrap
+
+class StorytellingPage(ctk.CTkFrame):
+    def __init__(self, container):
+        super().__init__(container, fg_color=Style.WINDOW_BG)
+
+        img_size = 130
+        button_width = 160
+        button_height = 60
+
+        self.time_container = ctk.CTkFrame(
+            self,
+            fg_color=Style.WINDOW_BG,
+        )
+        self.time_container.pack(fill="x")
+        self.time_bar = TimeBar(self.time_container)
+
+        # Input box container
+        self.story_container = ctk.CTkFrame(
+            self,
+            fg_color=Style.WIDGETS_BG,
+            border_color=Style.WIDGETS_BORDER_COLOR,
+            border_width=2,
+            corner_radius=15
+        )
+        self.story_container.pack(fill="both", expand=True, padx=10, pady=10)
+
+        story_path = "./rsc/storia.txt"
+        try:
+            with open(story_path, "r") as story:
+                self.content = story.read()
+        except FileNotFoundError:
+            raise FileNotFoundError(
+                f"Story file not found at '{story_path}'. "
+                "Please ensure the file exists and the path is correct."
+            )
+        
+        self.story = ctk.CTkLabel(
+            self.story_container,
+            text=textwrap.fill(self.content),
+            font=Style.WIDGETS_FONT,
+            text_color=Style.WIDGETS_FG_TEXT_COLOR,
+            fg_color="transparent",
+            justify="left",
+            # wraplength=400
+        )
+        self.story.pack(padx=15, pady=30, fill="both")
+
+        self.bottom_container = ctk.CTkFrame(
+            self.story_container,
+            fg_color='transparent'
+        )
+        self.bottom_container.pack(fill="x", padx=20, pady=(0, 20), side="bottom")
+
+        self.robby_img = ctk.CTkImage(
+            light_image=Image.open("./rsc/robot.png").resize(
+                (img_size, img_size)
+            ),
+            size=(img_size, img_size)
+        )
+        self.robby_container = ctk.CTkLabel(
+            self.bottom_container,
+            image=self.robby_img,
+            text="",
+            fg_color='transparent'
+        )
+        self.robby_container.pack(side="left")
+
+        # Bottone "Prossimo"
+        self.submit_button = ctk.CTkButton(
+            self.bottom_container,
+            text='Prossimo',
+            command=self.on_prossimo_button_click,
+            fg_color=Style.WINDOW_BG,
+            text_color=Style.WIDGETS_FG_TEXT_COLOR,
+            border_color=Style.WIDGETS_BORDER_COLOR,
+            border_width=2,
+            corner_radius=15,
+            font=Style.WIDGETS_FONT,
+            width=button_width,
+            height=button_height
+        )
+        self.submit_button.pack(side="right", anchor='s')
+
+
+    def on_prossimo_button_click(self):
+        """Clicking on the prossimo button brings you to the chat"""
+        chat_page_tutorial = Chat(self.master)
+        chat_page_tutorial.pack(fill="both", expand=True)
+        self.destroy()

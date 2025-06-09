@@ -11,6 +11,7 @@ Main Features:
 """
 
 class Person:
+
     def __init__(self):
         # Initialize the user profile with default values
         self.name = None
