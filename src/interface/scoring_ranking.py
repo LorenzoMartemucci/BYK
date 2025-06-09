@@ -16,7 +16,7 @@ Main Features:
 import tkinter as tk
 import customtkinter as ctk
 from PIL import Image
-from Interfaccia.ranking_list import read_scores, write_scores # se avviata da main_interface from Interfaccia.ranking_list
+from update_scores import read_scores, write_scores 
 import numpy as np
 
 class ScoringRankingPage(ctk.CTkFrame):
@@ -65,10 +65,10 @@ class ScoringRankingPage(ctk.CTkFrame):
             self.title_xplacement = 220  # Adjusted for right alignment
             self.title_yplacement = 60  # Adjusted for top placement
         # Update the ranking data
-            #self.new_user = "Giocatore"+str(len(self.ranking_data) + 1)  # Example new user
+            self.new_user = "Giocatore"+str(len(self.ranking_data) + 1)  # Example new user
             print("Score value:", self.score_value)
-            print(self.person.get_name())
-            self.new_user = self.person.get_name() if self.person else "Giocatore"  # Use the person's name if available
+            #print(self.person.get_name())
+            #self.new_user = self.person.get_name() if self.person else "Giocatore"  # Use the person's name if available
 
             self.ranking_data.append({"name": self.new_user, "score": self.score_value})  # Example of adding a new score
             self.ranking_data.sort(key=lambda x: x["score"], reverse=True)  # Sort by score descending
@@ -91,7 +91,7 @@ class ScoringRankingPage(ctk.CTkFrame):
 
         # Robot image (top right, floating)
         image_sides_size = 175
-        robot_img = Image.open("./Progettazione/robot.png").resize((image_sides_size, image_sides_size))
+        robot_img = Image.open("../../rsc/robot.png").resize((image_sides_size, image_sides_size))
         robot_photo = ctk.CTkImage(light_image=robot_img, size=(image_sides_size, image_sides_size))
         robot_label = ctk.CTkLabel(self.card_frame, image=robot_photo, text="", fg_color="transparent")
         robot_label.place(x=25, y=20)
@@ -232,6 +232,9 @@ if __name__ == "__main__":
     score_prova=[np.random.randint(60, 101),np.random.randint(0, 60), None, 23.45, -20, 130]
     # self.persona.get_score()
     #portarsi persona nella pagina di scoring
-    #page = ScoringRankingPage(root,person=None, score_value=score_prova[0], on_play_again=play_again)
-    #page.pack(fill="both", expand=True)
+    page = ScoringRankingPage(root,person=None, score_value=score_prova[0], on_play_again=play_again)
+    page.pack(fill="both", expand=True)
     root.mainloop()
+
+
+ 
