@@ -1,8 +1,9 @@
 class ChatLogics:
 
-    def __init__(self, chat, llm):
+    def __init__(self, person, chat, llm):
         self.chat = chat
         self.llm = llm
+        self.person = person
 
     @staticmethod
     def keep_chat_on(self, role, prompt, key):
@@ -12,6 +13,10 @@ class ChatLogics:
             self.chat.change_input_field_with_button() # TODO: Change input field to button 
         else:
             self.chat.add_message_bubble(response, is_user=False)
+
+    @staticmethod
+    def save_role_into_person(self):
+        pass
 
     @staticmethod
     def function():
