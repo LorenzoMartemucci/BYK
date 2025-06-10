@@ -1,5 +1,6 @@
-from src.interface.style import Style
-from src.interface.chat import Chat
+from llm.llm_backend import ChatSession
+from interface.style import Style
+from interface.chat import Chat
 import customtkinter as ctk
 
 class ChatTutorial(Chat):
@@ -7,6 +8,7 @@ class ChatTutorial(Chat):
     def __init__(self, container):
         super().__init__(container)
 
+        self.session = ChatSession()
         # TODO: impostare la logica di chat per il tutorial dalla classe di logica
         self.user_input.bind("<Return>", self._on_enter_pressed)
         
@@ -34,6 +36,8 @@ class ChatTutorial(Chat):
     def _on_enter_pressed(self, event):
         if event.state & 0x0001:  # Shift � premuto
             return  # Permetti il normale comportamento di andare a capo
-        self.add_message_bubble(self.get_message_from_textbox(), is_user=True)
+        prompt = self.get_message_from_textbox()
+        self.add_message_bubble(prompt, is_user=True)
         self.user_input.delete("1.0", "end")
-        return "break"
+        self.add_message_bubble("Risposta", is_user=False) # self.session.send_message(prompt)
+        # return "break"

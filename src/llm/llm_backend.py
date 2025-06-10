@@ -1,15 +1,13 @@
-import os
 from azure.ai.inference import ChatCompletionsClient
 from azure.ai.inference.models import SystemMessage, UserMessage, AssistantMessage
 from azure.core.credentials import AzureKeyCredential
 import re
-import langid
 
 
 class ChatSession:
     def __init__(self, endpoint = "https://byk-project-resource.services.ai.azure.com/models", 
         api_key = "C7zq6scqrGBWZQbDZgKRf5dFyPW1gEu6IYpNcYjzKd11mm1iGj16JQQJ99BFACgEuAYXJ3w3AAAAACOGSwgv",
-        model_name = "DeepSeek-R1-0528-2", system_prompt_path = "llm/system_prompt_new.txt", max_tokens=1024):
+        model_name = "DeepSeek-R1-0528-2", system_prompt_path = "./rsc/system_prompt.txt", max_tokens=1024):
 
         """"
         Initialize the chat session with Azure DeepSeek model.
@@ -48,8 +46,6 @@ class ChatSession:
         with open(self.system_prompt_path, "r") as file:
             return file.read()
 
-
-
     def send_message(self, user_input ):
         """
         Sends a message to the model and returns the AI's response.
@@ -70,7 +66,7 @@ class ChatSession:
         ai_message = response.choices[0].message.content
         self.conversation_history.append(AssistantMessage(content=ai_message))
 
-        return ai_message
+        return self._remove_thoughts(ai_message)
 
     def reset_conversation(self):
         """
@@ -78,7 +74,7 @@ class ChatSession:
         """
         self.conversation_history = [SystemMessage(content=self.system_prompt)]
 
-    def remove_thoughts(self, text: str) -> str:
+    def _remove_thoughts(self, text: str) -> str:
         """
         Remove chain of thoughts from the output if present. Chain of thoughts is typically indicated by the tags <think> and </think>.
         Args:
@@ -96,7 +92,7 @@ if __name__ == "__main__":
     endpoint = "https://byk-project-resource.services.ai.azure.com/models"
     model_name = "DeepSeek-R1-0528-2"
     api_key = "C7zq6scqrGBWZQbDZgKRf5dFyPW1gEu6IYpNcYjzKd11mm1iGj16JQQJ99BFACgEuAYXJ3w3AAAAACOGSwgv"
-    system_prompt_path = "llm/system_prompt.txt"
+    system_prompt_path = "./rsc/system_prompt.txt"
 
     
 
@@ -115,7 +111,7 @@ if __name__ == "__main__":
 
     while True:
         user_input = input("You: ")
-        if user_input.lower() == "exit":
+        if user_input.lower() == "exit": 
             print("Chat terminata manualmente.")
             break
 
