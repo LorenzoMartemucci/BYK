@@ -91,7 +91,7 @@ class ScoringRankingPage(ctk.CTkFrame):
 
         # Robot image (top right, floating)
         image_sides_size = 175
-        robot_img = Image.open("../../rsc/robot.png").resize((image_sides_size, image_sides_size))
+        robot_img = Image.open("./rsc/robot.png").resize((image_sides_size, image_sides_size))
         robot_photo = ctk.CTkImage(light_image=robot_img, size=(image_sides_size, image_sides_size))
         robot_label = ctk.CTkLabel(self.card_frame, image=robot_photo, text="", fg_color="transparent")
         robot_label.place(x=25, y=20)

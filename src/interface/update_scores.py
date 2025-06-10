@@ -16,7 +16,7 @@ def read_scores():
     """Reads the scores from a CSV file and returns a list of dictionaries."""
     scores = []
     try:
-        with open("../../rsc/scores.csv", "r", newline='', encoding='utf-8') as file:
+        with open("./rsc/scores.csv", "r", newline='', encoding='utf-8') as file:
             reader = csv.reader(file)
             for row in reader:
                 if len(row) >= 2:
@@ -27,7 +27,8 @@ def read_scores():
 
 def write_scores(scores):
     """Writes a list of score dictionaries to the CSV file."""
-    with open("../../rsc/scores.csv", "w", newline='', encoding='utf-8') as file:
+    with open("./rsc/scores.csv", "w", newline='', encoding='utf-8') as file:
         writer = csv.writer(file)
         for entry in scores:
             writer.writerow([entry["name"], entry["score"]])
+
