@@ -1,4 +1,3 @@
-from interface.storytelling_template import StorytellingPage
 from interface.start_page import StartPage
 from interface.style import Style
 import customtkinter as ctk

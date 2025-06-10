@@ -1,13 +1,13 @@
 from interface.time_bar import TimeBar
 from interface.style import Style
 from interface.chat import Chat
-
+from interface.chat_tutorial import ChatTutorial
 import customtkinter as ctk
 from PIL import Image
 import tkinter as tk
 import textwrap
 
-class StorytellingPage(ctk.CTkFrame):
+class StorytellingTemplate(ctk.CTkFrame):
     def __init__(self, container):
         super().__init__(container, fg_color=Style.WINDOW_BG)
 
@@ -92,6 +92,6 @@ class StorytellingPage(ctk.CTkFrame):
 
     def on_prossimo_button_click(self):
         """Clicking on the prossimo button brings you to the chat"""
-        chat_page_tutorial = Chat(self.master, is_tutorial=True)
+        chat_page_tutorial = ChatTutorial(self.master)
         chat_page_tutorial.pack(fill="both", expand=True)
         self.destroy()
