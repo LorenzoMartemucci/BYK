@@ -6,10 +6,9 @@ from PIL import Image
 import tkinter as tk
 
 class Chat(ctk.CTkFrame):
-    def __init__(self, container, is_tutorial):
-        super().__init__(container, is_tutorial, fg_color=Style.WINDOW_BG)
+    def __init__(self, container):
+        super().__init__(container, fg_color=Style.WINDOW_BG)
 
-        self.is_tutorial = is_tutorial # Flag to indicate if it's a tutorial
         self.message_bubbles = []
         self.last_user_message = None
 
@@ -48,21 +47,6 @@ class Chat(ctk.CTkFrame):
         )
         self.user_input.pack(side='left', fill='x', expand=True)
 
-        self.next_button = ctk.CTkButton(
-            self.input_frame,
-            text="Prossimo",
-            command=self.get_message_from_textbox,
-            fg_color=Style.WIDGETS_BG,
-            text_color=Style.WIDGETS_FG_TEXT_COLOR,
-            border_color=Style.WIDGETS_BORDER_COLOR,
-            border_width=2,
-            corner_radius=15,
-            height=70
-        )
-        self.next_button.pack(side='left', fill='x', expand=True)
-
-        self.next_button.bind("<Button-1>", self.get_message_from_textbox)
-
     def get_message_from_textbox(self):
         """Handles sending a message from the user input."""
         user_message = self.user_input.get("1.0", "end-1c").strip() # Get the text from the textbox and strip whitespace
@@ -91,17 +75,3 @@ class Chat(ctk.CTkFrame):
         self.chat.update_idletasks()
         self.chat._parent_canvas.yview_moveto(1.0)
     
-    def set_send_button_to_next(self, is_tutorial):
-        # Distruggi il frame di input
-        self.input_frame.destroy()
-        # Riposiziona il bottone al centro della riga
-        self.next_button.pack_forget()
-        self.next_button.configure(
-            text="Avanti",
-            command=self.go_to_recap_page if is_tutorial else self.go_to_score_page,
-            state="normal",
-            width=150,  # Set a fixed width for the button
-            height=90,
-            font=Style.WIDGETS_FONT,
-        )
-        self.next_button.pack(pady=10, anchor="center")
