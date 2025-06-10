@@ -1,5 +1,6 @@
 from interface.storytelling_page import StorytellingPage
 from interface.start_page import StartPage
+from interface.scoring_ranking import ScoringRankingPage
 from interface.style import Style
 import customtkinter as ctk
 import ctypes
@@ -19,7 +20,7 @@ class MainApp:
         self.root.configure(bg=Style.WINDOW_BG)
         self.username = None
         
-        self.start_page = StartPage(self.root)
+        self.start_page = ScoringRankingPage(self.root,username="Giocatore1", score_value=64)
         self.start_page.pack(fill="both", expand=True)
 
     def run(self):
