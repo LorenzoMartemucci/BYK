@@ -1,3 +1,0 @@
-Nel 2042 nasce Robbi, il primo robot umanoide della Lunatic Corp.
-Tu sei il suo programmatore e dovrai insegnargli tutto usando solo la tua immaginazione.
-Robbi non può accedere a Internet: impara solo da te e dalle vostre conversazioni.

@@ -164,5 +164,7 @@ dist/
 out/
 build/
 
-# dummy files
-test.py
+#Python
+__pycache__/
+llm/__pycache__/
+Interfaccia/__pycache__/
