@@ -9,7 +9,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 
 class Scorer:
 
-    DEF_ROLES = ["Cuoco", "Poeta", "Insegnante", "Pittore"]
+    DEF_ROLES = ["Cuoco", "Poeta", "Insegnante", "Consulente"]
     DEF_MODEL_NAME  = 'nickprock/sentence-bert-base-italian-uncased'
 
     def __init__(self, roles: list = DEF_ROLES, model_name: str = DEF_MODEL_NAME):

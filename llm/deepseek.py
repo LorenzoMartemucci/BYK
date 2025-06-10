@@ -9,7 +9,7 @@ import langid
 class ChatSession:
     def __init__(self, endpoint = "https://byk-project-resource.services.ai.azure.com/models", 
         api_key = "C7zq6scqrGBWZQbDZgKRf5dFyPW1gEu6IYpNcYjzKd11mm1iGj16JQQJ99BFACgEuAYXJ3w3AAAAACOGSwgv",
-        model_name = "DeepSeek-R1-0528-2", system_prompt_path = "llm/system_prompt.txt", max_tokens=1024):
+        model_name = "DeepSeek-R1-0528-2", system_prompt_path = "llm/system_prompt_new.txt", max_tokens=1024):
 
         """"
         Initialize the chat session with Azure DeepSeek model.
@@ -48,6 +48,8 @@ class ChatSession:
         with open(self.system_prompt_path, "r") as file:
             return file.read()
 
+
+
     def send_message(self, user_input ):
         """
         Sends a message to the model and returns the AI's response.
@@ -62,7 +64,7 @@ class ChatSession:
             messages=self.conversation_history,
             max_tokens=self.max_tokens,
             model=self.model_name,
-            temperature=0.4
+            temperature=0.2
         )
 
         ai_message = response.choices[0].message.content
@@ -86,64 +88,30 @@ class ChatSession:
         line = re.sub(r"\s*<think>.*?</think>\s*", "", text,flags=re.DOTALL)
         return line
 
-    def remove_fully_english_paragraphs(self, text: str, threshold: float = 0.80) -> str:
-        """
-        Removes paragraphs that are classified with high confidence as English.
-        Keeps Italian paragraphs even if they contain some English words.
-        
-        Args:
-            text (str): The model output to clean.
-            threshold (float): Confidence threshold to consider a paragraph fully English.
-        
-        Returns:
-            str: Cleaned text.
-        """
-        paragraphs = text.split('\n')
-        filtered_paragraphs = []
+   
 
-        for paragraph in paragraphs:
-            cleaned_paragraph = paragraph.strip()
-            if not cleaned_paragraph:
-                continue
 
-            lang, prob = langid.classify(cleaned_paragraph)
-
-            # Only remove paragraph if it's confidently classified as English
-            if lang == 'en' and prob >= threshold:
-                continue  # skip this paragraph (fully English)
-            else:
-                filtered_paragraphs.append(cleaned_paragraph)
-
-        return '\n'.join(filtered_paragraphs)
-
-    def clean_response(self, text: str) -> str:
-        """
-        Apply full cleaning pipeline:
-        - Remove <think> tags
-        - Remove fully English paragraphs
-        """
-        text_no_thoughts = self.remove_thoughts(text)
-        text_no_english = self.remove_fully_english_paragraphs(text_no_thoughts)
-        return text_no_english
-
-# ESEMPIO DI USO:
 
 if __name__ == "__main__":
-    # Parametri di configurazione
     endpoint = "https://byk-project-resource.services.ai.azure.com/models"
     model_name = "DeepSeek-R1-0528-2"
     api_key = "C7zq6scqrGBWZQbDZgKRf5dFyPW1gEu6IYpNcYjzKd11mm1iGj16JQQJ99BFACgEuAYXJ3w3AAAAACOGSwgv"
     system_prompt_path = "llm/system_prompt.txt"
 
-    # Creazione della sessione
+    
+
+    user_name = input("Ciao! Prima di iniziare, come ti chiami? ")
+
+   
     chat_session = ChatSession(endpoint, api_key, model_name, system_prompt_path)
-
-    # Simulazione ciclo conversazione
-    exit_phrase = "è stato bello giocare con te! ciao amico!"
-
-    user_name = input('Inserisci il tuo nome: ')
+    # print(chat_session.system_prompt)
+    
     ai_response = chat_session.send_message(f"Ciao Robbi, sono {user_name}")
-    print(chat_session.remove_thoughts(ai_response))
+    ai_response = chat_session.remove_thoughts(ai_response)
+    print(ai_response)
+
+    
+    exit_phrase = "è stato bello giocare con te! ciao amico!"
 
     while True:
         user_input = input("You: ")
@@ -152,9 +120,8 @@ if __name__ == "__main__":
             break
 
         ai_response = chat_session.send_message(user_input)
-        cleaned_response = chat_session.clean_response(ai_response)
+        cleaned_response = chat_session.remove_thoughts(ai_response)
         print(cleaned_response)
-
 
         if exit_phrase in ai_response.lower():
             print("Conversazione terminata automaticamente da Robbi.")

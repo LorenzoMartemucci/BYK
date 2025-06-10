@@ -7,6 +7,14 @@ import ollama
 
 # somma stringhe prompt dato dall'interfaccia come somma di tutte le frasi valide
 
+
+ollama.chat(
+    model='llama3',  # Specify the model to use
+    messages=[{'role': 'system', 'content': 'You are a helpful assistant.'}, 
+              {'role': 'user', 'content': 'What is the capital of France?'}],  # Pass the conversation history
+    options={'temperature': 0.3}  # Set the temperature for response variability
+)
+
 class LLMBuilder:
     def __init__(self, model = 'llama3', temperature = 0.3):
         self.model = model
@@ -14,6 +22,8 @@ class LLMBuilder:
         self.messages = []
         self.llm_role = ''
         self.final_prompt = ''
+
+        # send first prompt 
 
     def append_message(self, role, content):
         """
