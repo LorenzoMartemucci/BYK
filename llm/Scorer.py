@@ -9,7 +9,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 
 class Scorer:
 
-    DEF_ROLES = ["Cuoco", "Poeta", "Insegnante", "Pittore"]
+    DEF_ROLES = ["Cuoco", "Poeta", "Insegnante", "Consulente"]
     DEF_MODEL_NAME  = 'nickprock/sentence-bert-base-italian-uncased'
 
     def __init__(self, roles: list = DEF_ROLES, model_name: str = DEF_MODEL_NAME):
@@ -55,25 +55,32 @@ class Scorer:
 
         return bool(prompt and prompt.strip())
 
-    def get_most_similar_role(self, prompt) -> str:
+    def get_most_similar_role(self, prompt, thresold = 0.5) -> str:
         """
         Return the most similar role based on the given prompt.
+        If similarity is below threshold, return None.
         :param prompt: The prompt to check.
         :return: most similar role based on the prompt.
         """
 
         # Create a list of sentences with roles and prompt coupled together
-        sentences = [ [role,prompt] for role in self.roles]
+        sentences = [[role,prompt] for role in self.roles]
 
         # Encode the sentences using the model by extracting the embeddings
         embeddings = [self._model.encode(sentence) for sentence in sentences]
         
         # Calculate the similarity between the embeddings 
-        similarities =  [ self._model.similarity(embedding[0], embedding[1]) for embedding in embeddings]
+        similarities =  [self._model.similarity(embedding[0], embedding[1]) for embedding in embeddings]
 
         # Print index of max similarity
-        max_index = similarities.index(max(similarities))
-        return  self.roles[max_index]
+        max_similarity = max(similarities)
+        max_index = similarities.index(max_similarity)
+
+        # Check if the max similarity is above the threshold
+        if max_similarity >= threshold:
+            return self.roles[max_index]
+        else:
+            return None
 
     def __preprocess_text(self, text):
         '''
@@ -136,8 +143,7 @@ class Scorer:
         lexical_similarity = (lexical_similarity + 1) / 2
 
         # Combine the semantic and lexical similarity scores using the weight l_w
-
-        return  (1-l_w)*semantic_similarity +  l_w*lexical_similarity 
+        return  (1-l_w)*semantic_similarity + l_w*lexical_similarity 
 
 
     
