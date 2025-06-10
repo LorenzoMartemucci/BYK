@@ -1,4 +1,4 @@
-from interface.storytelling_page import StorytellingPage
+from interface.storytelling_template import StorytellingTemplate
 from interface.style import Style
 import customtkinter as ctk
 from PIL import Image
