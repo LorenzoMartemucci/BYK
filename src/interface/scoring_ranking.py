@@ -20,7 +20,7 @@ from update_scores import read_scores, write_scores
 import numpy as np
 
 class ScoringRankingPage(ctk.CTkFrame):
-    def __init__(self, master, person, score_value=80, on_play_again=None, *args, **kwargs):
+    def __init__(self, master, username, score_value, *args, **kwargs):
         super().__init__(master, fg_color="#FFE2CC", *args, **kwargs)
         # Theme colors and fonts (match your main interface)
         self.widgets_bg = "#FFA764"
@@ -33,49 +33,25 @@ class ScoringRankingPage(ctk.CTkFrame):
         self.title_font = ("Comic Sans MS", 25, "bold")
         self.subtitle_font = ("Comic Sans MS", 22)
         self.button_font = ("Comic Sans MS", 13)
-        self.title_xplacement = 190  # Adjusted for right alignment
-        self.title_yplacement = 30  # Adjusted for top placement
-        self.title_width = 280  # Width for the title label
-        
-        
+        self.title_text = "Congratulazioni!"
+        self.title_font = ("Comic Sans MS", 30, "bold")
+        self.title_width = 200  # Width for the title label
+        self.title_xplacement = 220  # Adjusted for right alignment
+        self.title_yplacement = 60  # Adjusted for top placement
 
-        self.is_score_below_minimum = False
+        
 
         self.score_value = score_value
         self.ranking_data = read_scores()   # Read existing scores
 
-        # Validate the score_value
-        if self.score_value is None:
-            self.title_text = "ERRORE! Punteggio non fornito!"
-        elif not isinstance(self.score_value, int):
-            self.title_text = "ERRORE! Punteggio non intero!"
-        elif self.score_value < 0 :
-            self.title_font = ("Comic Sans MS", 20, "bold")
-            self.title_text = "ERRORE! Il Punteggio deve essere positivo!"
-        elif self.score_value > 100:
-            self.title_font = ("Comic Sans MS", 20, "bold")
-            self.title_text = "ERRORE! Il Punteggio deve essere minore o uguale a 100!"
-        elif self.score_value < 60:
-            self.is_score_below_minimum = True
-            self.title_text = "Oh peccato, c'eri quasi! Prova di nuovo!"
-        else:
-            self.title_text = "Congratulazioni!"
-            self.title_font = ("Comic Sans MS", 30, "bold")
-            self.title_width = 200  # Width for the title label
-            self.title_xplacement = 220  # Adjusted for right alignment
-            self.title_yplacement = 60  # Adjusted for top placement
-        # Update the ranking data
-            self.new_user = "Giocatore"+str(len(self.ranking_data) + 1)  # Example new user
-            print("Score value:", self.score_value)
-            #print(self.person.get_name())
-            #self.new_user = self.person.get_name() if self.person else "Giocatore"  # Use the person's name if available
+    
+    # Update the ranking data
+        self.username = username  # Example new user
 
-            self.ranking_data.append({"name": self.new_user, "score": self.score_value})  # Example of adding a new score
-            self.ranking_data.sort(key=lambda x: x["score"], reverse=True)  # Sort by score descending
-            write_scores(self.ranking_data) # Save updated ranking
+        self.ranking_data.append({"name": self.username, "score": self.score_value})  # Example of adding a new score
+        self.ranking_data.sort(key=lambda x: x["score"], reverse=True)  # Sort by score descending
+        write_scores(self.ranking_data) # Save updated ranking
 
-        
-        self.on_play_again = on_play_again
 
         # Card-like frame
         self.card_frame = ctk.CTkFrame(
@@ -190,7 +166,6 @@ class ScoringRankingPage(ctk.CTkFrame):
         table_canvas.create_line(0, 0, table_width, 0, fill=self.widgets_fg_text_color, width=1)
 
         # Sort and assign ranks
-        # TODO: implementare la logica dello score minimo e ritentare la prova del gioco (+ recap window)
         row_height = 38
         sorted_ranking= self.ranking_data
         for idx, entry in enumerate(sorted_ranking, start=1):
@@ -214,7 +189,7 @@ class ScoringRankingPage(ctk.CTkFrame):
             corner_radius=15,
             width=250,
             height=50,
-            command=on_play_again
+            command="go to start page"  # inserire il comando per tornare alla pagina iniziale
         )
         play_again_button.place(relx=0.5, rely=0.93, anchor="center")
 
@@ -226,15 +201,8 @@ if __name__ == "__main__":
     root.minsize(600, 700)
     root.title("Score & Ranking")
 
-    def play_again():
-        print("Play again clicked!")
-
+    new_user="Giocatore"+str(len(read_scores()) + 1)
     score_prova=[np.random.randint(60, 101),np.random.randint(0, 60), None, 23.45, -20, 130]
-    # self.persona.get_score()
-    #portarsi persona nella pagina di scoring
-    page = ScoringRankingPage(root,person=None, score_value=score_prova[0], on_play_again=play_again)
+    page = ScoringRankingPage(root,username=new_user, score_value=score_prova[0])
     page.pack(fill="both", expand=True)
     root.mainloop()
-
-
- 
