@@ -47,6 +47,25 @@ class Chat(ctk.CTkFrame):
         )
         self.user_input.pack(side='left', fill='x', expand=True)
 
+        self.next_button = ctk.CTkButton(
+            self.input_frame,
+            text="Prossimo",
+            # command=self.go_to_recap_page,
+            fg_color=Style.WIDGETS_BG,
+            text_color=Style.WIDGETS_FG_TEXT_COLOR,
+            border_color=Style.WIDGETS_BORDER_COLOR,
+            border_width=2,
+            corner_radius=15,
+            height=70
+        )
+
+    def change_input_field_with_button(self):
+        """Changes the input field to a button for the next phase."""
+
+        # TODO: Destroy the input frame to remove the textbox and robot image
+
+        self.next_button.pack(side='left', fill='x', expand=True)
+
     def get_message_from_textbox(self):
         """Handles sending a message from the user input."""
         user_message = self.user_input.get("1.0", "end-1c").strip() # Get the text from the textbox and strip whitespace

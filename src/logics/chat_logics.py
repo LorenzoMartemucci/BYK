@@ -1,18 +1,20 @@
 class ChatLogics:
 
-    chat = Chat()
-    llm = Llm()
+    def __init__(self, chat, llm):
+        self.chat = chat
+        self.llm = llm
 
     @staticmethod
-    def keep_chat_on(self, role, prompt):
-        response = llm.send(role, prompt)
+    def keep_chat_on(self, role, prompt, key):
+        """Handles the logic for sending a message and receiving a response from the LLM."""
+        response = self.llm.send(role, prompt)
         if response is key:
-            chat.set_next_button_to_next()
+            self.chat.change_input_field_with_button() # TODO: Change input field to button 
         else:
-            chat.add_message_bubble(response, is_user=False)
+            self.chat.add_message_bubble(response, is_user=False)
 
     @staticmethod
-    def function(args):
+    def function():
         pass
     """
     user_message = self.user_input.get("1.0", "end-1c").strip()

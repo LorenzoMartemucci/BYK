@@ -1,13 +1,22 @@
-from interface.chat import Chat
-from interface.style import Style
+from src.interface.style import Style
+from src.interface.chat import Chat
 import customtkinter as ctk
 
 class ChatTutorial(Chat):
     
     def __init__(self, container):
         super().__init__(container)
+
+        # TODO: impostare la logica di chat per il tutorial dalla classe di logica
         self.user_input.bind("<Return>", self._on_enter_pressed)
 
+        # TODO: impostare la logica di chat per il tutorial dalla classe di logica
+
+        self.next_button.configure(command=self.go_to_recap_page)
+        # logic field
+
+    # function to handle the specific enter of the prompt
+    
     def go_to_recap_page(self):
         # Distruggi il frame di input
         self.user_input.destroy()
@@ -24,7 +33,7 @@ class ChatTutorial(Chat):
         self.next_button.pack(pady=10, anchor="center")
 
     def _on_enter_pressed(self, event):
-        if event.state & 0x0001:  # Shift è premuto
+        if event.state & 0x0001:  # Shift � premuto
             return  # Permetti il normale comportamento di andare a capo
         self.add_message_bubble(self.get_message_from_textbox(), is_user=True)
         self.user_input.delete("1.0", "end")
