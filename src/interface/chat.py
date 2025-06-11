@@ -40,6 +40,7 @@ class Chat(ctk.CTkFrame):
             self.input_frame,
             font=Style.WIDGETS_FONT,
             fg_color=Style.WIDGETS_BG,
+            height=120,
             text_color=Style.WIDGETS_FG_TEXT_COLOR,
             border_color=Style.WIDGETS_BORDER_COLOR,
             border_width=2,  # Ensure border is visible

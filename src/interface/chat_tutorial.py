@@ -14,17 +14,17 @@ class ChatTutorial(Chat):
         # TODO: impostare la logica di chat per il tutorial dalla classe di logica
         self.user_input.bind("<Return>", self._on_enter_pressed)
         
-        self.next_button.configure(command=self.go_to_recap_page)
+        self.next_button.configure(command=self.go_to_final_request)
         # logic field
         #self.chat_logics = ChatLogics(get_instance_person, self, None) #TODO:Da sistemare 
 
         self.after(1000, self.add_message_bubble("Ciao sono Robbi. Tu come ti chiami?", is_user=False))
         self.after(1000, self.add_message_bubble("Scrivi il tuo messaggio nel riquadro arancione e premi invio per mandarlo.", is_user=False))
 
-    def go_to_recap_page(self):
-        from interface.recap_page import RecapPage
-        recap_page = RecapPage(self.master)
-        recap_page.pack(fill="both", expand=True)
+    def go_to_final_request(self):
+        from interface.final_request_page import FinalRequestPage
+        request_page = FinalRequestPage(self.master)
+        request_page.pack(fill="both", expand=True)
         self.destroy()
 
 
