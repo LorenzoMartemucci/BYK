@@ -4,6 +4,7 @@ from interface.chat import Chat
 import customtkinter as ctk
 from logics.chat_logics import ChatLogics
 
+
 class ChatTutorial(Chat):
     
     def __init__(self, container):
@@ -13,14 +14,17 @@ class ChatTutorial(Chat):
         # TODO: impostare la logica di chat per il tutorial dalla classe di logica
         self.user_input.bind("<Return>", self._on_enter_pressed)
         
-        self.next_button.configure(command=self.go_to_recap_page)
+        self.next_button.configure(command=self.go_to_final_request)
         # logic field
         #self.chat_logics = ChatLogics(get_instance_person, self, None) #TODO:Da sistemare 
 
-    def go_to_recap_page(self):
-        from interface.recap_page import RecapPage
-        recap_page = RecapPage(self.master)
-        recap_page.pack(fill="both", expand=True)
+        self.after(1000, self.add_message_bubble("Ciao sono Robbi. Tu come ti chiami?", is_user=False))
+        self.after(1000, self.add_message_bubble("Scrivi il tuo messaggio nel riquadro arancione e premi invio per mandarlo.", is_user=False))
+
+    def go_to_final_request(self):
+        from interface.final_request_page import FinalRequestPage
+        request_page = FinalRequestPage(self.master)
+        request_page.pack(fill="both", expand=True)
         self.destroy()
 
 
@@ -34,9 +38,8 @@ class ChatTutorial(Chat):
                 # Riposiziona il bottone al centro della riga
                 self.next_button.pack(side='left', padx=20, pady=(0, 20), anchor='center')
 
-        self.add_message_bubble(self.get_message_from_textbox(), is_user=True)
         prompt = self.get_message_from_textbox()
         self.add_message_bubble(prompt, is_user=True)
         self.user_input.delete("1.0", "end")
         self.add_message_bubble(self.session.send_message(prompt), is_user=False) # self.session.send_message(prompt)
-        # return "break"
+        return "break"
