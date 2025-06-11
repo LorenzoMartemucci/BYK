@@ -17,7 +17,6 @@ class MainApp:
         self.root.minsize(480, 640)
         self.root.configure(bg=Style.WINDOW_BG)
         self.username = None
-        
         self.start_page = StartPage(self.root)
         self.start_page.pack(fill="both", expand=True)
 
