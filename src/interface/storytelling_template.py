@@ -45,9 +45,10 @@ class StorytellingTemplate(ctk.CTkFrame):
 
         self.story = ctk.CTkLabel(
             self.story_container,
-            text=textwrap.fill(self.content),
+            text=self.content,
             font=Style.WIDGETS_FONT,
             text_color=Style.WIDGETS_FG_TEXT_COLOR,
+            wraplength=380,
             fg_color="transparent",
             justify="left",
         )
