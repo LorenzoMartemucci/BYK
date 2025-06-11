@@ -1,6 +1,5 @@
 from interface.start_page import StartPage
-#from interface.scoring_ranking import ScoringRankingPage
-from interface.prova import ScoringRankingPage
+from interface.scoring_ranking import ScoringRankingPage
 from interface.style import Style
 import customtkinter as ctk
 import ctypes
