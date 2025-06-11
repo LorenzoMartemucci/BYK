@@ -46,7 +46,7 @@ class ChatSession:
         with open(self.system_prompt_path, "r") as file:
             return file.read()
 
-    def send_message(self, user_input ):
+    def send_input(self, user_input):
         """
         Sends a message to the model and returns the AI's response.
         Args:
@@ -55,7 +55,7 @@ class ChatSession:
             str: The AI's response.
         """
         self.conversation_history.append(UserMessage(content=user_input))
-
+    
         response = self.client.complete(
             messages=self.conversation_history,
             max_tokens=self.max_tokens,
@@ -83,9 +83,6 @@ class ChatSession:
         """
         line = re.sub(r"\s*<think>.*?</think>\s*", "", text,flags=re.DOTALL)
         return line
-
-   
-
 
 
 if __name__ == "__main__":

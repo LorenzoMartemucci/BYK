@@ -1,11 +1,16 @@
+from logics.fsm import FSM
+from interface.chat import Chat
+from llm.llm_backend import ChatSession
+
 class ChatLogics:
 
-    def __init__(self, person, chat, llm):
+    def __init__(self, fsm: FSM, chat: Chat, llm: ChatSession, person=None):
         self.chat = chat
         self.llm = llm
+        self.fsm = fsm
         self.person = person
 
-    @staticmethod
+    # @staticmethod
     def keep_chat_on(self, role, prompt, key):
         """Handles the logic for sending a message and receiving a response from the LLM."""
         response = self.llm.send(role, prompt)

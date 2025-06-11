@@ -9,7 +9,7 @@ class ChatTutorial(Chat):
     def __init__(self, container):
         super().__init__(container)
 
-        self.session = ChatSession()
+        self.logic = ChatLogics(self, ChatSession(), None)  # Inizializza la logica della chat
         # TODO: impostare la logica di chat per il tutorial dalla classe di logica
         self.user_input.bind("<Return>", self._on_enter_pressed)
         
@@ -31,13 +31,13 @@ class ChatTutorial(Chat):
             return  # Permetti il normale comportamento di andare a capo
         
         if self.get_message_from_textbox() == "test":
-                # Distruggi il frame di input
-                self.user_input.destroy()
-                # Riposiziona il bottone al centro della riga
-                self.next_button.pack(side='left', padx=20, pady=(0, 20), anchor='center')
+            # Distruggi il frame di input
+            self.user_input.destroy()
+            # Riposiziona il bottone al centro della riga
+            self.next_button.pack(side='left', padx=20, pady=(0, 20), anchor='center')
 
         prompt = self.get_message_from_textbox()
         self.add_message_bubble(prompt, is_user=True)
         self.user_input.delete("1.0", "end")
-        self.add_message_bubble(self.session.send_message(prompt), is_user=False) # self.session.send_message(prompt)
+        self.add_message_bubble("Risposta", is_user=False) # self.session.send_message(prompt)
         return "break"
