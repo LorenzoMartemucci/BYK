@@ -76,9 +76,9 @@ class ScoringRankingPage(ctk.CTkFrame):
 
         # Header (riga 0)
         ctk.CTkLabel(table_frame, text="Classifica", font=("Comic Sans MS", 14), anchor="center", fg_color="transparent",bg_color="transparent").grid(row=0, column=0, sticky="nsew", padx=10, pady=5)
-        ctk.CTkFrame(table_frame, width=sep_width, height=row_height, fg_color="gray").grid(row=0, column=1, sticky="ns", pady=(5,0))
+        ctk.CTkLabel(table_frame, text="", width=1, height=row_height, fg_color="gray").grid(row=0, column=1, sticky="ns", pady=(5,0))
         ctk.CTkLabel(table_frame, text="Utente", font=("Comic Sans MS", 14), anchor="center", fg_color="transparent",bg_color="transparent").grid(row=0, column=2, sticky="nsew", padx=10, pady=5)
-        ctk.CTkFrame(table_frame, width=sep_width, height=row_height, fg_color="gray").grid(row=0, column=3, sticky="ns", pady=(5,0))
+        ctk.CTkLabel(table_frame, text="", width=1, height=row_height, fg_color="gray").grid(row=0, column=3, sticky="ns", pady=(5,0))
         ctk.CTkLabel(table_frame, text="Punteggio", font=("Comic Sans MS", 14), anchor="center", fg_color="transparent", bg_color="transparent").grid(row=0, column=4, sticky="nsew", padx=10, pady=5)
 
         # Righe classifica (dalla riga 1 in poi)
