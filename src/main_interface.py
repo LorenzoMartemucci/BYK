@@ -1,4 +1,4 @@
-from interface.start_page import StartPage
+from interface.story_page import StoryPage
 from interface.style import Style
 import customtkinter as ctk
 import ctypes
@@ -17,8 +17,8 @@ class MainApp:
         self.root.minsize(480, 640)
         self.root.configure(bg=Style.WINDOW_BG)
         self.username = None
-        self.start_page = StartPage(self.root)
-        self.start_page.pack(fill="both", expand=True)
+        self.storytelling_page = StoryPage(self.root)
+        self.storytelling_page.pack(fill="both", expand=True)
 
     def run(self):
         self.root.mainloop()
