@@ -34,7 +34,6 @@ class ChatTutorial(Chat):
                 # Riposiziona il bottone al centro della riga
                 self.next_button.pack(side='left', padx=20, pady=(0, 20), anchor='center')
 
-        self.add_message_bubble(self.get_message_from_textbox(), is_user=True)
         prompt = self.get_message_from_textbox()
         self.add_message_bubble(prompt, is_user=True)
         self.user_input.delete("1.0", "end")
