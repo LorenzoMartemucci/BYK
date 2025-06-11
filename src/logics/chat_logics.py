@@ -1,18 +1,16 @@
+from llm.llm_backend import ChatSession as llm
+from interface.chat import Chat as chat
+
 class ChatLogics:
 
-    def __init__(self, person, chat, llm):
-        self.chat = chat
-        self.llm = llm
-        self.person = person
-
     @staticmethod
-    def keep_chat_on(self, role, prompt, key):
+    def keep_chat_on(self, prompt, key):
         """Handles the logic for sending a message and receiving a response from the LLM."""
-        response = self.llm.send(role, prompt)
+        response = llm.send_message(prompt)
         if response is key:
-            self.chat.change_input_field_with_button() # TODO: Change input field to button 
+            chat.change_input_field_with_button() # TODO: Change input field to button 
         else:
-            self.chat.add_message_bubble(response, is_user=False)
+            chat.add_message_bubble(response, is_user=False)
 
     @staticmethod
     def save_role_into_person(self):

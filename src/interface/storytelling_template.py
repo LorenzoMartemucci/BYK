@@ -8,16 +8,17 @@ import tkinter as tk
 import textwrap
 
 class StorytellingTemplate(ctk.CTkFrame):
-    def __init__(self, container, story_path=None, story_text=None):
+    def __init__(self, container,show_timer=False):
         super().__init__(container, fg_color=Style.WINDOW_BG)
 
         img_size = 130
         button_width = 160
         button_height = 60
 
-        self.time_container = ctk.CTkFrame(self, fg_color=Style.WINDOW_BG)
-        self.time_container.pack(fill="x")
-        self.time_bar = TimeBar(self.time_container)
+        if show_timer:
+            self.time_container = ctk.CTkFrame(self, fg_color=Style.WINDOW_BG)
+            self.time_container.pack(fill="x")
+            self.time_bar = TimeBar(self.time_container)
 
         self.story_container = ctk.CTkFrame(
             self,
@@ -28,26 +29,12 @@ class StorytellingTemplate(ctk.CTkFrame):
         )
         self.story_container.pack(fill="both", expand=True, padx=10, pady=10)
 
-        # Caricamento contenuto
-        if story_text is not None:
-            self.content = story_text
-        elif story_path is not None:
-            try:
-                with open(story_path, "r") as story:
-                    self.content = story.read()
-            except FileNotFoundError:
-                raise FileNotFoundError(
-                    f"Story file not found at '{story_path}'. "
-                    "Please ensure the file exists and the path is correct."
-                )
-        else:
-            raise ValueError("You must provide either 'story_path' or 'story_text'.")
-
         self.story = ctk.CTkLabel(
             self.story_container,
-            text=textwrap.fill(self.content),
+            text="",
             font=Style.WIDGETS_FONT,
             text_color=Style.WIDGETS_FG_TEXT_COLOR,
+            wraplength=380,
             fg_color="transparent",
             justify="left",
         )

@@ -4,6 +4,7 @@ from interface.chat import Chat
 import customtkinter as ctk
 from logics.chat_logics import ChatLogics
 
+
 class ChatTutorial(Chat):
     
     def __init__(self, container):
@@ -17,7 +18,8 @@ class ChatTutorial(Chat):
         # logic field
         #self.chat_logics = ChatLogics(get_instance_person, self, None) #TODO:Da sistemare 
 
-        self.after(1000, self.add_message_bubble("Ciao, come ti chiami?", is_user=False))
+        self.after(1000, self.add_message_bubble("Ciao sono Robbi. Tu come ti chiami?", is_user=False))
+        self.after(1000, self.add_message_bubble("Scrivi il tuo messaggio nel riquadro arancione e premi invio per mandarlo.", is_user=False))
 
     def go_to_recap_page(self):
         from interface.recap_page import RecapPage
