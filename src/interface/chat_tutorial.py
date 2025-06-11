@@ -17,6 +17,8 @@ class ChatTutorial(Chat):
         # logic field
         #self.chat_logics = ChatLogics(get_instance_person, self, None) #TODO:Da sistemare 
 
+        self.after(1000, self.add_message_bubble("Ciao, come ti chiami?", is_user=False))
+
     def go_to_recap_page(self):
         from interface.recap_page import RecapPage
         recap_page = RecapPage(self.master)

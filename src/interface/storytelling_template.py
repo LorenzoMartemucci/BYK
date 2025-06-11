@@ -70,7 +70,7 @@ class StorytellingTemplate(ctk.CTkFrame):
 
         self.next_button = ctk.CTkButton(
             self.bottom_container,
-            text='Prossimo',
+            text='Giochiamo!',
             fg_color=Style.WINDOW_BG,
             text_color=Style.WIDGETS_FG_TEXT_COLOR,
             border_color=Style.WIDGETS_BORDER_COLOR,
