@@ -3,7 +3,7 @@ from interface.style import Style
 from interface.chat import Chat
 import customtkinter as ctk
 from logics.chat_logics import ChatLogics
-from interface.globals import shown_stories as ss
+from interface.globals import Globals
 import random
 
 class ChatFinal(Chat):
@@ -31,14 +31,16 @@ class ChatFinal(Chat):
         recap_page = FailPage(self.master)
         recap_page.pack(fill="both", expand=True)
         self.destroy()
-        pass
 
     def read_quest(self):
-        rows= len(ss)
+        #Inizializziamo le variabili globali
+        global_instance= Globals()
+        rows= len(global_instance.shown_stories)
         if rows != 0:
             random_number = random.randint(0, rows-1)
-            ss_story_local= ss.iloc[random_number, 1]
-            ss.drop(random_number)
+            ss_story_local= global_instance.shown_stories.iloc[random_number, 1]
+            global_instance.role_story = global_instance.shown_stories.iloc[random_number, 0]
+            global_instance.shown_stories.drop(random_number)
             return ss_story_local
         else:
             raise ValueError("Tutte le storie sono già state mostrate.")

@@ -2,7 +2,8 @@ from interface.chat_final import ChatFinal
 from interface.storytelling_template import StorytellingTemplate
 import pandas as pd
 import random
-from interface.globals import shown_stories as ss
+import customtkinter as ctk
+from PIL import Image
 
 class FinalRequestPage(StorytellingTemplate):
     def __init__(self, container):
@@ -13,6 +14,12 @@ class FinalRequestPage(StorytellingTemplate):
                              " Ricorda, avrai a disposizione 2 minuti per ottenere un punteggio bonus.\n"+
                              " Buona fortuna e buon lavoro!\n",
                              font=("Comic Sans MS", 24))
+        self.robby_img = ctk.CTkImage(
+            light_image=Image.open("./rsc/robot.png").resize((120, 120)),
+            size=(120, 120)
+        )
+
+        self.robby_container.configure(image=self.robby_img)
 
     def go_to_chat_final(self):
         chat_final = ChatFinal(self.master)
