@@ -1,27 +1,28 @@
-from llm.llm_backend import ChatSession
+# from llm.llm_backend import ChatSession
 from interface.style import Style
 from interface.chat import Chat
 import customtkinter as ctk
 from logics.chat_logics import ChatLogics
 
-class ChatTutorial(Chat):
+class ChatFinal(Chat):
     
     def __init__(self, container):
         super().__init__(container)
 
-        self.session = ChatSession()
+        # self.session = ChatSession()
         # TODO: impostare la logica di chat per il tutorial dalla classe di logica
         self.user_input.bind("<Return>", self._on_enter_pressed)
         
-        self.next_button.configure(command=self.go_to_recap_page)
+        self.next_button.configure(command=self.go_to_final_page)
         # logic field
         #self.chat_logics = ChatLogics(get_instance_person, self, None) #TODO:Da sistemare 
 
-    def go_to_recap_page(self):
-        from interface.recap_page import RecapPage
-        recap_page = RecapPage(self.master)
-        recap_page.pack(fill="both", expand=True)
-        self.destroy()
+    def go_to_final_page(self):
+        # from interface.final_page import FinalPage
+        # recap_page = FinalPage(self.master)
+        # recap_page.pack(fill="both", expand=True)
+        # self.destroy()
+        pass
 
 
     def _on_enter_pressed(self, event):
@@ -37,5 +38,5 @@ class ChatTutorial(Chat):
         prompt = self.get_message_from_textbox()
         self.add_message_bubble(prompt, is_user=True)
         self.user_input.delete("1.0", "end")
-        self.add_message_bubble(self.session.send_message(prompt), is_user=False) # self.session.send_message(prompt)
-        return "break"
+        #self.add_message_bubble(self.session.send_message(prompt), is_user=False) # self.session.send_message(prompt)
+        # return "break"
