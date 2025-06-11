@@ -43,13 +43,8 @@ class StorytellingTemplate(ctk.CTkFrame):
         self.bottom_container = ctk.CTkFrame(self.story_container, fg_color='transparent')
         self.bottom_container.pack(fill="x", padx=20, pady=(0, 20), side="bottom")
 
-        self.robby_img = ctk.CTkImage(
-            light_image=Image.open("./rsc/robot.png").resize((img_size, img_size)),
-            size=(img_size, img_size)
-        )
         self.robby_container = ctk.CTkLabel(
             self.bottom_container,
-            image=self.robby_img,
             text="",
             fg_color='transparent'
         )
