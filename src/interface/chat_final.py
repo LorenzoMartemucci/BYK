@@ -57,6 +57,10 @@ class ChatFinal(Chat):
                     self.next_button.pack(side='left', padx=20, pady=(0, 20), anchor='center')
                 else:
                     self.next_button.configure(command=self.go_to_fail_page)
+                    # Distruggi il frame di input
+                    self.user_input.destroy()
+                    # Riposiziona il bottone al centro della riga
+                    self.next_button.pack(side='left', padx=20, pady=(0, 20), anchor='center')
 
         prompt = self.get_message_from_textbox()
         self.add_message_bubble(prompt, is_user=True)
