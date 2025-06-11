@@ -16,8 +16,8 @@ class ChatTutorial(Chat):
         #self.chat_logics = ChatLogics(get_instance_person, self, None) #TODO:Da sistemare 
 
     def go_to_recap_page(self):
-        from interface.storytelling_template import StorytellingTemplate
-        recap_page = StorytellingTemplate(self.master)
+        from interface.recap_page import RecapPage
+        recap_page = RecapPage(self.master)
         recap_page.pack(fill="both", expand=True)
         self.destroy()
 
