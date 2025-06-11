@@ -5,7 +5,7 @@ class StoryPage(StorytellingTemplate):
     def __init__(self, container):
         super().__init__(container, show_timer=False)
         self.next_button.configure(command=self.got_to_chat_tutorial)
-        self.story.configure(self.read_story("./rsc/storia.txt"))
+        self.story.configure(text=self.read_story("./rsc/storia.txt"))
 
     def read_story(self, story_path):
         try:
