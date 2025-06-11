@@ -3,6 +3,8 @@ from interface.style import Style
 from interface.chat import Chat
 import customtkinter as ctk
 from logics.chat_logics import ChatLogics
+from interface.globals import shown_stories as ss
+import random
 
 class ChatFinal(Chat):
     
@@ -15,6 +17,7 @@ class ChatFinal(Chat):
         
         # logic field
         #self.chat_logics = ChatLogics(get_instance_person, self, None) #TODO:Da sistemare 
+        self.after(1000, self.add_message_bubble(self.read_quest(), is_user=False))
 
     def go_to_final_page(self):
         # from interface.final_page import FinalPage
@@ -30,6 +33,15 @@ class ChatFinal(Chat):
         self.destroy()
         pass
 
+    def read_quest(self):
+        rows= len(ss)
+        if rows != 0:
+            random_number = random.randint(0, rows-1)
+            ss_story_local= ss.iloc[random_number, 1]
+            ss.drop(random_number)
+            return ss_story_local
+        else:
+            raise ValueError("Tutte le storie sono già state mostrate.")
 
     def _on_enter_pressed(self, event):
         if event.state & 0x0001:  # Shift � premuto
