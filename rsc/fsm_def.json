@@ -29,7 +29,7 @@
     "get_context": "Ottimo! Adesso: in quale CONTESTO devo svolgere questo compito? ",
     "get_output_format": "Benissimo! Ora specifica il FORMATO dell'output desiderato... ",
     "get_constraints": "Ci siamo quasi! Ora indicami eventuali VINCOLI da rispettare... ",
-    "summary_prompt": "Ecco il prompt completo che hai creato. Procedo ad eseguirlo! "},
+    "summary_prompt": "Ecco il riepilogo del prompt che hai creato:"},
 
     "initialState": "get_name",
     "acceptStates": ["summary_prompt"]

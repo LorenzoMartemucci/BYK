@@ -46,7 +46,7 @@ class ChatSession:
         with open(self.system_prompt_path, "r") as file:
             return file.read()
 
-    def send_input(self, user_input):
+    def send_input(self, user_input) -> str:
         """
         Sends a message to the model and returns the AI's response.
         Args:
@@ -81,7 +81,10 @@ class ChatSession:
             output (str): The output string from the model.
 
         """
-        line = re.sub(r"\s*<think>.*?</think>\s*", "", text,flags=re.DOTALL)
+        if "</think>" in text:
+            line = re.sub(r"\s*<think>.*?</think>?\s*", "", text,flags=re.DOTALL)
+        else:
+            raise ValueError("Chain of thoughts not closed properly in the output!")
         return line
 
 

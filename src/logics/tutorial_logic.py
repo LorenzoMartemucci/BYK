@@ -29,7 +29,11 @@ class TutorialLogic:
             str: The response from the LLM.
         """
 
-        system_prompt = f""" Esegui il seguente prompt: {prompt}. Rispondi in modo mirato e non aggiungere spiegazioni superflue. """
+        system_prompt = f'''
+            Esegui il seguente prompt: {prompt}. Rispondi in modo mirato, sintetico e non aggiungere spiegazioni superflue.
+            Concludi la risposta entro 1024 token.
+            Rispondi in italiano.
+        '''
         
         self.llm_session.conversation_history = []
         return self.llm_session.send_input(system_prompt)
@@ -119,7 +123,7 @@ class TutorialLogic:
         }
 
 
-        recap = ["Riepilogo delle tue risposte:\n"]
+        recap = []
 
         for key in ["get_role", "get_task", "get_context", "get_output_format", "get_constraints"]:
             value = self.user_data.get(key, "[Non specificato]")
