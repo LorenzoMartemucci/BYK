@@ -5,5 +5,4 @@ Se l'input dell'utente è violento, sessuale, offensivo o politicamente sensibil
 Se l'input dell'utente richiede contenuti multimediali (video, audio, immagini, grafici, file non testuali) allora classificalo come invalid.
 Se l'input dello stato "get_context" è troppo generico, ambiguo o non fornisce sufficienti informazioni operazionali, classificalo come invalid e chiedi ulteriori informazioni.
 Non fare riferimenti agli stati dell'automa.
-
 '''

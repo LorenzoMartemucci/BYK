@@ -1,8 +1,8 @@
 Nel 2025 la AI Foundry lancia il primo modello di un robottino umanoide in grado di compiere dei compiti,
-il suo nome e' Robbi.
-Tu hai appena acquistato un robottino che ti dovra' affiancare durante le tue giornate.
+il suo nome è Robbi.
+Tu hai appena acquistato un robottino che ti dovrà affiancare durante le tue giornate.
 Robbi apprende unicamente dai tuoi comandi, quindi nel gioco ci saranno due fasi
-1a fase:
+Fase 1:
 In questa sezione del gioco affronterai un tutorial su come si scrive un prompt (richesta da fare a Robbi) 
 seguendo questi step:
 	- Decisione di un RUOLO
@@ -10,6 +10,6 @@ seguendo questi step:
 	- Definzione di un CONTESTO
 	- Come dovra' essere il FORMATO OUTPUT
 	- Stabilire dei VINCOLI
-2a fase:
+Fase 2:
 In questa parte di gioco tu e robbi verrete messi alla prova in un contesto prestabilito, in cui dovrai 
 scrivere un prompt seguendo le linee guida definite nel tutorial.

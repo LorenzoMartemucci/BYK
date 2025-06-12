@@ -1,4 +1,5 @@
-from .fsm import FSM
+from interface.globals import Globals
+from logics.fsm import FSM
 from llm.llm_backend import ChatSession
 from azure.ai.inference.models import SystemMessage, UserMessage, AssistantMessage
 import json
@@ -28,15 +29,7 @@ class TutorialLogic:
         Returns:
             str: The response from the LLM.
         """
-
-        system_prompt = f'''
-            Esegui il seguente prompt: {prompt}. Rispondi in modo mirato, sintetico e non aggiungere spiegazioni superflue.
-            Concludi la risposta entro 1024 token.
-            Rispondi in italiano.
-        '''
-        
-        self.llm_session.conversation_history = []
-        return self.llm_session.send_input(system_prompt)
+        return self.llm_session.exec_prompt(prompt)
     
     def process_input(self, user_input: str) -> str:
         """
@@ -86,6 +79,8 @@ class TutorialLogic:
 
         if label == "valid":
             self.user_data[self.fsm.get_current_state()] = user_input
+            if self.fsm.get_current_state == "get_name":
+                Globals().user_name = user_input
             self.fsm.next_step(label)
             return self.fsm.state_questions.get(self.fsm.get_current_state(), "")
         elif label == "invalid":

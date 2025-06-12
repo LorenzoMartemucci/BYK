@@ -5,7 +5,7 @@
 
     "transitions": [
     { "from": "get_name", "to": "get_role", "input": "valid" },
-    { "from": "get_name", "to": "get_role", "input": "invalid" },
+    { "from": "get_name", "to": "get_name", "input": "invalid" },
 
     { "from": "get_role", "to": "get_task", "input": "valid" },
     { "from": "get_role", "to": "get_role", "input": "invalid" },

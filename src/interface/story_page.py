@@ -20,12 +20,12 @@ class StoryPage(StorytellingTemplate):
 
     def read_story(self, story_path):
         try:
-            with open(story_path, "r") as story_file:
+            with open(story_path, "r", encoding="utf-8") as story_file:
                 return story_file.read()
         except FileNotFoundError:
             raise FileNotFoundError(f"Story file not found at '{story_path}'. Please ensure the file exists and the path is correct.")
 
     def got_to_chat_tutorial(self):
-        chat_page_tutorial = FinalRequestPage(self.master) # ChatTutorial(self.master)
+        chat_page_tutorial = ChatTutorial(self.master) # ChatTutorial(self.master)
         chat_page_tutorial.pack(fill="both", expand=True)
         self.destroy()

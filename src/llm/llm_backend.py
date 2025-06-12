@@ -68,6 +68,26 @@ class ChatSession:
 
         return self._remove_thoughts(ai_message)
 
+    def exec_prompt(self, prompt: str) -> str:
+        """
+        Execute a prompt using the LLM session and return the response.
+        
+        Args:
+            prompt (str): The prompt to be sent to the LLM.
+        
+        Returns:
+            str: The response from the LLM.
+        """
+
+        system_prompt = f'''
+            Esegui il seguente prompt: {prompt}. Rispondi in modo mirato, sintetico e non aggiungere spiegazioni superflue.
+            Concludi la risposta entro 1024 token.
+            Rispondi in italiano.
+        '''
+        
+        self.conversation_history = []
+        return self.send_input(system_prompt)
+
     def reset_conversation(self):
         """
         Resets the conversation history keeping the system prompt.
