@@ -1,0 +1,22 @@
+digraph {
+	get_name [color=lightgrey shape=doublecircle style=filled]
+	get_role [shape=circle]
+	get_task [shape=circle]
+	get_context [shape=circle]
+	get_output_format [shape=circle]
+	get_constraints [shape=circle]
+	summary_prompt [shape=doublecircle]
+	"" [shape=plaintext]
+	"" -> get_name
+	get_name -> get_role [label=valid_name]
+	get_role -> get_task [label=valid_role]
+	get_role -> get_role [label=invalid_role]
+	get_task -> get_context [label=valid_task]
+	get_task -> get_task [label=invalid_task]
+	get_context -> get_output_format [label=valid_context]
+	get_context -> get_context [label=invalid_context]
+	get_output_format -> get_constraints [label=valid_output_format]
+	get_output_format -> get_output_format [label=invalid_output_format]
+	get_constraints -> summary_prompt [label=valid_constraints]
+	get_constraints -> get_constraints [label=invalid_constraints]
+}
