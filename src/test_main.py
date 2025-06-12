@@ -1,8 +1,8 @@
-from logics.robby import Robby
+from src.logics.tutorial_logic import TutorialLogic
 import json
 
 
-robby = Robby()
+robby = TutorialLogic()
 print(robby.start_game())
 while True:
     user_input = input("You: ")

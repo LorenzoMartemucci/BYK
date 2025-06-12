@@ -7,7 +7,7 @@ import re
 class ChatSession:
     def __init__(self, endpoint = "https://byk-project-resource.services.ai.azure.com/models", 
         api_key = "C7zq6scqrGBWZQbDZgKRf5dFyPW1gEu6IYpNcYjzKd11mm1iGj16JQQJ99BFACgEuAYXJ3w3AAAAACOGSwgv",
-        model_name = "DeepSeek-R1-0528-2", system_prompt_path = "./rsc/system_prompt.txt", max_tokens=1024):
+        model_name = "DeepSeek-R1-0528-2", system_prompt_path = "./rsc/system_prompt.txt", max_tokens=2048):
 
         """"
         Initialize the chat session with Azure DeepSeek model.

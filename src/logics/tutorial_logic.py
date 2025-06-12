@@ -5,7 +5,7 @@ import json
 
 
 
-class Robby:
+class TutorialLogic:
     def __init__(self):
         """
         Initialize the Robby instance with a finite state machine and a chat session.
@@ -87,10 +87,10 @@ class Robby:
         elif label == "invalid":
             self.fsm.next_step(label)
             return parsed.get("message", "")
-        
-        return None
+        else:
+            raise ValueError(f"Unexpected label: {label}. Expected 'valid' or 'invalid'.")
     
-    def start_game(self):
+    def start_game(self) -> str:
         """
         Start the game by returning the first question.
         Returns:
@@ -98,7 +98,7 @@ class Robby:
         """
         return self.fsm.state_questions.get("get_name")
     
-    def is_tutorial_completed(self):
+    def is_tutorial_completed(self) -> bool:
         """
         Check if the tutorial is completed by verifying if the FSM is in an accepting state.
         
@@ -107,16 +107,16 @@ class Robby:
         """
         return self.fsm.is_in_accepting_state()
 
-    def prompt_recap(self):
+    def prompt_recap(self) -> str:
 
         ''' This method returns the prompt recap.'''
         label_map = {
-        "get_role": "RUOLO",
-        "get_task": "COMPITO",
-        "get_context": "CONTESTO",
-        "get_output_format": "FORMATO OUTPUT",
-        "get_constraints": "VINCOLI"
-    }
+            "get_role": "RUOLO",
+            "get_task": "COMPITO",
+            "get_context": "CONTESTO",
+            "get_output_format": "FORMATO OUTPUT",
+            "get_constraints": "VINCOLI"
+        }
 
 
         recap = ["Riepilogo delle tue risposte:\n"]
@@ -128,7 +128,7 @@ class Robby:
 
         return "\n".join(recap)
 
-    def rewrite_prompt(self):
+    def rewrite_prompt(self) -> str:
         recap_text = self.prompt_recap()
 
         system_prompt = '''
@@ -153,4 +153,4 @@ class Robby:
         self.llm_session.conversation_history = [SystemMessage(content=system_prompt)]
         response = self.llm_session.send_input(user_prompt)
         
-        return  response
+        return response
