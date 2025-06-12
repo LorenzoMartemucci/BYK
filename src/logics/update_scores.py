@@ -7,7 +7,6 @@ It provides functions to load current rankings and update them by adding new ent
 Main Features:
 - Reads scores from a CSV file into a list of dictionaries.
 - Writes a list of user scores back to the CSV file.
-- Ensures new usernames are unique before adding a new score.
 """
 
 import csv
