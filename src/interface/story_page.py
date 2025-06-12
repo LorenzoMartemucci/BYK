@@ -3,6 +3,8 @@ from interface.storytelling_template import StorytellingTemplate
 import customtkinter as ctk
 from PIL import Image
 
+from interface.final_request_page import FinalRequestPage
+
 class StoryPage(StorytellingTemplate):
     def __init__(self, container):
         super().__init__(container, show_timer=False)
@@ -24,6 +26,6 @@ class StoryPage(StorytellingTemplate):
             raise FileNotFoundError(f"Story file not found at '{story_path}'. Please ensure the file exists and the path is correct.")
 
     def got_to_chat_tutorial(self):
-        chat_page_tutorial = ChatTutorial(self.master)
+        chat_page_tutorial = FinalRequestPage(self.master) # ChatTutorial(self.master)
         chat_page_tutorial.pack(fill="both", expand=True)
         self.destroy()
