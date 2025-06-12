@@ -19,7 +19,7 @@ class ChatFinal(Chat):
         #self.chat_logics = ChatLogics(get_instance_person, self, None) #TODO:Da sistemare 
         self.after(1000, self.add_message_bubble(self.read_quest(), is_user=False))
 
-    def page_switch_controller(self, username="None", score=59):
+    def page_switch_controller(self, username="None", score=60):
         if score >= 60:
             self.go_to_score_page(username, score)
         else:
