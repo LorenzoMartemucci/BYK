@@ -8,7 +8,7 @@ seguendo questi step:
 	- Decisione di un RUOLO
 	- Indicazione di un COMPITO
 	- Definzione di un CONTESTO
-	- Come dovra' essere il FORMATO OUTPUT
+	- Come dovrà essere il FORMATO OUTPUT
 	- Stabilire dei VINCOLI
 Fase 2:
 In questa parte di gioco tu e robbi verrete messi alla prova in un contesto prestabilito, in cui dovrai 

@@ -24,11 +24,11 @@
   ],
   "state_questions": {
     "get_name": "Ciao! Prima di iniziare, come ti chiami?",
-    "get_role": "Sono Robbi. Quale RUOLO vuoi assegnarmi oggi?",
-    "get_task": "Perfetto! Ora dimmi: qual è il COMPITO che devo svolgere?",
-    "get_context": "Ottimo! Adesso: in quale CONTESTO devo svolgere questo compito? ",
-    "get_output_format": "Benissimo! Ora specifica il FORMATO dell'output desiderato... ",
-    "get_constraints": "Ci siamo quasi! Ora indicami eventuali VINCOLI da rispettare... ",
+    "get_role": "Piacere di conoscerti! Oggi posso assumere qualunque ruolo tu voglia. Quale RUOLO vuoi assegnarmi?",
+    "get_task": "Perfetto! Ora dimmi: qual è il COMPITO che devo svolgere in base al ruolo che hai scelto?",
+    "get_context": "Ottimo! Adesso: in quale CONTESTO devo svolgere questo compito? Dammi le informazioni necessarie per capire il compito da svolgere. Più dettagli mi dai, meglio posso aiutarti!",
+    "get_output_format": "Benissimo! Ora specifica il FORMATO dell'output: come vuoi che ti restituisca il risultato?",
+    "get_constraints": "Ci siamo quasi! Ora indicami eventuali VINCOLI, ossia limiti da rispettare nel formato dell'output... ",
     "summary_prompt": "Ecco il riepilogo del prompt che hai creato:"},
 
     "initialState": "get_name",

@@ -16,17 +16,17 @@ class Credits (StorytellingTemplate):
 
     def _setup_ui(self):
         credits_text = (
-        "Manager Progetto:\n"
+        "Project Manager:\n"
         "Natale Milella\n\n"
-        "Team Progettazione:\n"
+        "Design Team:\n"
         "Giovanni Zagaria\n"
         "Pasquale Fidanza\n\n"
-        "Team Intelligenza Artificiale:\n"
+        "Artificial Intelligence Team:\n"
         "Palmina Angelini\n"
         "Salvatore Patisso\n"
         "Eleonora Amico\n"
-        "Nicolo' Resta\n\n"
-        "Team Interfaccia:\n"
+        "Nicolò Resta\n\n"
+        "Interface Team:\n"
         "Daniel Craciun\n"
         "Lorenzo Martemucci\n"
         "Giuliano Tarantino\n"

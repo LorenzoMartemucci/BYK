@@ -60,7 +60,7 @@ class ChatFinal(Chat):
 
         def go_to_score_page():
             from interface.score_ranking import ScoreRankingPage
-            recap_page = ScoreRankingPage(self.master, Globals.user_name, score)
+            recap_page = ScoreRankingPage(self.master, Globals().user_name, score)
             recap_page.pack(fill="both", expand=True)
             self.destroy()
             pass
