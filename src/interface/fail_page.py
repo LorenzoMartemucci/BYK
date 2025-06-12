@@ -8,10 +8,11 @@ class FailPage(StorytellingTemplate):
     def __init__(self, container):
         super().__init__(container, show_timer=False)
         self.next_button.configure(command=self.go_to_start_page)
-        self.story.configure(text=f'Il prompt ideale doveva essere: {self.ideal_prompt()} Riproviamo!')
+        self.story.configure(text=f'Il prompt ideale doveva essere: {self.ideal_prompt()} Riproviamo!',
+                             font=("Comic Sans MS", 24))
         self.robby_img = ctk.CTkImage(
-            light_image=Image.open("./rsc/sad_bot.png").resize((120, 120)),
-            size=(120, 120)
+            light_image=Image.open("./rsc/sad_bot.png").resize((130, 130)),
+            size=(130, 130)
         )
         self.robby_container.configure(image=self.robby_img)
 

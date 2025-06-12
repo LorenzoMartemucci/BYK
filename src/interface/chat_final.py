@@ -19,11 +19,17 @@ class ChatFinal(Chat):
         #self.chat_logics = ChatLogics(get_instance_person, self, None) #TODO:Da sistemare 
         self.after(1000, self.add_message_bubble(self.read_quest(), is_user=False))
 
-    def go_to_final_page(self):
-        # from interface.final_page import FinalPage
-        # recap_page = FinalPage(self.master)
-        # recap_page.pack(fill="both", expand=True)
-        # self.destroy()
+    def page_switch_controller(self, username="None", score=60):
+        if score >= 60:
+            self.go_to_score_page(username, score)
+        else:
+            self.go_to_fail_page()
+        
+    def go_to_score_page(self, username, score):
+        from interface.score_ranking import ScoreRankingPage
+        recap_page = ScoreRankingPage(self.master, username, score)
+        recap_page.pack(fill="both", expand=True)
+        self.destroy()
         pass
 
     def go_to_fail_page(self):
@@ -50,20 +56,13 @@ class ChatFinal(Chat):
             return  # Permetti il normale comportamento di andare a capo
         
         if self.get_message_from_textbox() == "test":
-                score = 59
-                if score > 60:
-                    self.next_button.configure(command=self.go_to_final_page)
-                    # Distruggi il frame di input
-                    self.user_input.destroy()
-                    # Riposiziona il bottone al centro della riga
-                    self.next_button.pack(side='left', padx=20, pady=(0, 20), anchor='center')
-                else:
-                    self.next_button.configure(command=self.go_to_fail_page)
-                    # Distruggi il frame di input
-                    self.user_input.destroy()
-                    # Riposiziona il bottone al centro della riga
-                    self.next_button.pack(side='left', padx=20, pady=(0, 20), anchor='center')
-
+            self.next_button.configure(command=self.page_switch_controller)
+            # Distruggi il frame di input
+            self.user_input.destroy()
+            # Riposiziona il bottone al centro della riga
+            self.next_button.pack(side='left', padx=20, pady=(0, 20), anchor='center')
+            return "break"
+        
         prompt = self.get_message_from_textbox()
         self.add_message_bubble(prompt, is_user=True)
         self.user_input.delete("1.0", "end")

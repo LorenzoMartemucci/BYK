@@ -18,7 +18,6 @@ class MainApp:
         self.root.configure(bg=Style.WINDOW_BG)
         self.start_page = StartPage(self.root)
 
-
         self.start_page.pack(fill="both", expand=True)
 
     def run(self):
