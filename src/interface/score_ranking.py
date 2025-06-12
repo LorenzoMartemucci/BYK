@@ -1,7 +1,7 @@
 """
-scoring_ranking.py
+score_ranking.py
 
-This module defines the ScoringRankingPage class, a custom Tkinter frame designed to display
+This module defines the ScoreRankingPage class, a custom Tkinter frame designed to display
 user scores and a ranking leaderboard in a stylized card interface. It provides visual feedback
 at the end of an activity or game, and includes the option to play again.
 
@@ -16,9 +16,10 @@ import customtkinter as ctk
 from PIL import Image
 from interface.style import Style
 from logics.update_scores import read_scores, write_scores
+from interface.start_page import StartPage
 
-class ScoringRankingPage(ctk.CTkFrame):
-    def __init__(self, container, username, score_value, on_play_again=None):
+class ScoreRankingPage(ctk.CTkFrame):
+    def __init__(self, container, username, score_value):
         super().__init__(container, fg_color=Style.WINDOW_BG)
         self.score_value = score_value
         self.username = username
@@ -99,6 +100,11 @@ class ScoringRankingPage(ctk.CTkFrame):
             border_width=2,
             corner_radius=15,
             border_color=Style.WIDGETS_BORDER_COLOR,
-            command=on_play_again if on_play_again else None
+            command=self.go_to_start_page
         )
         play_again_button.grid(row=3, column=0, sticky="ew", padx=100, pady=(10, 20))
+        
+    def go_to_start_page(self):
+        story_page = StartPage(self.master)
+        story_page.pack(fill="both", expand=True)
+        self.destroy()
