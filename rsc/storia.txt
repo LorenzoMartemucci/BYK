@@ -1,12 +1,15 @@
 Storia
-Nel 2025, AI Foundry crea Robbi, il primo robottino virtuale capace di dialogare con le persone e aiutarle
- nelle attività quotidiane. Ora hai l’opportunità di provarlo in anteprima!
+Nel 2025, AI Foundry crea Robbi, il primo robottino virtuale capace 
+di dialogare con le persone e aiutarle nelle attività quotidiane.
+Ora hai l’opportunità di provarlo in anteprima!
 
 Fase 1 – Tutorial: Impara a Comunicare con Robbi
-In questa fase, scoprirai come scrivere un prompt efficace per Robbi. Segui questi passaggi fondamentali 
-per ottenere risposte precise e utili:
+In questa fase, scoprirai come scrivere un prompt efficace per 
+Robbi. Segui questi passaggi fondamentali per ottenere risposte 
+precise e utili:
 
-Scegli un RUOLO: Decidi chi deve essere Robbi (es. insegnante, cuoco, poeta, consulente).
+Scegli un RUOLO: Decidi chi deve essere Robbi (es. insegnante, cuoco,
+poeta, consulente).
 Definisci un COMPITO: Spiega chiaramente cosa vuoi che Robbi faccia.
 Stabilisci un CONTESTO: Fornisci informazioni utili sulla situazione o sull’ambiente.
 Indica il FORMATO dell’OUTPUT: Specifica come vuoi ricevere la risposta (es. elenco, poesia, presentazione).

@@ -19,7 +19,7 @@ class ChatTutorial(Chat):
         self.next_button.configure(command=self.go_to_final_request)
 
         self.add_context_bubble("Tutorial: Impara a Comunicare con Robbi")
-        self.after(1000, self.add_message_bubble("Ciao sono Robbi. Tu come ti chiami?", is_user=False))
+        self.after(1000, self.add_message_bubble("Come ti chiami?", is_user=False))
         self.after(1000, self.add_message_bubble("Scrivi il tuo messaggio nel riquadro arancione e premi invio per mandarlo.", is_user=False))
 
     def go_to_final_request(self):
