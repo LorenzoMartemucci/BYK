@@ -42,3 +42,10 @@ class TimeBar:
         else:
             if callback:
                 callback()
+                
+    def stop_timer(self):
+        """Stop the timer when on enter pressed function is called."""
+        self.timer_running = False
+        self.chat_timer_label.configure(text="Tempo scaduto!" if self.timer_var[0] <= 0 else "Timer fermato")
+        self.chat_progress_bar.set(0.0)
+        self.container.after_cancel(self.update_timer)
