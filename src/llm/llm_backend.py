@@ -7,7 +7,7 @@ import re
 class ChatSession:
     def __init__(self, endpoint = "https://byk-project-resource.services.ai.azure.com/models", 
         api_key = "C7zq6scqrGBWZQbDZgKRf5dFyPW1gEu6IYpNcYjzKd11mm1iGj16JQQJ99BFACgEuAYXJ3w3AAAAACOGSwgv",
-        model_name = "DeepSeek-R1-0528-2", system_prompt_path = "./rsc/system_prompt.txt", max_tokens=1024):
+        model_name = "DeepSeek-R1-0528-2", system_prompt_path = "./rsc/system_prompt.txt", max_tokens=10000):
 
         """"
         Initialize the chat session with Azure DeepSeek model.
@@ -46,7 +46,7 @@ class ChatSession:
         with open(self.system_prompt_path, "r") as file:
             return file.read()
 
-    def send_message(self, user_input ):
+    def send_input(self, user_input) -> str:
         """
         Sends a message to the model and returns the AI's response.
         Args:
@@ -55,7 +55,7 @@ class ChatSession:
             str: The AI's response.
         """
         self.conversation_history.append(UserMessage(content=user_input))
-
+    
         response = self.client.complete(
             messages=self.conversation_history,
             max_tokens=self.max_tokens,
@@ -67,6 +67,26 @@ class ChatSession:
         self.conversation_history.append(AssistantMessage(content=ai_message))
 
         return self._remove_thoughts(ai_message)
+
+    def exec_prompt(self, prompt: str) -> str:
+        """
+        Execute a prompt using the LLM session and return the response.
+        
+        Args:
+            prompt (str): The prompt to be sent to the LLM.
+        
+        Returns:
+            str: The response from the LLM.
+        """
+
+        system_prompt = f'''
+            Esegui il seguente prompt: {prompt}. Rispondi in modo mirato, sintetico e non aggiungere spiegazioni superflue.
+            Concludi la risposta entro 1024 token.
+            Rispondi in italiano.
+        '''
+        
+        self.conversation_history = []
+        return self.send_input(system_prompt)
 
     def reset_conversation(self):
         """
@@ -81,11 +101,11 @@ class ChatSession:
             output (str): The output string from the model.
 
         """
-        line = re.sub(r"\s*<think>.*?</think>\s*", "", text,flags=re.DOTALL)
+        if "</think>" in text:
+            line = re.sub(r"\s*<think>.*?</think>?\s*", "", text,flags=re.DOTALL)
+        else:
+            raise ValueError("Chain of thoughts not closed properly in the output!")
         return line
-
-   
-
 
 
 if __name__ == "__main__":

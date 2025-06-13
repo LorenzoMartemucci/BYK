@@ -1,10 +1,10 @@
 # from llm.llm_backend import ChatSession
-from interface.style import Style
 from interface.chat import Chat
-import customtkinter as ctk
-from logics.chat_logics import ChatLogics
 from interface.globals import Globals
 import random
+
+from llm.scorer import Scorer
+from llm.llm_backend import ChatSession
 
 class ChatFinal(Chat):
     
@@ -14,23 +14,12 @@ class ChatFinal(Chat):
         # self.session = ChatSession()
         # TODO: impostare la logica di chat per il tutorial dalla classe di logica
         self.user_input.bind("<Return>", self._on_enter_pressed)
-        
+        self.scorer = Scorer()
+        self.llm = ChatSession()
+
         # logic field
         #self.chat_logics = ChatLogics(get_instance_person, self, None) #TODO:Da sistemare 
-        self.after(1000, self.add_message_bubble(self.read_quest(), is_user=False))
-
-    def page_switch_controller(self, username="None", score=59):
-        if score >= 60:
-            self.go_to_score_page(username, score)
-        else:
-            self.go_to_fail_page()
-        
-    def go_to_score_page(self, username, score):
-        from interface.score_ranking import ScoreRankingPage
-        recap_page = ScoreRankingPage(self.master, username, score)
-        recap_page.pack(fill="both", expand=True)
-        self.destroy()
-        pass
+        self.after(1000, self.add_context_bubble(self.read_quest()))
 
     def go_to_fail_page(self):
         from interface.fail_page import FailPage
@@ -38,13 +27,19 @@ class ChatFinal(Chat):
         recap_page.pack(fill="both", expand=True)
         self.destroy()
 
+    def go_to_final_request(self):
+        from interface.final_request_page import FinalRequestPage
+        request_page = FinalRequestPage(self.master)
+        request_page.pack(fill="both", expand=True)
+        self.destroy()
+
     def read_quest(self):
         #Inizializziamo le variabili globali
         global_instance= Globals()
-        rows= len(global_instance.shown_stories)
+        rows = len(global_instance.shown_stories)
         if rows != 0:
             random_number = random.randint(0, rows-1)
-            ss_story_local= global_instance.shown_stories.iloc[random_number, 1]
+            ss_story_local = global_instance.shown_stories.iloc[random_number, 1]
             global_instance.role_story = global_instance.shown_stories.iloc[random_number, 0]
             global_instance.shown_stories.drop(random_number)
             return ss_story_local
@@ -55,16 +50,37 @@ class ChatFinal(Chat):
         if event.state & 0x0001:  # Shift � premuto
             return  # Permetti il normale comportamento di andare a capo
         
-        if self.get_message_from_textbox() == "test":
-            self.next_button.configure(command=self.page_switch_controller)
+        global_instance = Globals()
+        ideal_prompt = global_instance.ideal_prompts[global_instance.ideal_prompts['Titolo'] == global_instance.role_story]['Prompt Ideale'].values[0]
+        prompt = self.get_message_from_textbox()
+        self.add_message_bubble(prompt, is_user=True)
+        self.user_input.delete("1.0", "end")
+        
+
+        try:
+            response = self.llm.exec_prompt(prompt)
+            self.add_message_bubble(response, is_user=False)  # self.session.send_message(prompt)
+            score = round(self.scorer.get_prompt_score(prompt, ideal_prompt) * 100)
+
+            def go_to_score_page():
+                from interface.score_ranking import ScoreRankingPage
+                recap_page = ScoreRankingPage(self.master, Globals().user_name, score)
+                recap_page.pack(fill="both", expand=True)
+                self.destroy()
+            
+            self.next_button.configure(
+                command=go_to_score_page
+                if score >= 60 else self.go_to_fail_page
+            )
             # Distruggi il frame di input
             self.user_input.destroy()
             # Riposiziona il bottone al centro della riga
             self.next_button.pack(side='left', padx=20, pady=(0, 20), anchor='center')
-            return "break"
+        except Exception as e:
+            self.add_error_bubble(f"Errore durante l'esecuzione del prompt finale: {str(e)}. Clicca il bottone per tornare alla pagina della storia e riprovare il tutorial!")
+            self.user_input.destroy()
+            self.next_button.configure(text='Torna indietro', command=self.go_to_final_request)
+            self.next_button.pack(side='left', padx=20, pady=(0, 20), anchor='center')
         
-        prompt = self.get_message_from_textbox()
-        self.add_message_bubble(prompt, is_user=True)
-        self.user_input.delete("1.0", "end")
-        #self.add_message_bubble(self.session.send_message(prompt), is_user=False) # self.session.send_message(prompt)
-        # return "break"
+
+        return "break"

@@ -7,6 +7,16 @@ from nltk.tokenize import word_tokenize
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
+import nltk
+try:
+    nltk.data.find('tokenizers/punkt')
+except LookupError:
+    nltk.download('punkt')
+try:
+    nltk.data.find('corpora/stopwords')
+except LookupError:
+    nltk.download('stopwords')
+
 class Scorer:
 
     DEF_ROLES = ["Cuoco", "Poeta", "Insegnante", "Consulente"]
@@ -55,7 +65,7 @@ class Scorer:
 
         return bool(prompt and prompt.strip())
 
-    def get_most_similar_role(self, prompt, thresold = 0.5) -> str:
+    def get_most_similar_role(self, prompt, threshold = 0.5) -> str:
         """
         Return the most similar role based on the given prompt.
         If similarity is below threshold, return None.
@@ -143,7 +153,8 @@ class Scorer:
         lexical_similarity = (lexical_similarity + 1) / 2
 
         # Combine the semantic and lexical similarity scores using the weight l_w
-        return  (1-l_w)*semantic_similarity + l_w*lexical_similarity 
+        result = ((1-l_w)*semantic_similarity + l_w*lexical_similarity).squeeze().item()
+        return result
 
 
     

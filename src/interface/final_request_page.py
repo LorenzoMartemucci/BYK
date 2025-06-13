@@ -9,8 +9,8 @@ class FinalRequestPage(StorytellingTemplate):
     def __init__(self, container):
         super().__init__(container)
         self.next_button.configure(command=self.go_to_chat_final)
-        self.story.configure(text="Adesso e' arrivato il momento di metterti alla prova!\n"+
-                             " Ti verra' fornito un problema da risolvere insieme a Robbi.\n"+
+        self.story.configure(text="Adesso è arrivato il momento di metterti alla prova!\n"+
+                             " Ti verrà fornito un problema da risolvere insieme a Robbi.\n"+
                              " Ricorda, avrai a disposizione 2 minuti per ottenere un punteggio bonus.\n"+
                              " Buona fortuna e buon lavoro!\n",
                              font=("Comic Sans MS", 24))

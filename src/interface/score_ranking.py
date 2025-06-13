@@ -17,6 +17,7 @@ from PIL import Image
 from interface.style import Style
 from logics.update_scores import update_ranking_list
 from interface.start_page import StartPage
+from interface.credits import Credits
 
 class ScoreRankingPage(ctk.CTkFrame):
     def __init__(self, container, username, score_value):
@@ -100,8 +101,26 @@ class ScoreRankingPage(ctk.CTkFrame):
             border_color=Style.WIDGETS_BORDER_COLOR,
             command=self.go_to_start_page
         )
-        play_again_button.grid(row=3, column=0, sticky="ew", padx=100, pady=(10, 20))
+        play_again_button.grid(row=3, column=0, sticky="ew", padx=100, pady=5)
         
+        play_again_button = ctk.CTkButton(
+            self,
+            text="Riconoscimenti!",
+            font=("Comic Sans MS", 20),
+            fg_color=Style.WIDGETS_BG,
+            text_color=Style.WIDGETS_FG_TEXT_COLOR,
+            border_width=2,
+            corner_radius=15,
+            border_color=Style.WIDGETS_BORDER_COLOR,
+            command=self.go_to_credits_page
+        )
+        play_again_button.grid(row=4, column=0, sticky="ew", padx=100, pady=(5,10))
+        
+    def go_to_credits_page(self):
+        credits_page = Credits(self.master)
+        credits_page.pack(fill="both", expand=True)
+        self.destroy()
+    
     def go_to_start_page(self):
         story_page = StartPage(self.master)
         story_page.pack(fill="both", expand=True)
