@@ -44,8 +44,7 @@ class ChatSession:
         response = self.client.chat.completions.create(
             messages=self.conversation_history,
             max_completion_tokens=self.max_tokens,
-            temperature=0.2,
-            top_p=1.0,
+            temperature=2.0,
             frequency_penalty=0.0,
             presence_penalty=0.0,
             model=self.deployment
