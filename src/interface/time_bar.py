@@ -36,17 +36,16 @@ class TimeBar:
         # INVERTI IL PROGRESSO: 1.0 -> pieno, 0.0 -> vuoto
         progress = max(0, min(1, self.timer_var / total))
         self.chat_progress_bar.set(progress)
-        if self.timer_var > 0:
-            self.timer_var -= 1
-            self.container.after(1000, lambda: self.update_timer(total))
-
+        if time_var[0] > 0:
+            time_var[0] -= 1
+            self.container.after(1000, lambda: self.update_timer(time_var, total, callback))
+        else:
+            if callback:
+                callback()
+                
     def stop_timer(self):
+        """Stop the timer when on enter pressed function is called."""
         self.timer_running = False
-
-    def destroy_timer(self):
-        self.timer_running = False
-        self.chat_timer_label.destroy()
-        self.chat_progress_bar.destroy()
-
-    def is_timedout(self):
-        return self.timer_var == 0
+        self.chat_timer_label.configure(text="Tempo scaduto!" if self.timer_var[0] <= 0 else "Timer fermato")
+        self.chat_progress_bar.set(0.0)
+        self.container.after_cancel(self.update_timer)

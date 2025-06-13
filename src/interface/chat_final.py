@@ -12,8 +12,6 @@ class ChatFinal(Chat):
     def __init__(self, container):
         super().__init__(container)
 
-        # self.session = ChatSession()
-        # TODO: impostare la logica di chat per il tutorial dalla classe di logica
         self.user_input.bind("<Return>", self._on_enter_pressed)
         self.scorer = Scorer()
         self.llm = ChatSession()
