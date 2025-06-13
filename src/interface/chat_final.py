@@ -27,6 +27,12 @@ class ChatFinal(Chat):
         recap_page.pack(fill="both", expand=True)
         self.destroy()
 
+    def go_to_final_request(self):
+        from interface.final_request_page import FinalRequestPage
+        request_page = FinalRequestPage(self.master)
+        request_page.pack(fill="both", expand=True)
+        self.destroy()
+
     def read_quest(self):
         #Inizializziamo le variabili globali
         global_instance= Globals()
@@ -49,28 +55,32 @@ class ChatFinal(Chat):
         prompt = self.get_message_from_textbox()
         self.add_message_bubble(prompt, is_user=True)
         self.user_input.delete("1.0", "end")
+        
 
         try:
             response = self.llm.exec_prompt(prompt)
             self.add_message_bubble(response, is_user=False)  # self.session.send_message(prompt)
+            score = round(self.scorer.get_prompt_score(prompt, ideal_prompt) * 100)
+
+            def go_to_score_page():
+                from interface.score_ranking import ScoreRankingPage
+                recap_page = ScoreRankingPage(self.master, Globals().user_name, score)
+                recap_page.pack(fill="both", expand=True)
+                self.destroy()
+            
+            self.next_button.configure(
+                command=go_to_score_page
+                if score >= 60 else self.go_to_fail_page
+            )
+            # Distruggi il frame di input
+            self.user_input.destroy()
+            # Riposiziona il bottone al centro della riga
+            self.next_button.pack(side='left', padx=20, pady=(0, 20), anchor='center')
         except Exception as e:
             self.add_error_bubble(f"Errore durante l'esecuzione del prompt finale: {str(e)}. Clicca il bottone per tornare alla pagina della storia e riprovare il tutorial!")
+            self.user_input.destroy()
+            self.next_button.configure(text='Torna indietro', command=self.go_to_final_request)
+            self.next_button.pack(side='left', padx=20, pady=(0, 20), anchor='center')
+        
 
-        score = round(self.scorer.get_prompt_score(prompt, ideal_prompt) * 100)
-
-        def go_to_score_page():
-            from interface.score_ranking import ScoreRankingPage
-            recap_page = ScoreRankingPage(self.master, Globals().user_name, score)
-            recap_page.pack(fill="both", expand=True)
-            self.destroy()
-            pass
-
-        self.next_button.configure(
-            command=go_to_score_page
-            if score >= 60 else self.go_to_fail_page
-        )
-        # Distruggi il frame di input
-        self.user_input.destroy()
-        # Riposiziona il bottone al centro della riga
-        self.next_button.pack(side='left', padx=20, pady=(0, 20), anchor='center')
         return "break"

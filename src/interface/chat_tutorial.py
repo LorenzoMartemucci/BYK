@@ -59,10 +59,9 @@ class ChatTutorial(Chat):
                 response = self.logic.exec_prompt(final_prompt)
                 self.add_message_bubble(response, is_user=False)
                 self.add_message_bubble("È stato un piacere giocare con te!", is_user=False)
+                self.next_button.pack(side='left', padx=20, pady=(0, 20), anchor='center')
         except Exception as e:
             self.add_error_bubble(f"Errore durante l'esecuzione del prompt finale: {str(e)}. Clicca il bottone per tornare alla pagina della storia e riprovare il tutorial!")
             self.next_button.configure(text='Torna indietro', command=self.go_to_story_page)
-        finally:
-            # Riposiziona il bottone al centro della riga
             self.next_button.pack(side='left', padx=20, pady=(0, 20), anchor='center')
         return "break"
