@@ -5,7 +5,7 @@ from PIL import Image
 class Credits (StorytellingTemplate):
     def __init__(self, container):
         super().__init__(container)
-        self.next_button.configure(command=self.go_to_start_page)
+        self.next_button.configure(text='Giochiamo di nuovo!' ,command=self.go_to_start_page)
         self._setup_ui()
         self.robby_img = ctk.CTkImage(
             light_image=Image.open("./rsc/robbi_credits.png").resize((120, 120)),

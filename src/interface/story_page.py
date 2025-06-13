@@ -8,7 +8,7 @@ from interface.final_request_page import FinalRequestPage
 class StoryPage(StorytellingTemplate):
     def __init__(self, container):
         super().__init__(container, show_timer=False)
-        self.next_button.configure(command=self.got_to_chat_tutorial)
+        self.next_button.configure(text='Avanti' ,command=self.got_to_chat_tutorial)
         self.story.configure(text=self.read_story("./rsc/storia.txt"))
 
         self.robby_img = ctk.CTkImage(

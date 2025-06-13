@@ -1,4 +1,4 @@
-from interface.start_page import StartPage
+from interface.final_request_page import FinalRequestPage
 from interface.storytelling_template import StorytellingTemplate
 from interface.globals import Globals
 import customtkinter as ctk
@@ -7,7 +7,7 @@ from PIL import Image
 class FailPage(StorytellingTemplate):
     def __init__(self, container):
         super().__init__(container, show_timer=False)
-        self.next_button.configure(command=self.go_to_start_page)
+        self.next_button.configure(text="Riprova" ,command=self.go_to_final_request_page)
         self.story.configure(text=f'Il prompt ideale doveva essere: {self.ideal_prompt()} Riproviamo!',
                              font=("Comic Sans MS", 24))
         self.robby_img = ctk.CTkImage(
@@ -22,7 +22,7 @@ class FailPage(StorytellingTemplate):
         ideal_prompt = global_instance.ideal_prompts[global_instance.ideal_prompts['Titolo'] == global_instance.role_story]['Prompt Ideale'].values[0]
         return ideal_prompt
 
-    def go_to_start_page(self):
-        story_page = StartPage(self.master)
+    def go_to_final_request_page(self):
+        story_page = FinalRequestPage(self.master)
         story_page.pack(fill="both", expand=True)
         self.destroy()
