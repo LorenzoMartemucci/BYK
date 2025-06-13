@@ -1,4 +1,5 @@
 # from llm.llm_backend import ChatSession
+from interface.time_bar import TimeBar
 from interface.chat import Chat
 from interface.globals import Globals
 from interface.time_bar import TimeBar
@@ -12,8 +13,6 @@ class ChatFinal(Chat):
     def __init__(self, container):
         super().__init__(container)
 
-        # self.session = ChatSession()
-        # TODO: impostare la logica di chat per il tutorial dalla classe di logica
         self.user_input.bind("<Return>", self._on_enter_pressed)
         self.scorer = Scorer()
         self.llm = ChatSession()
@@ -60,8 +59,8 @@ class ChatFinal(Chat):
         global_instance = Globals()
         ideal_prompt = global_instance.ideal_prompts[global_instance.ideal_prompts['Titolo'] == global_instance.role_story]['Prompt Ideale'].values[0]
         prompt = self.get_message_from_textbox()
-        self.add_message_bubble(prompt, is_user=True)
         self.user_input.delete("1.0", "end")
+        self.add_message_bubble(prompt, is_user=True)
         
 
         try:
@@ -93,6 +92,5 @@ class ChatFinal(Chat):
             self.time_bar.destroy_timer()
             self.next_button.configure(text='Torna indietro', command=self.go_to_final_request)
             self.next_button.pack(side='left', padx=20, pady=(0, 20), anchor='center')
-        
 
         return "break"
