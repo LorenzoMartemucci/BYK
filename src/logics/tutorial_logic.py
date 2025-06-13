@@ -79,8 +79,6 @@ class TutorialLogic:
 
         if label == "valid":
             self.user_data[self.fsm.get_current_state()] = user_input
-            if self.fsm.get_current_state == "get_name":
-                Globals().user_name = user_input
             self.fsm.next_step(label)
             return self.fsm.state_questions.get(self.fsm.get_current_state(), "")
         elif label == "invalid":
@@ -119,7 +117,8 @@ class TutorialLogic:
 
 
         recap = []
-
+        user_name = self.user_data['get_name']
+        Globals().user_name = user_name
         for key in ["get_role", "get_task", "get_context", "get_output_format", "get_constraints"]:
             value = self.user_data.get(key, "[Non specificato]")
             label = label_map.get(key, key)
