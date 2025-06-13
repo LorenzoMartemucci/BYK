@@ -7,6 +7,14 @@ import ollama
 
 # somma stringhe prompt dato dall'interfaccia come somma di tutte le frasi valide
 
+
+ollama.chat(
+    model='llama3',  # Specify the model to use
+    messages=[{'role': 'system', 'content': 'You are a helpful assistant.'}, 
+              {'role': 'user', 'content': 'What is the capital of France?'}],  # Pass the conversation history
+    options={'temperature': 0.3}  # Set the temperature for response variability
+)
+
 class LLMBuilder:
     def __init__(self, model = 'llama3', temperature = 0.3):
         self.model = model
@@ -15,6 +23,8 @@ class LLMBuilder:
         self.llm_role = ''
         self.final_prompt = ''
 
+        # send first prompt 
+
     def append_message(self, role, content):
         """
         Appends a message to the conversation history.
@@ -22,6 +32,13 @@ class LLMBuilder:
         :param content: The content of the message.
         """
         self.messages.append({'role': role, 'content': content})
+
+    def remove_last_message(self):
+        """
+        Removes the last message from the conversation history.
+        """
+        if self.messages:
+            self.messages.pop()
 
     def chat_with_llm(self):
         """
@@ -60,7 +77,7 @@ class LLMBuilder:
 
         response = self.chat_with_llm()
 
-        self.append_message("assistant", response)
+        
         return response
 
 

@@ -1,0 +1,36 @@
+{
+    "states": ["get_name", "get_role", "get_task", "get_context", "get_output_format", "get_constraints", "summary_prompt"],
+    "alphabet": ["valid", "invalid"]
+    ,
+
+    "transitions": [
+    { "from": "get_name", "to": "get_role", "input": "valid" },
+    { "from": "get_name", "to": "get_name", "input": "invalid" },
+
+    { "from": "get_role", "to": "get_task", "input": "valid" },
+    { "from": "get_role", "to": "get_role", "input": "invalid" },
+    
+    { "from": "get_task", "to": "get_context", "input": "valid" },
+    { "from": "get_task", "to": "get_task", "input": "invalid" },
+    
+    { "from": "get_context", "to": "get_output_format", "input": "valid" },
+    { "from": "get_context", "to": "get_context", "input": "invalid" },
+    
+    { "from": "get_output_format", "to": "get_constraints", "input": "valid" },
+    { "from": "get_output_format", "to": "get_output_format", "input": "invalid" },
+    
+    { "from": "get_constraints", "to": "summary_prompt", "input": "valid" },
+    { "from": "get_constraints", "to": "get_constraints", "input": "invalid" }
+  ],
+  "state_questions": {
+    "get_name": "Ciao! Prima di iniziare, come ti chiami?",
+    "get_role": "Piacere di conoscerti! Oggi posso assumere qualunque ruolo tu voglia. Quale RUOLO vuoi assegnarmi?",
+    "get_task": "Perfetto! Ora dimmi: qual è il COMPITO che devo svolgere in base al ruolo che hai scelto?",
+    "get_context": "Ottimo! Adesso: in quale CONTESTO devo svolgere questo compito? Dammi le informazioni necessarie per capire il compito da svolgere. Più dettagli mi dai, meglio posso aiutarti!",
+    "get_output_format": "Benissimo! Ora specifica il FORMATO dell'output: come vuoi che ti restituisca il risultato?",
+    "get_constraints": "Ci siamo quasi! Ora indicami eventuali VINCOLI, ossia limiti da rispettare nel formato dell'output... ",
+    "summary_prompt": "Ecco il riepilogo del prompt che hai creato:"},
+
+    "initialState": "get_name",
+    "acceptStates": ["summary_prompt"]
+}
