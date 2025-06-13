@@ -13,7 +13,7 @@ class FinalRequestPage(StorytellingTemplate):
                              " Ti verrà fornito un problema da risolvere insieme a Robbi.\n"+
                              " Ricorda, avrai a disposizione 2 minuti per ottenere un punteggio bonus.\n"+
                              " Buona fortuna e buon lavoro!\n",
-                             font=("Comic Sans MS", 24))
+                             font=("Comic Sans MS", 20))
         self.robby_img = ctk.CTkImage(
             light_image=Image.open("./rsc/robot.png").resize((120, 120)),
             size=(120, 120)

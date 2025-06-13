@@ -1,7 +1,4 @@
-from llm.llm_backend import ChatSession
-from interface.style import Style
 from interface.chat import Chat
-import customtkinter as ctk
 from logics.tutorial_logic import TutorialLogic
 
 

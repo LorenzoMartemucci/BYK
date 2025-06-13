@@ -15,6 +15,8 @@ class MainApp:
         self.root.geometry("480x640")
         # self.root.resizable(False, False)
         self.root.minsize(480, 640)
+        self.root.title('Robbi')
+        self.root.iconbitmap('rsc/robot_icon.ico')
         self.root.configure(bg=Style.WINDOW_BG)
         self.start_page = StartPage(self.root)
 

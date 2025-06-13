@@ -154,6 +154,7 @@ class Scorer:
 
         # Combine the semantic and lexical similarity scores using the weight l_w
         result = ((1-l_w)*semantic_similarity + l_w*lexical_similarity).squeeze().item()
+        
         return result
 
 

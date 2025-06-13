@@ -1,4 +1,3 @@
-from interface.time_bar import TimeBar
 from interface.style import Style
 
 import customtkinter as ctk
@@ -12,7 +11,6 @@ class Chat(ctk.CTkFrame):
         self.message_bubbles = []
         self.last_user_message = None
 
-        self.time_bar = TimeBar(self, timer_total=180)
 
         self.chat = ctk.CTkScrollableFrame(self, fg_color="transparent")
         self.chat.pack(fill="both",expand=True)

@@ -1,6 +1,7 @@
 # from llm.llm_backend import ChatSession
 from interface.chat import Chat
 from interface.globals import Globals
+from interface.time_bar import TimeBar
 import random
 
 from llm.scorer import Scorer
@@ -16,15 +17,20 @@ class ChatFinal(Chat):
         self.user_input.bind("<Return>", self._on_enter_pressed)
         self.scorer = Scorer()
         self.llm = ChatSession()
-
+       
         # logic field
         #self.chat_logics = ChatLogics(get_instance_person, self, None) #TODO:Da sistemare 
         self.after(1000, self.add_context_bubble(self.read_quest()))
+        self.after(1 ,self.add_time_bar(container))
+
+    def add_time_bar(self, container):
+        self.time_bar = TimeBar(container)
 
     def go_to_fail_page(self):
         from interface.fail_page import FailPage
         recap_page = FailPage(self.master)
         recap_page.pack(fill="both", expand=True)
+        self.time_bar.destroy_timer()
         self.destroy()
 
     def go_to_final_request(self):
@@ -47,6 +53,7 @@ class ChatFinal(Chat):
             raise ValueError("Tutte le storie sono già state mostrate.")
 
     def _on_enter_pressed(self, event):
+        self.time_bar.stop_timer()
         if event.state & 0x0001:  # Shift � premuto
             return  # Permetti il normale comportamento di andare a capo
         
@@ -62,10 +69,14 @@ class ChatFinal(Chat):
             self.add_message_bubble(response, is_user=False)  # self.session.send_message(prompt)
             score = round(self.scorer.get_prompt_score(prompt, ideal_prompt) * 100)
 
+            if  not self.time_bar.is_timedout():
+                score = score + 10
+
             def go_to_score_page():
                 from interface.score_ranking import ScoreRankingPage
                 recap_page = ScoreRankingPage(self.master, Globals().user_name, score)
                 recap_page.pack(fill="both", expand=True)
+                self.time_bar.destroy_timer()
                 self.destroy()
             
             self.next_button.configure(
@@ -79,6 +90,7 @@ class ChatFinal(Chat):
         except Exception as e:
             self.add_error_bubble(f"Errore durante l'esecuzione del prompt finale: {str(e)}. Clicca il bottone per tornare alla pagina della storia e riprovare il tutorial!")
             self.user_input.destroy()
+            self.time_bar.destroy_timer()
             self.next_button.configure(text='Torna indietro', command=self.go_to_final_request)
             self.next_button.pack(side='left', padx=20, pady=(0, 20), anchor='center')
         
