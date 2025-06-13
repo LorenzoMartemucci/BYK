@@ -2,8 +2,6 @@
 from interface.time_bar import TimeBar
 from interface.chat import Chat
 from interface.globals import Globals
-import customtkinter as ctk
-from interface.style import Style
 import random
 
 from llm.scorer import Scorer
@@ -14,61 +12,13 @@ class ChatFinal(Chat):
     def __init__(self, container):
         super().__init__(container)
 
-        # self.session = ChatSession()
-        # TODO: impostare la logica di chat per il tutorial dalla classe di logica
         self.user_input.bind("<Return>", self._on_enter_pressed)
         self.scorer = Scorer()
         self.llm = ChatSession()
         
-        self.time_bar = TimeBar(self, timer_total=300)
-        
-        # logic field
-        #self.chat_logics = ChatLogics(get_instance_person, self, None) #TODO:Da sistemare 
-        self.after(1000, self.add_context_bubble(self.read_quest()))
-        self.chat_timer_label = ctk.CTkLabel(
-            self.container,
-            text="Tempo rimanente: 180", 
-            font=("Comic Sans MS", 14),
-            text_color=Style.WIDGETS_FG_TEXT_COLOR,
-        )
-        self.chat_timer_label.pack()
-
-        self.chat_progress_bar = ctk.CTkProgressBar(
-            self.container,
-            width=400,
-            height=20,
-            progress_color=Style.WIDGETS_PROGRESS_BAR_COLOR,
-        )
-        self.chat_progress_bar.set(1.0)
-        self.chat_progress_bar.pack()
-
-        self.timer_var = [300]
-        self.timer_running = False
-        self.timer_running = True
-        self.update_timer(self.timer_var, self.timer_var, None)
-    
-    def update_timer(self, time_var, total, callback):
-        """Update the timer label and progress bar every second."""
-        if not self.timer_running:
-            return
-        minutes = time_var[0] // 60
-        seconds = time_var[0] % 60
-        self.chat_timer_label.configure(text=f"Tempo rimanente: {minutes:02d}:{seconds:02d}")
-        # INVERTI IL PROGRESSO: 1.0 -> pieno, 0.0 -> vuoto
-        progress = max(0, min(1, time_var[0] / total))
-        self.chat_progress_bar.set(progress)
-        if time_var[0] > 0:
-            time_var[0] -= 1
-            self.after(1000, lambda: self.update_timer(time_var, total, callback))
-        else:
-            if callback:
-                callback()
-                
-    def stop_timer(self):
-        """Stop the timer when _on_enter_pressed function is called."""
-        self.timer_running = False
-        self.chat_timer_label.configure(text="Tempo scaduto!" if self.timer_var[0] <= 0 else "Timer fermato")
-        
+        self.time_bar = TimeBar(container, timer_total=300)
+        self.add_context_bubble()
+        self.after(1000, self.add_context_bubble(self.read_quest()))        
 
     def go_to_fail_page(self):
         from interface.fail_page import FailPage

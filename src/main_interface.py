@@ -17,10 +17,10 @@ class MainApp:
         self.root.minsize(480, 720)  # Set minimum size to 480x720
         self.root.configure(bg=Style.WINDOW_BG)
         self.root.title("Robbi")
-        # try:
-        #     self.root.iconbitmap("./rsc/robbi.ico")
-        # except Exception:
-        #     pass
+        try:
+            self.root.iconbitmap("./rsc/robot_icon.ico")
+        except Exception:
+            pass
         self.start_page = StartPage(self.root)
 
         self.start_page.pack(fill="both", expand=True)
