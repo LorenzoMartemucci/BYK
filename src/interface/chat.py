@@ -11,6 +11,7 @@ class Chat(ctk.CTkFrame):
         self.message_bubbles = []
         self.last_user_message = None
 
+
         self.chat = ctk.CTkScrollableFrame(self, fg_color="transparent")
         self.chat.pack(fill="both",expand=True)
 
