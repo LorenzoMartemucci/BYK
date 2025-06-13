@@ -1,15 +1,21 @@
-Nel 2025 la AI Foundry lancia il primo modello di un robottino umanoide in grado di compiere dei compiti,
-il suo nome è Robbi.
-Tu hai appena acquistato un robottino che ti dovrà affiancare durante le tue giornate.
-Robbi apprende unicamente dai tuoi comandi, quindi nel gioco ci saranno due fasi
-Fase 1:
-In questa sezione del gioco affronterai un tutorial su come si scrive un prompt (richesta da fare a Robbi) 
-seguendo questi step:
-	- Decisione di un RUOLO
-	- Indicazione di un COMPITO
-	- Definzione di un CONTESTO
-	- Come dovrà essere il FORMATO OUTPUT
-	- Stabilire dei VINCOLI
-Fase 2:
-In questa parte di gioco tu e robbi verrete messi alla prova in un contesto prestabilito, in cui dovrai 
-scrivere un prompt seguendo le linee guida definite nel tutorial.
+Storia
+Nel 2025, AI Foundry crea Robbi, il primo robottino virtuale capace 
+di dialogare con le persone e aiutarle nelle attività quotidiane.
+Ora hai l’opportunità di provarlo in anteprima!
+
+Fase 1 – Tutorial: Impara a Comunicare con Robbi
+In questa fase, scoprirai come scrivere un prompt efficace per 
+Robbi. Segui questi passaggi fondamentali per ottenere risposte 
+precise e utili:
+
+Scegli un RUOLO: Decidi chi deve essere Robbi (es. insegnante, cuoco,
+poeta, consulente).
+Definisci un COMPITO: Spiega chiaramente cosa vuoi che Robbi faccia.
+Stabilisci un CONTESTO: Fornisci informazioni utili sulla situazione o sull’ambiente.
+Indica il FORMATO dell’OUTPUT: Specifica come vuoi ricevere la risposta (es. elenco, poesia, presentazione).
+Aggiungi eventuali VINCOLI: Imposta limiti o regole (es. lunghezza massima, stile, tempo).
+
+Fase 2 – Challenge: Metti alla Prova le Tue Abilità
+Ora che conosci le regole, dovrai affrontare una sfida: scrivi un prompt seguendo le linee guida apprese nel 
+tutorial. Robbi ti aiuterà a risolvere un problema in un contesto specifico. Più il tuo prompt sarà ben 
+costruito, migliore sarà il punteggio che otterrai e più efficaci saranno le risposte di Robbi!

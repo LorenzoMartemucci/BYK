@@ -14,8 +14,13 @@ class MainApp:
         self.root = ctk.CTk(fg_color=Style.WINDOW_BG)
         self.root.geometry("480x640")
         # self.root.resizable(False, False)
-        self.root.minsize(480, 640)
+        self.root.minsize(480, 720)  # Set minimum size to 480x720
         self.root.configure(bg=Style.WINDOW_BG)
+        self.root.title("Robbi")
+        # try:
+        #     self.root.iconbitmap("./rsc/robbi.ico")
+        # except Exception:
+        #     pass
         self.start_page = StartPage(self.root)
 
         self.start_page.pack(fill="both", expand=True)
