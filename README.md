@@ -55,6 +55,6 @@ Il punteggio finale si basa su:
 
 1. Clona il repository:
    ```bash
-   git clone https://github.com/tuo-utente/promptmaster.git
-   cd promptmaster
+   git clone https://github.com/LorenzoMartemucci/BYK
+   
 
