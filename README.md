@@ -47,7 +47,7 @@ Il punteggio finale si basa su:
 ## 🛠️ Tecnologie Utilizzate
 
 - Linguaggio: **Python 3**
-- Librerie principali: *(aggiungi qui le librerie usate, es. `tkinter`, `time`, `difflib`, ecc.)*
+- Librerie principali: 
 
 ---
 
