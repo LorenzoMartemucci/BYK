@@ -1,4 +1,4 @@
-from interface.style import Style
+from src.interface.style import Style
 import customtkinter as ctk
 
 class TimeBar:

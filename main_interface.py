@@ -1,8 +1,8 @@
 import sys
 import os
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
-from interface.start_page import StartPage
-from interface.style import Style
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'src')))
+from src.interface.start_page import StartPage
+from src.interface.style import Style
 import customtkinter as ctk
 import ctypes
 

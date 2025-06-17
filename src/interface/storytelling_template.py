@@ -1,11 +1,8 @@
-from interface.time_bar import TimeBar
-from interface.style import Style
-from interface.chat import Chat
-from interface.chat_tutorial import ChatTutorial
+from src.interface.time_bar import TimeBar
+from src.interface.style import Style
+
 import customtkinter as ctk
-from PIL import Image
-import tkinter as tk
-import textwrap
+
 
 class StorytellingTemplate(ctk.CTkFrame):
     def __init__(self, container,show_timer=False):

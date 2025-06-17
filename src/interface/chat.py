@@ -1,4 +1,4 @@
-from interface.style import Style
+from src.interface.style import Style
 
 import customtkinter as ctk
 from PIL import Image
@@ -131,4 +131,25 @@ class Chat(ctk.CTkFrame):
         self.message_bubbles.append(bubble)
         self.chat.update_idletasks()
         self.chat._parent_canvas.yview_moveto(1.0)
-    
+
+    def add_recap_bubble(self, message):
+        """Adds a message bubble to the chat interface."""
+
+        bubble_frame = tk.Frame(self.chat, bg=Style.WINDOW_BG)
+        bubble_frame.pack(fill='x', expand=True)
+
+        bubble = ctk.CTkLabel(
+            bubble_frame,
+            text=message,
+            fg_color=Style.CONTEXT_BUBBLE_COLOR,
+            text_color=Style.WIDGETS_FG_TEXT_COLOR,
+            font=Style.WIDGETS_FONT,
+            wraplength=300,
+            justify="left",
+            corner_radius=15
+       )
+        bubble.pack(side='left', pady=(10, 0), padx=20)
+        self.message_bubbles.append(bubble)
+        self.chat.update_idletasks()
+        self.chat._parent_canvas.yview_moveto(1.0)
+        

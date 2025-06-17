@@ -1,5 +1,5 @@
-from interface.story_page import StoryPage
-from interface.style import Style
+from src.interface.story_page import StoryPage
+from src.interface.style import Style
 import customtkinter as ctk
 from PIL import Image
 

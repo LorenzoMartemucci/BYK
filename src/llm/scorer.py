@@ -65,7 +65,7 @@ class Scorer:
 
         return bool(prompt and prompt.strip())
 
-    def get_most_similar_role(self, prompt, threshold = 0.5) -> str:
+    def get_most_similar_role(self, prompt, threshold = 0.4) -> str:
         """
         Return the most similar role based on the given prompt.
         If similarity is below threshold, return None.
@@ -124,7 +124,7 @@ class Scorer:
 
         return similarity[0][0]
     
-    def get_prompt_score(self, prompt: str, ideal_prompt: str, l_w=0.8) -> float:
+    def get_prompt_score(self, prompt: str, ideal_prompt: str, l_w=0.9) -> float:
         """
         Return the score of the prompt based on the roles.
         :param prompt: The prompt to check.
@@ -139,23 +139,31 @@ class Scorer:
         if not self.is_valid_prompt(ideal_prompt):
             raise ValueError("Ideal prompt must be a non-empty string.")
         
-        # Compute embeddings for the ideal prompt and the prompt and then score them
-        ideal_embedding,prompt_embedding = self._model.encode([ideal_prompt, prompt])
-        semantic_similarity = self._model.similarity(ideal_embedding, prompt_embedding)
-
-        # Normalize the semantic similarity score to be between 0 and 1
-        semantic_similarity = (semantic_similarity + 1) / 2
-
-        # Compute the Bag-of-Words similarity between the ideal prompt and the prompt
-        lexical_similarity = self.bow_similarity(ideal_prompt, prompt)
-
-        # Normalize the semantic similarity score to be between 0 and 1
-        lexical_similarity = (lexical_similarity + 1) / 2
-
-        # Combine the semantic and lexical similarity scores using the weight l_w
-        result = ((1-l_w)*semantic_similarity + l_w*lexical_similarity).squeeze().item()
+        #Check if the ideal prompt has the valid role 
+        #Check if get_most_similar_role returns None
+        ideal_role = self.get_most_similar_role(ideal_prompt)   
+        if ideal_role is None:
+            result = 0.1
+            return result 
         
-        return result
+        else:
+            # Compute embeddings for the ideal prompt and the prompt and then score them
+            ideal_embedding,prompt_embedding = self._model.encode([ideal_prompt, prompt])
+            semantic_similarity = self._model.similarity(ideal_embedding, prompt_embedding)
+
+            # Normalize the semantic similarity score to be between 0 and 1
+            semantic_similarity = (semantic_similarity + 1) / 2
+
+            # Compute the Bag-of-Words similarity between the ideal prompt and the prompt
+            lexical_similarity = self.bow_similarity(ideal_prompt, prompt)
+
+            # Normalize the semantic similarity score to be between 0 and 1
+            lexical_similarity = (lexical_similarity + 1) / 2
+
+            # Combine the semantic and lexical similarity scores using the weight l_w
+            result = ((1-l_w)*semantic_similarity + l_w*lexical_similarity).squeeze().item()
+            
+            return result
 
 
     

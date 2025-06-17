@@ -1,12 +1,12 @@
 # from llm.llm_backend import ChatSession
-from interface.time_bar import TimeBar
-from interface.chat import Chat
-from interface.globals import Globals
-from interface.time_bar import TimeBar
+from src.interface.time_bar import TimeBar
+from src.interface.chat import Chat
+from src.interface.globals import Globals
+from src.interface.time_bar import TimeBar
 import random
 
-from llm.scorer import Scorer
-from llm.llm_backend import ChatSession
+from src.llm.scorer import Scorer
+from src.llm.llm_backend import ChatSession
 
 class ChatFinal(Chat):
     
@@ -26,14 +26,14 @@ class ChatFinal(Chat):
         self.time_bar = TimeBar(container)
 
     def go_to_fail_page(self):
-        from interface.fail_page import FailPage
+        from src.interface.fail_page import FailPage
         recap_page = FailPage(self.master)
         recap_page.pack(fill="both", expand=True)
         self.time_bar.destroy_timer()
         self.destroy()
 
     def go_to_final_request(self):
-        from interface.final_request_page import FinalRequestPage
+        from src.interface.final_request_page import FinalRequestPage
         request_page = FinalRequestPage(self.master)
         request_page.pack(fill="both", expand=True)
         self.destroy()
@@ -69,10 +69,12 @@ class ChatFinal(Chat):
             score = round(self.scorer.get_prompt_score(prompt, ideal_prompt) * 100)
 
             if  not self.time_bar.is_timedout():
-                score = score + 10
+                if score >= 60:
+                    self.add_recap_bubble(f'Un prompt ideale è strutturato come il seguente:\n"{ideal_prompt}"')
+                    score = score + 10
 
             def go_to_score_page():
-                from interface.score_ranking import ScoreRankingPage
+                from src.interface.score_ranking import ScoreRankingPage
                 recap_page = ScoreRankingPage(self.master, Globals().user_name, score)
                 recap_page.pack(fill="both", expand=True)
                 self.time_bar.destroy_timer()
