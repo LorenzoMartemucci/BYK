@@ -14,10 +14,10 @@ Main Features:
 
 import customtkinter as ctk
 from PIL import Image
-from interface.style import Style
-from logics.update_scores import update_ranking_list
-from interface.start_page import StartPage
-from interface.credits import Credits
+from src.interface.style import Style
+from src.logics.update_scores import update_ranking_list
+from src.interface.start_page import StartPage
+from src.interface.credits import Credits
 
 class ScoreRankingPage(ctk.CTkFrame):
     def __init__(self, container, username, score_value):

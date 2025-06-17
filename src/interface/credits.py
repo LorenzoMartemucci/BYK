@@ -1,7 +1,7 @@
 import customtkinter as ctk
 import tkinter as tk
 from PIL import Image
-from interface.storytelling_template import StorytellingTemplate
+from src.interface.storytelling_template import StorytellingTemplate
 
 class Credits(StorytellingTemplate):
     def __init__(self, container):
