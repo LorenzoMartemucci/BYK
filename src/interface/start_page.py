@@ -2,6 +2,7 @@ from src.interface.story_page import StoryPage
 from src.interface.style import Style
 import customtkinter as ctk
 from PIL import Image
+from src.interface.final_request_page import FinalRequestPage
 
 class StartPage(ctk.CTkFrame):
     def __init__(self, container):
@@ -77,7 +78,7 @@ class StartPage(ctk.CTkFrame):
         """Handle the 'Play' button click: store name and transition."""
         # username = self.username_entry.get()
         # self.master is the parent container of this frame
-        storytelling_page = StoryPage(self.master)
+        storytelling_page = FinalRequestPage(self.master)
         storytelling_page.pack(fill="both", expand=True)
         self.destroy()  # Remove the StartPage frame after transition
 

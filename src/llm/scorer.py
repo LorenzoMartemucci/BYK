@@ -65,7 +65,7 @@ class Scorer:
 
         return bool(prompt and prompt.strip())
 
-    def get_most_similar_role(self, prompt, threshold = 0.4) -> str:
+    def get_most_similar_role(self, prompt, threshold = 0.35) -> str:
         """
         Return the most similar role based on the given prompt.
         If similarity is below threshold, return None.
@@ -91,7 +91,37 @@ class Scorer:
             return self.roles[max_index]
         else:
             return None
+        
+    def get_similar_role(self, role, prompt, threshold = 0.4) -> str:
+        """
+        Return True o False if the role is similar to the prompt.
+        :param role: The role to check.
+        """
+        # Check if the role is valid
+        if not self.is_valid_role(role):
+            raise ValueError("Role must be a non-empty string.")
+        
+        # Check if the prompt is valid
+        if not self.is_valid_prompt(prompt):
+            raise ValueError("Prompt must be a non-empty string.")
 
+        # Create a list of sentences with roles and prompt coupled together
+        sentences = [[role,prompt]]
+
+        # Encode the sentences using the model by extracting the embeddings
+        embeddings = [self._model.encode(sentence) for sentence in sentences]
+        
+        # Calculate the similarity between the embeddings 
+        similarity = self._model.similarity(embeddings[0][0], embeddings[0][1])
+
+        if similarity >= threshold:
+            return True
+        else:
+            return False
+    
+    
+
+    
     def __preprocess_text(self, text):
         '''
         Preprocess the text by tokenizing, removing stopwords, and stemming.
@@ -141,29 +171,32 @@ class Scorer:
         
         #Check if the ideal prompt has the valid role 
         #Check if get_most_similar_role returns None
-        ideal_role = self.get_most_similar_role(ideal_prompt)   
-        if ideal_role is None:
-            result = 0.1
-            return result 
+        # ideal_role = self.get_most_similar_role(ideal_prompt)   
+        # if ideal_role is None:
+        #     result = 0.1
+        #     return result 
         
-        else:
-            # Compute embeddings for the ideal prompt and the prompt and then score them
-            ideal_embedding,prompt_embedding = self._model.encode([ideal_prompt, prompt])
-            semantic_similarity = self._model.similarity(ideal_embedding, prompt_embedding)
+        # else:
+        # Compute embeddings for the ideal prompt and the prompt and then score them
+        ideal_embedding,prompt_embedding = self._model.encode([ideal_prompt, prompt])
+        semantic_similarity = self._model.similarity(ideal_embedding, prompt_embedding)
 
-            # Normalize the semantic similarity score to be between 0 and 1
-            semantic_similarity = (semantic_similarity + 1) / 2
+        # Normalize the semantic similarity score to be between 0 and 1
+        semantic_similarity = (semantic_similarity + 1) / 2
 
-            # Compute the Bag-of-Words similarity between the ideal prompt and the prompt
-            lexical_similarity = self.bow_similarity(ideal_prompt, prompt)
+        # Compute the Bag-of-Words similarity between the ideal prompt and the prompt
+        lexical_similarity = self.bow_similarity(ideal_prompt, prompt)
 
-            # Normalize the semantic similarity score to be between 0 and 1
-            lexical_similarity = (lexical_similarity + 1) / 2
+        # Normalize the semantic similarity score to be between 0 and 1
+        lexical_similarity = (lexical_similarity + 1) / 2
 
-            # Combine the semantic and lexical similarity scores using the weight l_w
-            result = ((1-l_w)*semantic_similarity + l_w*lexical_similarity).squeeze().item()
-            
-            return result
+        # Combine the semantic and lexical similarity scores using the weight l_w
+        result = ((1-l_w)*semantic_similarity + l_w*lexical_similarity).squeeze().item()
+        
+        return result
 
 
-    
+# print("Scorer module loaded successfully.")
+# scorer = Scorer()
+# print(Scorer.DEF_ROLES)
+# print(scorer.get_most_similar_role(prompt="immagina di essere un cuoco che si sta approcciando ad un progetto che sfrutta gli LLMs. Scrivi una ricetta che spieghi queste tecnologie in 5 punti che sia professionale e adatta ad un pubblico non tecnico. Deve avere un massimo di 100 caratteri."))
