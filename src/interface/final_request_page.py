@@ -1,7 +1,5 @@
 from interface.chat_final import ChatFinal
 from interface.storytelling_template import StorytellingTemplate
-import pandas as pd
-import random
 import customtkinter as ctk
 from PIL import Image
 

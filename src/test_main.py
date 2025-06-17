@@ -1,4 +1,4 @@
-from src.logics.tutorial_logic import TutorialLogic
+from logics.tutorial_logic import TutorialLogic
 import json
 
 

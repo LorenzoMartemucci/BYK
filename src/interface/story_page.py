@@ -3,8 +3,6 @@ from interface.storytelling_template import StorytellingTemplate
 import customtkinter as ctk
 from PIL import Image
 
-from interface.final_request_page import FinalRequestPage
-
 class StoryPage(StorytellingTemplate):
     def __init__(self, container):
         super().__init__(container, show_timer=False)
