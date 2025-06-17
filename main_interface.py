@@ -27,7 +27,7 @@ class MainApp:
         except Exception:
             pass
         self.start_page = StartPage(self.root)
-        #self.start_page = Credits(self.root)
+
 
         self.start_page.pack(fill="both", expand=True)
 
