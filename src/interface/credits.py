@@ -29,8 +29,8 @@ class Credits (StorytellingTemplate):
         "Interface Team:\n"
         "Daniel Craciun\n"
         "Lorenzo Martemucci\n"
-        "Giuliano Tarantino\n"
         "Tommaso Lippolis\n\n"
+        "Giuliano Tarantino\n"
         "Grazie per aver giocato!"
         )
         self.story.configure(
