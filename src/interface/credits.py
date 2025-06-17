@@ -18,58 +18,71 @@ class Credits(StorytellingTemplate):
         self.animate_credits()
 
     def _setup_ui(self):
-        self.credits_text = (
-            "Project Manager\n"
-            "Natale Milella\n\n"
-            "Design Team\n"
-            "Giovanni Zagaria\n"
-            "Pasquale Fidanza\n\n"
-            "Artificial Intelligence Team\n"
-            "Palmina Angelini\n"
-            "Salvatore Patisso\n"
-            "Eleonora Amico\n"
-            "Nicolò Resta\n\n"
-            "Interface Team\n"
-            "Daniel Craciun\n"
-            "Lorenzo Martemucci\n"
-            "Giuliano Tarantino\n"
-            "Tommaso Lippolis\n\n"
-            "Grazie per aver giocato!"
-        )
-        # Nascondi il testo originale
+        # Lista di tuple: (testo, è_ruolo)
+        credits_lines = [
+            ("Project Manager", True),
+            ("Natale Milella", False),
+            ("", False),
+            ("Design Team", True),
+            ("Giovanni Zagaria", False),
+            ("Pasquale Fidanza", False),
+            ("", False),
+            ("Artificial Intelligence Team", True),
+            ("Palmina Angelini", False),
+            ("Salvatore Patisso", False),
+            ("Eleonora Amico", False),
+            ("Nicolò Resta", False),
+            ("", False),
+            ("Interface Team", True),
+            ("Daniel Craciun", False),
+            ("Lorenzo Martemucci", False),
+            ("Giuliano Tarantino", False),
+            ("Tommaso Lippolis", False),
+            ("", False),
+            ("Grazie per aver giocato!", False)
+        ]
+
         self.story.configure(text="")
 
-        # Usa il Canvas di Tkinter standard
         self.canvas = tk.Canvas(self, width=450, height=560, bg=self.robby_container._bg_color, highlightthickness=0)
         self.canvas.place(relx=0.5, rely=0.41, anchor="center")
 
-        # Inserisci il testo fuori dalla finestra (in basso)
-        self.text_id = self.canvas.create_text(
-            250, 720,  # x, y (y > height per partire da sotto)
-            text=self.credits_text,
-            font=("Comic Sans MS", 15),
-            fill="black",
-            justify="center"
-        )
+        # Font
+        bold_font = ("Comic Sans MS", 15, "bold")
+        normal_font = ("Comic Sans MS", 15)
+
+        # Inserisci ogni riga come oggetto separato
+        self.text_ids = []
+        start_y = 600  # posizione iniziale in basso
+        line_height = 30  # distanza tra le righe (puoi regolare questo valore)
+        for i, (line, is_role) in enumerate(credits_lines):
+            font = bold_font if is_role else normal_font
+            text_id = self.canvas.create_text(
+                228, start_y + i * line_height,
+                text=line,
+                font=font,
+                fill="black",
+                justify="center"
+            )
+            self.text_ids.append(text_id)
 
     def animate_credits(self):
         speed = 1       # Pixel per frame
         delay = 20      # ms tra i frame
 
-        # Calcola l'altezza del testo per sapere quando fermarsi
-        bbox = self.canvas.bbox(self.text_id)
-        text_height = bbox[3] - bbox[1] if bbox else 0
-
         def step():
-            coords = self.canvas.coords(self.text_id)
-            if coords and len(coords) >= 2:
-                x, y = coords[:2]
-                # Ferma quando la PRIMA riga arriva in alto (y - text_height/2 <= 0)
-                if y - text_height / 2 > 0:
-                    self.canvas.move(self.text_id, 0, -speed)
+            # Prendi la coordinata y della PRIMA riga (quella con indice 0)
+            first_coords = self.canvas.coords(self.text_ids[0])
+            if first_coords and len(first_coords) >= 2:
+                _, first_y = first_coords[:2]
+                if first_y > 10:
+                    # Muovi tutte le righe verso l'alto
+                    for text_id in self.text_ids:
+                        self.canvas.move(text_id, 0, -speed)
                     self.after(delay, step)
+                # Altrimenti: la prima riga ha toccato il bordo superiore, quindi ferma tutto
             else:
-                print("Errore: impossibile ottenere le coordinate del testo.")
+                print("Errore: impossibile ottenere le coordinate della prima riga.")
 
         step()
 
