@@ -1,3 +1,6 @@
+# 
+venv/
+.venv/
 
 # Visual Studio 2022
 .vscode/
