@@ -8,8 +8,9 @@ class FailPage(StorytellingTemplate):
     def __init__(self, container):
         super().__init__(container, show_timer=False)
         self.next_button.configure(text="Riprova" ,command=self.go_to_final_request_page)
-        self.story.configure(text=f'Il prompt ideale doveva essere: {self.ideal_prompt()} Riproviamo!',
-                             font=("Comic Sans MS", 20))
+        self.story.configure(text=f'Peccato! Il tuo punteggio \u00e8 minore di 65 punti.\n'
+                                f'Il prompt ideale doveva essere:\n\n {self.ideal_prompt()} \n\nRiproviamo!',
+                             font=("Comic Sans MS", 18))
         self.robby_img = ctk.CTkImage(
             light_image=Image.open("./rsc/sad_bot.png").resize((130, 130)),
             size=(130, 130)
