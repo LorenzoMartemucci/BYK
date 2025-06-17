@@ -1,11 +1,11 @@
 # from llm.llm_backend import ChatSession
-from interface.chat import Chat
-from interface.globals import Globals
-from interface.time_bar import TimeBar
+from src.interface.time_bar import TimeBar
+from src.interface.chat import Chat
+from src.interface.globals import Globals
 import random
 
-from llm.scorer import Scorer
-from llm.llm_backend import ChatSession
+from src.llm.scorer import Scorer
+from src.llm.llm_backend import ChatSession
 
 class ChatFinal(Chat):
     
@@ -25,14 +25,14 @@ class ChatFinal(Chat):
         self.time_bar = TimeBar(container)
 
     def go_to_fail_page(self):
-        from interface.fail_page import FailPage
+        from src.interface.fail_page import FailPage
         recap_page = FailPage(self.master)
         recap_page.pack(fill="both", expand=True)
         self.time_bar.destroy_timer()
         self.destroy()
 
     def go_to_final_request(self):
-        from interface.final_request_page import FinalRequestPage
+        from src.interface.final_request_page import FinalRequestPage
         request_page = FinalRequestPage(self.master)
         request_page.pack(fill="both", expand=True)
         self.destroy()
@@ -63,23 +63,35 @@ class ChatFinal(Chat):
         
 
         try:
-            response = self.llm.exec_prompt(prompt)
-            self.add_message_bubble(response, is_user=False)  # self.session.send_message(prompt)
-            score = round(self.scorer.get_prompt_score(prompt, ideal_prompt) * 100)
+            ideal_role = self.scorer.get_similar_role(global_instance.role_story, prompt)
+            if ideal_role is False:
+                self.add_error_bubble(f"Il prompt non contiene il ruolo richiesto: {global_instance.role_story}. Riprova!")
+                return "break"
+            # prompt minore di 10 caratteri
+            elif len(prompt) < 15:
+                self.add_error_bubble("Il prompt deve essere lungo almeno 15 caratteri. Riprova!")
+                return "break"
+            else:
+                response = self.llm.exec_prompt(prompt)
+                self.add_message_bubble(response, is_user=False)  # self.session.send_message(prompt)
+                score = round(self.scorer.get_prompt_score(prompt, ideal_prompt) * 100)
 
             if  not self.time_bar.is_timedout():
-                score = score + 10
+                if score >= 65:
+                    self.add_recap_bubble(f'Un prompt ideale è strutturato come il seguente:\n"{ideal_prompt}"')
+                    score = score + 10
 
             def go_to_score_page():
-                from interface.score_ranking import ScoreRankingPage
+                from src.interface.score_ranking import ScoreRankingPage
                 recap_page = ScoreRankingPage(self.master, Globals().user_name, score)
                 recap_page.pack(fill="both", expand=True)
                 self.time_bar.destroy_timer()
                 self.destroy()
             
             self.next_button.configure(
+                text='Continua', 
                 command=go_to_score_page
-                if score >= 60 else self.go_to_fail_page
+                if score >= 65 else self.go_to_fail_page
             )
             # Distruggi il frame di input
             self.user_input.destroy()
@@ -88,9 +100,8 @@ class ChatFinal(Chat):
         except Exception as e:
             self.add_error_bubble(f"Errore durante l'esecuzione del prompt finale: {str(e)}. Clicca il bottone per tornare alla pagina della storia e riprovare il tutorial!")
             self.user_input.destroy()
-            self.time_bar.destroy_timer()
             self.next_button.configure(text='Torna indietro', command=self.go_to_final_request)
             self.next_button.pack(side='left', padx=20, pady=(0, 20), anchor='center')
-        
+            self.time_bar.destroy_timer()
 
         return "break"

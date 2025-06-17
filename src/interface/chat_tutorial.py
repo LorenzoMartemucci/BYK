@@ -1,6 +1,5 @@
-from interface.chat import Chat
-from logics.tutorial_logic import TutorialLogic
-
+from src.interface.chat import Chat
+from src.logics.tutorial_logic import TutorialLogic
 
 class ChatTutorial(Chat):
     
@@ -20,13 +19,13 @@ class ChatTutorial(Chat):
         self.after(1000, self.add_message_bubble("Scrivi il tuo messaggio nel riquadro arancione e premi invio per mandarlo.", is_user=False))
 
     def go_to_final_request(self):
-        from interface.final_request_page import FinalRequestPage
+        from src.interface.final_request_page import FinalRequestPage
         request_page = FinalRequestPage(self.master)
         request_page.pack(fill="both", expand=True)
         self.destroy()
 
     def go_to_story_page(self):
-        from interface.story_page import StoryPage
+        from src.interface.story_page import StoryPage
         request_page = StoryPage(self.master)
         request_page.pack(fill="both", expand=True)
         self.destroy()
@@ -51,11 +50,11 @@ class ChatTutorial(Chat):
             if self.logic.is_tutorial_completed():
                 # Distruggi il frame di input
                 self.user_input.destroy()
-                self.add_message_bubble(self.logic.prompt_recap(), is_user=False)
+                self.add_recap_bubble(f"RECAP:\n"+self.logic.prompt_recap())
                 final_prompt = self.logic.rewrite_prompt()
-                self.add_message_bubble(final_prompt, is_user=False)
+                self.add_recap_bubble(f"PROMPT IDEALE:\n"+final_prompt)
                 response = self.logic.exec_prompt(final_prompt)
-                self.add_message_bubble(response, is_user=False)
+                self.add_message_bubble(f"OUTPUT:\n"+response, is_user=False)
                 self.add_message_bubble("È stato un piacere giocare con te!", is_user=False)
                 self.next_button.pack(side='left', padx=20, pady=(0, 20), anchor='center')
         except Exception as e:

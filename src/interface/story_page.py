@@ -1,5 +1,5 @@
-from interface.chat_tutorial import ChatTutorial
-from interface.storytelling_template import StorytellingTemplate
+from src.interface.chat_tutorial import ChatTutorial
+from src.interface.storytelling_template import StorytellingTemplate
 import customtkinter as ctk
 from PIL import Image
 

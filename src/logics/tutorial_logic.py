@@ -1,6 +1,6 @@
-from interface.globals import Globals
-from logics.fsm import FSM
-from llm.llm_backend import ChatSession
+from src.interface.globals import Globals
+from src.logics.fsm import FSM
+from src.llm.llm_backend import ChatSession
 from azure.ai.inference.models import SystemMessage, UserMessage, AssistantMessage
 import json
 

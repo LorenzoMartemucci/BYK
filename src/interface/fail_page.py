@@ -1,6 +1,6 @@
-from interface.final_request_page import FinalRequestPage
-from interface.storytelling_template import StorytellingTemplate
-from interface.globals import Globals
+from src.interface.final_request_page import FinalRequestPage
+from src.interface.storytelling_template import StorytellingTemplate
+from src.interface.globals import Globals
 import customtkinter as ctk
 from PIL import Image
 

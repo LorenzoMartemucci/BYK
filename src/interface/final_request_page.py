@@ -1,5 +1,5 @@
-from interface.chat_final import ChatFinal
-from interface.storytelling_template import StorytellingTemplate
+from src.interface.chat_final import ChatFinal
+from src.interface.storytelling_template import StorytellingTemplate
 import customtkinter as ctk
 from PIL import Image
 
@@ -8,10 +8,10 @@ class FinalRequestPage(StorytellingTemplate):
         super().__init__(container)
         self.next_button.configure(text="Proseguiamo" ,command=self.go_to_chat_final)
         self.story.configure(text="Adesso è arrivato il momento di metterti alla prova!\n"+
-                             " Ti verrà fornito un problema da risolvere insieme a Robbi.\n"+
-                             " Ricorda, avrai a disposizione 2 minuti per ottenere un punteggio bonus.\n"+
-                             " Buona fortuna e buon lavoro!\n",
-                             font=("Comic Sans MS", 20))
+                             "Ti verrà fornito un problema da risolvere insieme a Robbi.\n"+
+                             "Ricorda, avrai a disposizione 5 minuti per ottenere un punteggio bonus.\n"+
+                             "Buona fortuna e buon lavoro!\n",
+                             font=("Comic Sans MS", 21))
         self.robby_img = ctk.CTkImage(
             light_image=Image.open("./rsc/robot.png").resize((120, 120)),
             size=(120, 120)
