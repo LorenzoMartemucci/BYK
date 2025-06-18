@@ -15,7 +15,7 @@ Main Features:
 import customtkinter as ctk
 from PIL import Image
 from src.interface.style import Style
-from src.logics.update_scores import read_scores, write_scores
+from src.logics.update_scores import update_ranking_list
 from src.interface.start_page import StartPage
 from src.interface.credits import Credits
 
@@ -26,10 +26,8 @@ class ScoreRankingPage(ctk.CTkFrame):
         self.username = username
 
         # Aggiorna classifica
-        self.ranking_data = read_scores()
-        self.ranking_data.append({"name": self.username, "score": self.score_value})
-        self.ranking_data.sort(key=lambda x: x["score"], reverse=True)
-        write_scores(self.ranking_data)
+        self.ranking_data = update_ranking_list(self.username, self.score_value)
+
 
         # Layout principale
         self.grid_rowconfigure(2, weight=1)

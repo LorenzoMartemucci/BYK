@@ -25,10 +25,11 @@ class FailPage(StorytellingTemplate):
         )
         self.start_button.pack(side="right", padx = 10, anchor='s')
         self.start_button.configure(text="Ricominciamo!", command=self.go_to_start_page)
-        
+
         self.next_button.configure(text="Riprova" ,command=self.go_to_final_request_page)
-        self.story.configure(text=f'Il prompt ideale doveva essere: {self.ideal_prompt()} Riproviamo!',
-                             font=("Comic Sans MS", 20))
+        self.story.configure(text=f'Peccato! Il tuo punteggio \u00e8 minore di 65 punti.\n'
+                                f'Il prompt ideale doveva essere:\n\n "{self.ideal_prompt()}" \n\nRiproviamo!',
+                             font=("Comic Sans MS", 16))
         self.robby_img = ctk.CTkImage(
             light_image=Image.open("./rsc/sad_bot.png").resize((130, 130)),
             size=(130, 130)
@@ -45,9 +46,10 @@ class FailPage(StorytellingTemplate):
         story_page = FinalRequestPage(self.master)
         story_page.pack(fill="both", expand=True)
         self.destroy()
-        
+
     def go_to_start_page(self):
-            from src.interface.start_page import StartPage
-            tutorial_page = StartPage(self.master)
-            tutorial_page.pack(fill="both", expand=True)
-            self.destroy()
+        from src.interface.start_page import StartPage
+        tutorial_page = StartPage(self.master)
+        tutorial_page.pack(fill="both", expand=True)
+        self.destroy()
+

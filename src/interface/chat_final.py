@@ -64,14 +64,14 @@ class ChatFinal(Chat):
 
         try:
             ideal_role = self.scorer.get_similar_role(global_instance.role_story, prompt)
-            if ideal_role is False:
+            if ideal_role is False or len(prompt) < 30:
                 score = 10
                 #self.add_error_bubble(f"Il prompt non è corretto. Riprova!")
                 #return "break"
             # prompt minore di 10 caratteri
-            elif len(prompt) < 15:
-                self.add_error_bubble("Il prompt deve essere lungo almeno 15 caratteri. Riprova!")
-                return "break"
+            #elif len(prompt) < 15:
+                #self.add_error_bubble("Il prompt deve essere lungo almeno 15 caratteri. Riprova!")
+                #return "break"
             else:
                 score = round(self.scorer.get_prompt_score(prompt, ideal_prompt) * 100)
 
