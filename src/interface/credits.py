@@ -87,7 +87,7 @@ class Credits(StorytellingTemplate):
         step()
 
     def go_to_start_page(self):
-        from interface.start_page import StartPage
+        from src.interface.start_page import StartPage
         start_page = StartPage(self.master)
         start_page.pack(fill="both", expand=True)
         self.destroy()
