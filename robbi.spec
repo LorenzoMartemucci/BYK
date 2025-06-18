@@ -9,10 +9,8 @@ a = Analysis(
     pathex=['./src'],
     binaries=[],
     datas=[
-        ('rsc/*', 'rsc'),
-        ('C:/Users/XT144AC/AppData/Roaming/nltk_data/tokenizers/punkt', 'nltk_data/tokenizers/punkt'),
-        ('C:/Users/XT144AC/AppData/Roaming/nltk_data/corpora/stopwords', 'nltk_data/corpora/stopwords'),
-    ]
+        ('rsc/*', 'rsc')
+    ],
     hiddenimports=collect_submodules('transformers') + [
         'sklearn.utils._typedefs',                 # Often needed for sklearn
         'sentence_transformers.models',            # Sentence Transformers
