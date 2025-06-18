@@ -78,7 +78,7 @@ class StartPage(ctk.CTkFrame):
         """Handle the 'Play' button click: store name and transition."""
         # username = self.username_entry.get()
         # self.master is the parent container of this frame
-        storytelling_page = FinalRequestPage(self.master)
+        storytelling_page = StoryPage(self.master)
         storytelling_page.pack(fill="both", expand=True)
         self.destroy()  # Remove the StartPage frame after transition
 

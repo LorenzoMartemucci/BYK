@@ -4,9 +4,28 @@ from src.interface.globals import Globals
 import customtkinter as ctk
 from PIL import Image
 
+from src.interface.style import Style
+
 class FailPage(StorytellingTemplate):
     def __init__(self, container):
         super().__init__(container, show_timer=False)
+
+        button_width = 160
+        button_height = 60
+        self.start_button = ctk.CTkButton(
+            self.bottom_container,
+            fg_color=Style.WINDOW_BG,
+            text_color=Style.WIDGETS_FG_TEXT_COLOR,
+            border_color=Style.WIDGETS_BORDER_COLOR,
+            border_width=2,
+            corner_radius=15,
+            font=Style.WIDGETS_FONT,
+            width=button_width,
+            height=button_height
+        )
+        self.start_button.pack(side="right", padx = 10, anchor='s')
+        self.start_button.configure(text="Ricominciamo!", command=self.go_to_start_page)
+        
         self.next_button.configure(text="Riprova" ,command=self.go_to_final_request_page)
         self.story.configure(text=f'Il prompt ideale doveva essere: {self.ideal_prompt()} Riproviamo!',
                              font=("Comic Sans MS", 20))
@@ -26,3 +45,9 @@ class FailPage(StorytellingTemplate):
         story_page = FinalRequestPage(self.master)
         story_page.pack(fill="both", expand=True)
         self.destroy()
+        
+    def go_to_start_page(self):
+            from src.interface.start_page import StartPage
+            tutorial_page = StartPage(self.master)
+            tutorial_page.pack(fill="both", expand=True)
+            self.destroy()
