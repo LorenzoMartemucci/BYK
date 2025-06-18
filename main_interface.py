@@ -2,6 +2,7 @@ import sys
 import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'src')))
 from src.interface.start_page import StartPage
+from src.interface.final_request_page import FinalRequestPage 
 from src.interface.style import Style
 import customtkinter as ctk
 import ctypes
@@ -26,7 +27,8 @@ class MainApp:
             self.root.iconbitmap("./rsc/robot_icon.ico")
         except Exception:
             pass
-        self.start_page = StartPage(self.root)
+        #self.start_page = StartPage(self.root)
+        self.start_page = FinalRequestPage(self.root)
 
 
         self.start_page.pack(fill="both", expand=True)

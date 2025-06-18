@@ -92,7 +92,7 @@ class Scorer:
         else:
             return None
         
-    def get_similar_role(self, role, prompt, threshold = 0.3) -> str:
+    def get_similar_role(self, role, prompt, threshold = 0.35) -> str:
         """
         Return True o False if the role is similar to the prompt.
         :param role: The role to check.
@@ -154,7 +154,7 @@ class Scorer:
 
         return similarity[0][0]
     
-    def get_prompt_score(self, prompt: str, ideal_prompt: str, l_w=0.9) -> float:
+    def get_prompt_score(self, prompt: str, ideal_prompt: str, l_w=0.8) -> float:
         """
         Return the score of the prompt based on the roles.
         :param prompt: The prompt to check.
