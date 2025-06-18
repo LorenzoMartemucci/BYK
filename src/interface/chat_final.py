@@ -65,22 +65,45 @@ class ChatFinal(Chat):
         try:
             ideal_role = self.scorer.get_similar_role(global_instance.role_story, prompt)
             if ideal_role is False:
-                self.add_error_bubble(f"Il prompt non contiene il ruolo richiesto: {global_instance.role_story}. Riprova!")
+                #score = 30
+                self.add_error_bubble(f"Il prompt non è corretto. Riprova!")
                 return "break"
             # prompt minore di 10 caratteri
             elif len(prompt) < 15:
                 self.add_error_bubble("Il prompt deve essere lungo almeno 15 caratteri. Riprova!")
                 return "break"
             else:
-                response = self.llm.exec_prompt(prompt)
-                self.add_message_bubble(response, is_user=False)  # self.session.send_message(prompt)
                 score = round(self.scorer.get_prompt_score(prompt, ideal_prompt) * 100)
 
-            if  not self.time_bar.is_timedout():
-                if score >= 65:
-                    self.add_recap_bubble(f'Un prompt ideale è strutturato come il seguente:\n"{ideal_prompt}"')
-                    score = score + 10
+            
+            if score >= 65 and score < 90:
+                response = self.llm.exec_prompt(prompt)
+                self.add_message_bubble("Questo è l'output del tuo prompt: \n" + response, is_user=False)  # self.session.send_message(prompt)
+                self.add_recap_bubble(f"Il prompt può essere migliorato. La prossima volta potresti specificare meglio:\n"
+                    "Ruolo: 'Agisci come [esperto, docente, consulente, ecc.]'\n"
+                    "Compito: 'Devi [fare una cosa specifica]'\n"
+                    "Contesto: 'Il contesto è [settore, obiettivo, pubblico, ulteriori dettagli]'\n"
+                    "Formato output: '[elenco, paragrafo, codice, tabella, ecc.]'\n"
+                    "Vincoli: '[lunghezza, tono, linguaggio, ecc.]'"
+            )
+                self.add_recap_bubble(f'Un prompt ideale è strutturato come il seguente:\n"{ideal_prompt}')
+            elif score >= 90:
+                response = self.llm.exec_prompt(prompt)
+                self.add_message_bubble("Questo è l'output del tuo prompt: \n" + response, is_user=False)  # self.session.send_message(prompt)
+                self.add_recap_bubble(f'Il tuo prompt è perfetto!')
+            else:
+                self.add_recap_bubble(
+                    "Il prompt non è corretto. Ricordati di specificare:\n"
+                    "Ruolo: 'Agisci come [esperto, docente, consulente, ecc.]'\n"
+                    "Compito: 'Devi [fare una cosa specifica]'\n"
+                    "Contesto: 'Il contesto è [settore, obiettivo, pubblico, ulteriori dettagli]'\n"
+                    "Formato output: '[elenco, paragrafo, codice, tabella, ecc.]'\n"
+                    "Vincoli: '[lunghezza, tono, linguaggio, ecc.]'"
+                )
 
+            if  not self.time_bar.is_timedout() and score >=65:
+                    score = score + 10 
+                    
             def go_to_score_page():
                 from src.interface.score_ranking import ScoreRankingPage
                 recap_page = ScoreRankingPage(self.master, Globals().user_name, score)
