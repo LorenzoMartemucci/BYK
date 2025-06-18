@@ -92,7 +92,7 @@ class Scorer:
         else:
             return None
         
-    def get_similar_role(self, role, prompt, threshold = 0.4) -> str:
+    def get_similar_role(self, role, prompt, threshold = 0.3) -> str:
         """
         Return True o False if the role is similar to the prompt.
         :param role: The role to check.
